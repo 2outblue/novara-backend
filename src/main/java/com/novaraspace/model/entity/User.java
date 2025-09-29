@@ -38,6 +38,9 @@ public class User extends BaseEntity {
     private boolean newsletter;
     private boolean marketing;
 
+    public User() {
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }

@@ -1,3 +1,11 @@
 spring:
   application:
     name: novara
+
+
+app:
+  jwt:
+    issuer: "novara-space"
+    secret: "${NOVARA_JWT_SECRET}"
+    expiry-minutes: 15
+    refresh-expiry-hours: 24
