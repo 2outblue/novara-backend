@@ -1,13 +1,13 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.enums.AccountStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.novaraspace.model.enums.UserRole;
+import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 import static java.sql.Types.VARCHAR;
@@ -19,10 +19,14 @@ public class User extends BaseEntity {
     private Instant createdAt;
     @JdbcTypeCode(VARCHAR)
     @Column(unique = true)
-    private UUID authId;
+    private String authId;
     private AccountStatus status;
     private Instant lastLoginAt;
     private Instant deletedAt;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<UserRole> roles;
 
     private String firstName;
     private String lastName;
@@ -50,11 +54,11 @@ public class User extends BaseEntity {
         return this;
     }
 
-    public UUID getAuthId() {
+    public String getAuthId() {
         return authId;
     }
 
-    public User setAuthId(UUID authId) {
+    public User setAuthId(String authId) {
         this.authId = authId;
         return this;
     }
@@ -83,6 +87,15 @@ public class User extends BaseEntity {
 
     public User setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
+        return this;
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
+
+    public User setRoles(Set<UserRole> roles) {
+        this.roles = roles;
         return this;
     }
 

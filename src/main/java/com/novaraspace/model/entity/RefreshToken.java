@@ -17,7 +17,7 @@ public class RefreshToken extends BaseEntity{
     private String token;
     @Column(nullable = false)
     @JdbcTypeCode(VARCHAR)
-    private UUID userAuthId;
+    private String userAuthId;
     @Column(nullable = false)
     private Instant expiryDate;
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class RefreshToken extends BaseEntity{
     public RefreshToken() {
     }
 
-    public RefreshToken(String publicKey, String token, UUID userAuthId, Instant expiryDate, UUID familyId) {
+    public RefreshToken(String publicKey, String token, String userAuthId, Instant expiryDate, UUID familyId) {
         this.publicKey = publicKey;
         this.token = token;
         this.userAuthId = userAuthId;
@@ -57,11 +57,11 @@ public class RefreshToken extends BaseEntity{
         return this;
     }
 
-    public UUID getUserAuthId() {
+    public String getUserAuthId() {
         return userAuthId;
     }
 
-    public RefreshToken setUserAuthId(UUID userAuthId) {
+    public RefreshToken setUserAuthId(String userAuthId) {
         this.userAuthId = userAuthId;
         return this;
     }
