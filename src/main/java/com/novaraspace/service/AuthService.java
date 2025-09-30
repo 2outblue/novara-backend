@@ -100,7 +100,7 @@ public class AuthService {
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
 
-        User userEntity = userRepository.findByEmail(authId)
+        User userEntity = userRepository.findByAuthId(authId)
                 .orElseThrow(() -> new UserNotFoundException("User not available"));
 
         Set<UserRole> roles = userEntity.getRoles();

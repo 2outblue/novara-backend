@@ -1,11 +1,27 @@
 spring:
   application:
     name: novara
-
-
+  datasource:
+    username: ${NOVARA_SQL_USER:root}
+    url: jdbc:mysql://localhost:3306/novara-main?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ${MYSQL_PASS1:1q2w3e4r}
+  jpa:
+    show-sql: true
+    open-in-view: 'false'
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: 'TRUE'
+    hibernate:
+      ddl-auto: update
 app:
   jwt:
     issuer: "novara-space"
     secret: "${NOVARA_JWT_SECRET}"
     expiry-minutes: 15
-    refresh-expiry-hours: 24
+    refresh-expiry-hours: 32
+
+server:
+  port: 8095

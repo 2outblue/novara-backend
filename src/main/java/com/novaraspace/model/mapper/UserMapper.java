@@ -18,7 +18,10 @@ import java.util.UUID;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class UserMapper {
 
-    protected final PasswordEncoder passwordEncoder;
+    protected PasswordEncoder passwordEncoder;
+
+    public UserMapper() {
+    }
 
     public UserMapper(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
