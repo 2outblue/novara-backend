@@ -40,7 +40,7 @@ public class User extends BaseEntity {
     private String addressLine1;
     private String addressLine2;
     private boolean newsletter;
-    private boolean marketing;
+    private boolean marketing = false;
 
     public User() {
     }

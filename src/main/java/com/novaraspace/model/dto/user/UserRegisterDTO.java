@@ -10,8 +10,6 @@ import java.util.UUID;
 public class UserRegisterDTO {
 
     @NotEmpty
-    private UUID authId;
-    @NotEmpty
     @Size(min = 2, max = 60)
     private String firstName;
     @NotEmpty
@@ -47,13 +45,8 @@ public class UserRegisterDTO {
     @NotNull
     private boolean newsletter;
 
-    public @NotEmpty UUID getAuthId() {
-        return authId;
-    }
 
-    public UserRegisterDTO setAuthId(@NotEmpty UUID authId) {
-        this.authId = authId;
-        return this;
+    public UserRegisterDTO() {
     }
 
     public @NotEmpty @Size(min = 2, max = 60) String getFirstName() {
