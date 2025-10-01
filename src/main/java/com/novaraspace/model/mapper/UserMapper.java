@@ -5,6 +5,7 @@ import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -23,7 +24,8 @@ public abstract class UserMapper {
     public UserMapper() {
     }
 
-    public UserMapper(PasswordEncoder passwordEncoder) {
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,7 +38,7 @@ public abstract class UserMapper {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setCreatedAt(Instant.now());
         user.setAuthId(Base64.encode(UUID.randomUUID().toString()).toString());
-        user.setStatus(AccountStatus.PENDING_ACTIVATION);
+        user.setStatus(AccountStatus.ACTIVE); // TODO: CHANGE THIS TO PENDING_ACTIVATION AFTER EMAIL IS SET UP!
         user.setRoles(Set.of(UserRole.USER));
 
         return user;

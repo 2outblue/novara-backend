@@ -14,6 +14,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
+        validator:
+          allow_multiple_cascaded_validation_on_composable_constraints: false
     hibernate:
       ddl-auto: update
 app:

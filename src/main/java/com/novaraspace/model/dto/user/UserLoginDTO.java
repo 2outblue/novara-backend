@@ -1,7 +1,15 @@
 package com.novaraspace.model.dto.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class UserLoginDTO {
+    @NotEmpty
+    @Email
     private String email;
+    @NotEmpty
+    @Size(min = 5, max = 60)
     private String password;
 
     public UserLoginDTO() {
