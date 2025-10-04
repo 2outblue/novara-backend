@@ -14,8 +14,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
-        validator:
-          allow_multiple_cascaded_validation_on_composable_constraints: false
     hibernate:
       ddl-auto: update
 app:
@@ -27,3 +25,13 @@ app:
 
 server:
   port: 8095
+
+logging:
+  level:
+    org.hibernate.SQL: ERROR
+    org.hibernate.arm.jdbc.bind: ERROR
+    org.springframework: ERROR
+    org.springframework.boot.actuate: ERROR
+    #    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.springframework.security: ERROR
+    org.springframework.mail: ERROR
