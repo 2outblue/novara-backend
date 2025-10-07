@@ -13,6 +13,7 @@ import com.novaraspace.model.exception.UserNotFoundException;
 import com.novaraspace.repository.RefreshTokenRepository;
 import com.novaraspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
@@ -49,6 +51,16 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {
+        return ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/auth")
+                .maxAge( logout ? Duration.ZERO : Duration.ofHours(refreshExpiryHours))
+                .sameSite("Strict")
+                .build();
+    }
+
     public TokenAuthenticationDTO generateNewTokenAuthentication(Authentication authentication) {
         String authId = userRepository.getAuthIdByEmail(authentication.getName())
                 .orElseThrow(UserNotFoundException::new);
@@ -58,13 +70,22 @@ public class AuthService {
         return new TokenAuthenticationDTO(refreshToken, jwt);
     }
 
-    public TokenAuthenticationDTO validateRefreshToken(String rawRefreshToken) {
-        if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
-            throw new RefreshTokenException();
-        }
-        String[] tokenParams = rawRefreshToken.split("\\.");
-        if (tokenParams.length != 2) {throw new RefreshTokenException();}
+    public void invalidateActiveTokens(String rawRefreshToken) {
+        //There shouldn't be any active tokens aside from the input one, but for safety invalidate by familyId.
+        String publicKey = getRefreshTokenParams(rawRefreshToken)[0];
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
+                .orElseThrow(RefreshTokenException::new);
+        invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+    }
 
+    public TokenAuthenticationDTO validateRefreshToken(String rawRefreshToken) {
+//        if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
+//            throw new RefreshTokenException();
+//        }
+//        String[] tokenParams = rawRefreshToken.split("\\.");
+//        if (tokenParams.length != 2) {throw new RefreshTokenException();}
+
+        String[] tokenParams = getRefreshTokenParams(rawRefreshToken);
         String publicKey = tokenParams[0];
         String rawToken = tokenParams[1];
 
@@ -150,6 +171,15 @@ public class AuthService {
         byte[] secret = new byte[32];
         random.nextBytes(secret);
         return Base64.encode(secret).toString();
+    }
+
+    private String[] getRefreshTokenParams(String rawRefreshToken) {
+        if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
+            throw new RefreshTokenException();
+        }
+        String[] tokenParams = rawRefreshToken.split("\\.");
+        if (tokenParams.length != 2) {throw new RefreshTokenException();}
+        return tokenParams;
     }
 
     private void invalidateTokenFamily(UUID familyId) {

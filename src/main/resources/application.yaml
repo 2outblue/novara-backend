@@ -30,7 +30,7 @@ logging:
   level:
     org.hibernate.SQL: ERROR
     org.hibernate.arm.jdbc.bind: ERROR
-    org.springframework: ERROR
+    org.springframework: DEBUG
     org.springframework.boot.actuate: ERROR
     #    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     org.springframework.security: ERROR

@@ -7,7 +7,10 @@ import com.novaraspace.model.exception.UserNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,9 +42,12 @@ public class GlobalExceptionHandler { //TODO: Split this if it gets too big
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationExceptions(AuthenticationException ex) {
-        System.out.println(ex.getMessage());
+        String message = "Bad Credentials.";
+        if (ex instanceof BadCredentialsException || ex instanceof UsernameNotFoundException || ex instanceof InternalAuthenticationServiceException) {
+            message = "Invalid username or password.";
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "BAD_CREDENTIALS", "Bad Credentials."));
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "BAD_CREDENTIALS", message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

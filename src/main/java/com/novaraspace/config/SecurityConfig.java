@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 .jwtAuthenticationConverter(jwtAuthConverter())
                         )
                         .bearerTokenResolver(request -> {
-                            if (request.getRequestURI().equals("/auth/refresh") || request.getRequestURI().equals("/auth/register")) {
+                            if (request.getRequestURI().equals("/auth/refresh") || request.getRequestURI().equals("/auth/register") || request.getRequestURI().equals("/auth/register")) {
                                 return null;
                             }
                             return new DefaultBearerTokenResolver().resolve(request);
