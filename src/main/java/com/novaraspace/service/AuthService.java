@@ -3,15 +3,16 @@ package com.novaraspace.service;
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.config.JWKAlgorithmImpl;
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
+import com.novaraspace.model.dto.auth.VerificationTokenDTO;
+import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.entity.RefreshToken;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
-import com.novaraspace.model.exception.ExpiredRefreshTokenException;
-import com.novaraspace.model.exception.RefreshTokenException;
-import com.novaraspace.model.exception.UserNotFoundException;
+import com.novaraspace.model.exception.*;
+import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.RefreshTokenRepository;
-import com.novaraspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -32,23 +33,52 @@ import java.util.UUID;
 public class AuthService {
     @Value("${app.jwt.issuer}")
     private String issuer;
-
     @Value("${app.jwt.expiry-minutes}")
     private long jwtExpiryMinutes;
-
     @Value("${app.jwt.refresh-expiry-hours}")
     private long refreshExpiryHours;
+    @Value("${app.enable-email-verification}")
+    private boolean emailVerificationEnabled;
 
     private final JwtEncoder jwtEncoder;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final VerificationService verificationService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public AuthService(JwtEncoder jwtEncoder, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(
+            JwtEncoder jwtEncoder, UserService userService, VerificationService verificationService,
+            RefreshTokenRepository refreshTokenRepository,
+            PasswordEncoder passwordEncoder, UserMapper userMapper
+    ) {
         this.jwtEncoder = jwtEncoder;
-        this.userRepository = userRepository;
+        this.userService = userService;
+        this.verificationService = verificationService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+    }
+
+    public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
+        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
+        VerificationToken verificationToken = verificationService.generateVerificationToken(newUser);
+        if (emailVerificationEnabled) {
+            newUser.setVerification(verificationToken);
+        }
+        userService.persistUser(newUser);
+        return new VerificationTokenDTO()
+                .setEmail(newUser.getEmail())
+                .setCode(verificationToken.getCode())
+                .setLinkToken(verificationToken.getLinkToken());
+    }
+
+    public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
+        VerificationToken verification = verificationService.getEntityByLinkTokenOrCode(linkOrCode);
+        if (verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
+            throw new DisabledVerificationTokenException("Expired or invalid verification code.");
+        }
+        userService.activateUserAccount(verification.getUser().getId());
     }
 
     public ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {
@@ -62,7 +92,7 @@ public class AuthService {
     }
 
     public TokenAuthenticationDTO generateNewTokenAuthentication(Authentication authentication) {
-        String authId = userRepository.getAuthIdByEmail(authentication.getName())
+        String authId = userService.getAuthIdByEmail(authentication.getName())
                 .orElseThrow(UserNotFoundException::new);
 
         String refreshToken = generateNewRefreshToken(authId);
@@ -79,12 +109,6 @@ public class AuthService {
     }
 
     public TokenAuthenticationDTO validateRefreshToken(String rawRefreshToken) {
-//        if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
-//            throw new RefreshTokenException();
-//        }
-//        String[] tokenParams = rawRefreshToken.split("\\.");
-//        if (tokenParams.length != 2) {throw new RefreshTokenException();}
-
         String[] tokenParams = getRefreshTokenParams(rawRefreshToken);
         String publicKey = tokenParams[0];
         String rawToken = tokenParams[1];
@@ -105,7 +129,7 @@ public class AuthService {
             throw new ExpiredRefreshTokenException();
         }
 
-        User userEntity = userRepository.findByAuthId(refreshTokenEntity.getUserAuthId())
+        User userEntity = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId())
                 .orElseThrow(() -> new UserNotFoundException("User not available"));
 
         if (!userEntity.getStatus().equals(AccountStatus.ACTIVE)) {
@@ -121,7 +145,7 @@ public class AuthService {
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
 
-        User userEntity = userRepository.findByAuthId(authId)
+        User userEntity = userService.findEntityByAuthId(authId)
                 .orElseThrow(() -> new UserNotFoundException("User not available"));
 
         Set<UserRole> roles = userEntity.getRoles();

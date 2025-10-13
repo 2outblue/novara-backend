@@ -1,9 +1,12 @@
 package com.novaraspace.web;
 
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
+import com.novaraspace.model.dto.auth.VerificationTokenDTO;
+import com.novaraspace.model.dto.auth.CodeOrLinkTokenDTO;
 import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.service.AuthService;
+import com.novaraspace.service.EmailService;
 import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,28 +21,36 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
-
 @RestController
 @RequestMapping("auth")
 public class AuthController {
 
     private final AuthenticationManager authManager;
     private final AuthService authService;
+    private final EmailService emailService;
     private final UserService userService;
 
     @Value("${app.jwt.expiry-minutes}")
     private long jwtExpiryMinutes;
+    @Value("${app.enable-email-verification}")
+    private boolean emailVerificationEnabled;
 
-    public AuthController(AuthenticationManager authManager, AuthService authService, UserService userService) {
+    public AuthController(AuthenticationManager authManager, AuthService authService, EmailService emailService, UserService userService) {
         this.authManager = authManager;
         this.authService = authService;
+        this.emailService = emailService;
         this.userService = userService;
     }
 
+    // TODO: Figure out a way to handle a failure to send email on registration - delete the user ?
+    // The user should be able to retry - since at the moment, if the email is not correctly send,
+    //  it will be 'locked' - the user can't retry registration with the same email.
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userDto) {
-        userService.registerUser(userDto);
+        VerificationTokenDTO verificationDTO = authService.registerUser(userDto);
+        if (emailVerificationEnabled) {
+            emailService.sendRegistrationEmail(verificationDTO);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -48,7 +59,7 @@ public class AuthController {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );
-        
+
         TokenAuthenticationDTO tokenDTO = authService.generateNewTokenAuthentication(authentication);
         ResponseCookie cookie = authService.createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
         return ResponseEntity.ok()
@@ -82,6 +93,12 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, invalidCookie.toString())
                 .build();
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<Void> verifyCode(@RequestBody CodeOrLinkTokenDTO codeDTO) {
+        authService.verifyAccountByLinkTokenOrCode(codeDTO.getCodeOrLinkToken());
+        return ResponseEntity.ok().build();
     }
 }
 

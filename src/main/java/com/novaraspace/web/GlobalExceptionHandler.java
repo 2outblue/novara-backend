@@ -1,13 +1,12 @@
 package com.novaraspace.web;
 
-import com.novaraspace.model.exception.ApiError;
-import com.novaraspace.model.exception.ExpiredRefreshTokenException;
-import com.novaraspace.model.exception.RefreshTokenException;
-import com.novaraspace.model.exception.UserNotFoundException;
+
+import com.novaraspace.model.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,11 +41,16 @@ public class GlobalExceptionHandler { //TODO: Split this if it gets too big
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationExceptions(AuthenticationException ex) {
         String message = "Bad Credentials.";
+        String errorCode = "BAD_CREDENTIALS";
         if (ex instanceof BadCredentialsException || ex instanceof UsernameNotFoundException || ex instanceof InternalAuthenticationServiceException) {
             message = "Invalid username or password.";
         }
+        if (ex instanceof DisabledException) {
+            message = "Account is not activated";
+            errorCode = "ACCOUNT_NOT_ACTIVE";
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "BAD_CREDENTIALS", message));
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -55,14 +58,41 @@ public class GlobalExceptionHandler { //TODO: Split this if it gets too big
         Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 fieldErrors.put(error.getField(), error.getDefaultMessage()));
+
+        String errorCode = "INVALID_DATA";
+        if (fieldErrors.get("email").equals("Email already exists.")) {
+            errorCode = "EMAIL_IN_USE";
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "INVALID_DATA", "Validation failed.", fieldErrors));
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, "Validation failed.", fieldErrors));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "INVALID_DATA", "NO_ERROR_MESSAGE"));
+    }
+
+    @ExceptionHandler(FailedSendingEmailException.class)
+    public ResponseEntity<ApiError> handleEmailMessagingException(FailedSendingEmailException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "EMAIL_SENDING_FAILED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(FailedOperationException.class)
+    public ResponseEntity<ApiError> handleFailedOperation(FailedOperationException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "FAILED_OPERATION", ex.getMessage()));
+    }
+
+    @ExceptionHandler(VerificationTokenException.class)
+    public ResponseEntity<ApiError> handleVerificationTokenException(VerificationTokenException ex) {
+        String errorCode = "VERIFICATION_FAILED";
+        if (ex instanceof DisabledVerificationTokenException) {
+            errorCode = "VERIFICATION_DISABLED";
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, ex.getMessage()));
     }
 
 }

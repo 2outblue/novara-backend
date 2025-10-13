@@ -1,4 +1,18 @@
 spring:
+  mail:
+    host: smtp.mailersend.net
+    port: 587
+    username: ${MAILERSEND_USER}
+    password: ${MAILERSEND_PASS}
+    from: noreply@novaraspace.com
+    properties:
+      mail:
+        smtp:
+          debug: true
+          auth: true
+          starttls:
+            enable: true
+          timeout: 8000
   application:
     name: novara
   datasource:
@@ -22,6 +36,9 @@ app:
     secret: "${NOVARA_JWT_SECRET}"
     expiry-minutes: 15
     refresh-expiry-hours: 32
+  verification-token-expiry-hours: 24
+  enable-email-verification: true
+  frontend-url: http://localhost:4200
 
 server:
   port: 8095

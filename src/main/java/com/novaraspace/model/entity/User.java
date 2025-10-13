@@ -8,7 +8,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 import static java.sql.Types.VARCHAR;
 
@@ -27,6 +26,9 @@ public class User extends BaseEntity {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<UserRole> roles;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private VerificationToken verification;
 
     private String firstName;
     private String lastName;
@@ -96,6 +98,15 @@ public class User extends BaseEntity {
 
     public User setRoles(Set<UserRole> roles) {
         this.roles = roles;
+        return this;
+    }
+
+    public VerificationToken getVerification() {
+        return verification;
+    }
+
+    public User setVerification(VerificationToken verification) {
+        this.verification = verification;
         return this;
     }
 

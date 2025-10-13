@@ -1,7 +1,11 @@
 package com.novaraspace.repository;
 
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.entity.VerificationToken;
+import com.novaraspace.model.enums.AccountStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -16,4 +20,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u.authId as authId from User u where u.email = :email")
     Optional<String> getAuthIdByEmail(@Param("email") String email);
+
+    @Modifying
+    @Query("update User u set u.status = :newStatus where u.id = :userId")
+    @Transactional
+    void updateUserStatusById(@Param("userId") Long userId, @Param("newStatus") AccountStatus newStatus);
+
+    @Modifying
+    @Query("update User u set u.verification = :verification where u.id = :userId")
+    @Transactional
+    void updateVerification(@Param("userId") Long userId, @Param("verification")VerificationToken verification);
 }
