@@ -1,5 +1,6 @@
 package com.novaraspace.web;
 
+import com.novaraspace.model.dto.auth.EmailDTO;
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
 import com.novaraspace.model.dto.auth.VerificationTokenDTO;
 import com.novaraspace.model.dto.auth.CodeOrLinkTokenDTO;
@@ -98,6 +99,12 @@ public class AuthController {
     @PostMapping("/verify")
     public ResponseEntity<Void> verifyCode(@RequestBody CodeOrLinkTokenDTO codeDTO) {
         authService.verifyAccountByLinkTokenOrCode(codeDTO.getCodeOrLinkToken());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verify/new")
+    public ResponseEntity<Void> generateNewVerification(@RequestBody EmailDTO emailDTO) {
+
         return ResponseEntity.ok().build();
     }
 }

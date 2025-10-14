@@ -81,6 +81,26 @@ public class AuthService {
         userService.activateUserAccount(verification.getUser().getId());
     }
 
+    public void generateNewVerification(String email) {
+        // Maybe make a method in the user service that deletes its verification?
+        // You could even re-use it for activateUser() ? Then just use the same email
+        // to generate a new verification. Then maybe modify the registerUser method -
+        // save the user and make a method in the user service like updateUserVerification
+        // to which you will pass a user email (or id/authId - most likely email), the user
+        // service can fetch this user, attach the new verification and persist it. Then you can
+        // use this method both here and in the registerUser() method above. So you don't
+        // even need a method that specifically deletes the user verification - you can just pass
+        // null to updateUserVerification().
+
+        // Only conditions under which an error matters to the frontend are:
+        // - email is invalid (USER_NOT_FOUND) - specific error will be shown and page won't be disabled
+        // - account is already activated - specific error - make an exception for that or something
+
+        // Maybe User-Verification doesn't need to be bi-directional - you could just
+        // have the email in the verification entity ? The current setup is a hassle to
+        // manage.
+    }
+
     public ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)

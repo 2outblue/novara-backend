@@ -33,7 +33,7 @@ public class EmailService {
             helper.setTo(verificationDTO.getEmail());
             helper.setSubject("Novara Registration Email");
             helper.setText(
-                    "<p>To verify your account please click <a href=\"" + frontendUrl + "/" + verificationDTO.getLinkToken() + "\">here</a> to verify your email.</p>" +
+                    "<p>To verify your account please click <a href=\"" + frontendUrl + "/linkToken=" + verificationDTO.getLinkToken() + "\">here</a> to verify your email.</p>" +
                             "<p>Or enter this code: </p>" +
                             verificationDTO.getCode(),
 
