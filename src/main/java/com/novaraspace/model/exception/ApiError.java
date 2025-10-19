@@ -7,25 +7,25 @@ import java.util.Map;
 public class ApiError {
     private String timestamp;
     private int status;
-    private String error;
+    private String errorCode;
     private String message;
     private Map<String, String> fieldErrors;
 
     public ApiError() {
     }
 
-    public ApiError(int status, String error, String message) {
+    public ApiError(int status, String errorCode, String message) {
         this.timestamp = Instant.now().toString();
         this.status = status;
-        this.error = error;
+        this.errorCode = errorCode;
         this.message = message;
         this.fieldErrors = new HashMap<>();
     }
 
-    public ApiError(int status, String error, String message, Map<String, String> fieldErrors) {
+    public ApiError(int status, String errorCode, String message, Map<String, String> fieldErrors) {
         this.timestamp = Instant.now().toString();
         this.status = status;
-        this.error = error;
+        this.errorCode = errorCode;
         this.message = message;
         this.fieldErrors = fieldErrors;
     }
@@ -48,12 +48,12 @@ public class ApiError {
         return this;
     }
 
-    public String getError() {
-        return error;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public ApiError setError(String error) {
-        this.error = error;
+    public ApiError setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
         return this;
     }
 

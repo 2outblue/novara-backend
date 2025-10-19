@@ -1,6 +1,7 @@
 package com.novaraspace.web;
 
 
+import com.novaraspace.model.enums.ErrCode;
 import com.novaraspace.model.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -18,25 +19,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler { //TODO: Split this if it gets too big
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(RefreshTokenException.class)
     public ResponseEntity<ApiError> handleInvalidToken(RefreshTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiError(HttpStatus.UNAUTHORIZED.value(), "INVALID_TOKEN", ex.getMessage()));
+        return ResponseEntity.status(ex.getStatus())
+                .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                .body(new ApiError(HttpStatus.UNAUTHORIZED.value(), "INVALID_TOKEN", ex.getMessage()));
     }
 
-    @ExceptionHandler(ExpiredRefreshTokenException.class)
-    public ResponseEntity<ApiError> handleExpiredToken(ExpiredRefreshTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiError(HttpStatus.UNAUTHORIZED.value(), "EXPIRED_TOKEN", ex.getMessage()));
+//    @ExceptionHandler(ExpiredRefreshTokenException.class)
+//    public ResponseEntity<ApiError> handleExpiredToken(ExpiredRefreshTokenException ex) {
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                .body(new ApiError(HttpStatus.UNAUTHORIZED.value(), "EXPIRED_TOKEN", ex.getMessage()));
+//    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ApiError> handleUserException(UserException ex) {
+        return ResponseEntity.status(ex.getStatus())
+                .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiError(HttpStatus.NOT_FOUND.value(), "USER_NOT_FOUND", ex.getMessage()));
-    }
+//    @ExceptionHandler(UserNotFoundException.class)
+//    public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex) {
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                .body(new ApiError(HttpStatus.NOT_FOUND.value(), "USER_NOT_FOUND", ex.getMessage()));
+//    }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationExceptions(AuthenticationException ex) {
@@ -50,7 +59,7 @@ public class GlobalExceptionHandler { //TODO: Split this if it gets too big
             errorCode = "ACCOUNT_NOT_ACTIVE";
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, message));
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), ErrCode.BAD_CREDENTIALS.toString(), message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -85,14 +94,20 @@ public class GlobalExceptionHandler { //TODO: Split this if it gets too big
                 .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "FAILED_OPERATION", ex.getMessage()));
     }
 
-    @ExceptionHandler(VerificationTokenException.class)
-    public ResponseEntity<ApiError> handleVerificationTokenException(VerificationTokenException ex) {
-        String errorCode = "VERIFICATION_FAILED";
-        if (ex instanceof DisabledVerificationTokenException) {
-            errorCode = "VERIFICATION_DISABLED";
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, ex.getMessage()));
+    @ExceptionHandler(VerificationException.class)
+    public ResponseEntity<ApiError> handleVerificationException(VerificationException ex) {
+        return ResponseEntity.status(ex.getStatus())
+                .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
     }
+
+//    @ExceptionHandler(VerificationTokenException.class)
+//    public ResponseEntity<ApiError> handleVerificationTokenException(VerificationTokenException ex) {
+//        String errorCode = "VERIFICATION_FAILED";
+//        if (ex instanceof DisabledVerificationTokenException) {
+//            errorCode = "VERIFICATION_DISABLED";
+//        }
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, ex.getMessage()));
+//    }
 
 }

@@ -3,7 +3,7 @@ package com.novaraspace.service;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.exception.FailedOperationException;
-import com.novaraspace.model.exception.VerificationTokenException;
+import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,29 @@ public class VerificationService {
 
     public VerificationToken getEntityByLinkTokenOrCode(String linkOrCode) {
         if (linkOrCode.length() <= 7 && linkOrCode.matches("/\\d+/")) {
-            return verificationTokenRepository.findByCode(linkOrCode).orElseThrow(() -> new VerificationTokenException("Invalid verification code"));
+            return verificationTokenRepository.findByCode(linkOrCode).orElseThrow(VerificationException::failed);
         }
-        return verificationTokenRepository.findByLinkToken(linkOrCode).orElseThrow(() -> new VerificationTokenException("Invalid verification code"));
+        return verificationTokenRepository.findByLinkToken(linkOrCode).orElseThrow(VerificationException::failed);
     }
 
 
-    public VerificationToken generateVerificationToken(User user) { //TODO: Maybe hash these with the passwordEncoder ?
+//    public VerificationToken generateVerificationToken(User user) { //TODO: Maybe hash these with the passwordEncoder ?
+//        VerificationToken verificationToken = new VerificationToken();
+//        SecureRandom random = new SecureRandom();
+//        byte[] randomBytes = new byte[32];
+//        random.nextBytes(randomBytes);
+//        String linkToken = java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+//        String code = generateVerificationCode();
+//
+//        return verificationToken
+//                .setLinkToken(linkToken)
+//                .setCode(code)
+//                .setUser(user)
+//                .setCreatedAt(Instant.now())
+//                .setExpiresAt(Instant.now().plusSeconds(verificationTokenExpiryHours * 60 * 60))
+//                .setUsed(false);
+//    }
+    public VerificationToken generateVerificationToken(String email) { //TODO: Maybe hash these with the passwordEncoder ?
         VerificationToken verificationToken = new VerificationToken();
         SecureRandom random = new SecureRandom();
         byte[] randomBytes = new byte[32];
@@ -42,7 +58,7 @@ public class VerificationService {
         return verificationToken
                 .setLinkToken(linkToken)
                 .setCode(code)
-                .setUser(user)
+                .setUserEmail(email)
                 .setCreatedAt(Instant.now())
                 .setExpiresAt(Instant.now().plusSeconds(verificationTokenExpiryHours * 60 * 60))
                 .setUsed(false);

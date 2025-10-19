@@ -1,0 +1,14 @@
+package com.novaraspace.model.enums;
+
+public enum ErrCode {
+    BAD_CREDENTIALS,
+    USER_NOT_FOUND,
+    USER_DISABLED,
+    USER_ALREADY_ACTIVE,
+    USER_NOT_ACTIVATED,
+    VERIFICATION_FAILED,
+    VERIFICATION_DISABLED,
+
+    INVALID_TOKEN,
+    EXPIRED_TOKEN,
+}

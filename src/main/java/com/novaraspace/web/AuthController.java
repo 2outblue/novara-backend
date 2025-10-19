@@ -6,6 +6,7 @@ import com.novaraspace.model.dto.auth.VerificationTokenDTO;
 import com.novaraspace.model.dto.auth.CodeOrLinkTokenDTO;
 import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
+import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.service.AuthService;
 import com.novaraspace.service.EmailService;
 import com.novaraspace.service.UserService;
@@ -43,14 +44,11 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // TODO: Figure out a way to handle a failure to send email on registration - delete the user ?
-    // The user should be able to retry - since at the moment, if the email is not correctly send,
-    //  it will be 'locked' - the user can't retry registration with the same email.
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userDto) {
         VerificationTokenDTO verificationDTO = authService.registerUser(userDto);
         if (emailVerificationEnabled) {
-            emailService.sendRegistrationEmail(verificationDTO);
+            emailService.sendActivationEmail(verificationDTO);
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -104,7 +102,11 @@ public class AuthController {
 
     @PostMapping("/verify/new")
     public ResponseEntity<Void> generateNewVerification(@RequestBody EmailDTO emailDTO) {
-
+        VerificationTokenDTO verificationDTO = authService.generateNewVerification(emailDTO.getEmail());
+        boolean emailSent = emailService.sendActivationEmail(verificationDTO);
+        if (!emailSent) {
+            throw VerificationException.failed();
+        }
         return ResponseEntity.ok().build();
     }
 }

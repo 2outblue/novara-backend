@@ -9,11 +9,13 @@ import com.novaraspace.model.entity.RefreshToken;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
+import com.novaraspace.model.enums.ErrCode;
 import com.novaraspace.model.enums.UserRole;
 import com.novaraspace.model.exception.*;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,9 +62,21 @@ public class AuthService {
         this.userMapper = userMapper;
     }
 
+//    public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
+//        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
+//        VerificationToken verificationToken = verificationService.generateVerificationToken(newUser);
+//        if (emailVerificationEnabled) {
+//            newUser.setVerification(verificationToken);
+//        }
+//        userService.persistUser(newUser);
+//        return new VerificationTokenDTO()
+//                .setEmail(newUser.getEmail())
+//                .setCode(verificationToken.getCode())
+//                .setLinkToken(verificationToken.getLinkToken());
+//    }
     public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
         User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
-        VerificationToken verificationToken = verificationService.generateVerificationToken(newUser);
+        VerificationToken verificationToken = verificationService.generateVerificationToken(dto.getEmail());
         if (emailVerificationEnabled) {
             newUser.setVerification(verificationToken);
         }
@@ -76,29 +90,28 @@ public class AuthService {
     public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
         VerificationToken verification = verificationService.getEntityByLinkTokenOrCode(linkOrCode);
         if (verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
-            throw new DisabledVerificationTokenException("Expired or invalid verification code.");
+            throw VerificationException.disabled();
         }
-        userService.activateUserAccount(verification.getUser().getId());
+        User user = userService.getEntityByEmail(verification.getUserEmail()).orElseThrow(VerificationException::failed);
+        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.disabled();}
+        userService.activateUserAccount(verification.getUserEmail());
     }
+    public VerificationTokenDTO generateNewVerification(String email) {
+        // Could return a 200 here and in verifyAccountByLinkTokenOrCode()
+        // in order to not expose any implementation details and accounts
+        // with status PENDING_ACTIVATION and also standardize response times
+        // but thats an overkill for this project at this stage...
+        if (!emailVerificationEnabled) {throw new FailedOperationException();}
 
-    public void generateNewVerification(String email) {
-        // Maybe make a method in the user service that deletes its verification?
-        // You could even re-use it for activateUser() ? Then just use the same email
-        // to generate a new verification. Then maybe modify the registerUser method -
-        // save the user and make a method in the user service like updateUserVerification
-        // to which you will pass a user email (or id/authId - most likely email), the user
-        // service can fetch this user, attach the new verification and persist it. Then you can
-        // use this method both here and in the registerUser() method above. So you don't
-        // even need a method that specifically deletes the user verification - you can just pass
-        // null to updateUserVerification().
-
-        // Only conditions under which an error matters to the frontend are:
-        // - email is invalid (USER_NOT_FOUND) - specific error will be shown and page won't be disabled
-        // - account is already activated - specific error - make an exception for that or something
-
-        // Maybe User-Verification doesn't need to be bi-directional - you could just
-        // have the email in the verification entity ? The current setup is a hassle to
-        // manage.
+        User user = userService.getEntityByEmail(email).orElseThrow(VerificationException::failed);
+        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.failed();}
+        VerificationToken newVerification = verificationService.generateVerificationToken(email);
+//        userService.updateUserVerification(email, null); //TODO: test if its okay to not have this
+        userService.updateUserVerification(email, newVerification);
+        return new VerificationTokenDTO()
+                .setEmail(user.getEmail())
+                .setCode(newVerification.getCode())
+                .setLinkToken(newVerification.getLinkToken());
     }
 
     public ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {
@@ -113,7 +126,7 @@ public class AuthService {
 
     public TokenAuthenticationDTO generateNewTokenAuthentication(Authentication authentication) {
         String authId = userService.getAuthIdByEmail(authentication.getName())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserException::notFound); // TODO: throw a generic refresh token exception here ?
 
         String refreshToken = generateNewRefreshToken(authId);
         String jwt = generateJwtByAuthId(authId);
@@ -124,7 +137,7 @@ public class AuthService {
         //There shouldn't be any active tokens aside from the input one, but for safety invalidate by familyId.
         String publicKey = getRefreshTokenParams(rawRefreshToken)[0];
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
-                .orElseThrow(RefreshTokenException::new);
+                .orElseThrow(RefreshTokenException::invalid);
         invalidateTokenFamily(refreshTokenEntity.getFamilyId());
     }
 
@@ -134,26 +147,26 @@ public class AuthService {
         String rawToken = tokenParams[1];
 
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
-                .orElseThrow(RefreshTokenException::new);
+                .orElseThrow(RefreshTokenException::invalid);
 
         if (refreshTokenEntity.isRevoked()) {
             invalidateTokenFamily(refreshTokenEntity.getFamilyId());
-            throw new RefreshTokenException();
+            throw RefreshTokenException.invalid();
         }
 
         if (!passwordEncoder.matches(rawToken, refreshTokenEntity.getToken())) {
-            throw new RefreshTokenException();
+            throw RefreshTokenException.invalid();
         }
 
         if (refreshTokenEntity.getExpiryDate().isBefore(Instant.now())) {
-            throw new ExpiredRefreshTokenException();
+            throw RefreshTokenException.expired();
         }
 
         User userEntity = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId())
-                .orElseThrow(() -> new UserNotFoundException("User not available"));
+                .orElseThrow(UserException::notFound); // TODO: throw a generic refresh token exception here ?
 
         if (!userEntity.getStatus().equals(AccountStatus.ACTIVE)) {
-            throw new UserNotFoundException("User not available");
+            throw UserException.disabled(); // TODO: throw a generic refresh token exception here ?
         }
 
         String newRefreshToken = refreshExistingToken(refreshTokenEntity);
@@ -166,7 +179,7 @@ public class AuthService {
         Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
 
         User userEntity = userService.findEntityByAuthId(authId)
-                .orElseThrow(() -> new UserNotFoundException("User not available"));
+                .orElseThrow(UserException::notFound); // TODO: throw a generic exception here probably authentication exc or something?
 
         Set<UserRole> roles = userEntity.getRoles();
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -219,10 +232,10 @@ public class AuthService {
 
     private String[] getRefreshTokenParams(String rawRefreshToken) {
         if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
-            throw new RefreshTokenException();
+            throw RefreshTokenException.invalid();
         }
         String[] tokenParams = rawRefreshToken.split("\\.");
-        if (tokenParams.length != 2) {throw new RefreshTokenException();}
+        if (tokenParams.length != 2) {throw RefreshTokenException.invalid();}
         return tokenParams;
     }
 
