@@ -1,7 +1,6 @@
 package com.novaraspace.service;
 
 import com.novaraspace.model.dto.auth.VerificationTokenDTO;
-import com.novaraspace.model.exception.FailedSendingEmailException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender mailSender;
 
+    @Value("${app.enable-email-verification}")
+    private boolean emailVerificationEnabled;
     @Value("${spring.mail.from}")
     private String from;
     @Value("${app.frontend-url}")
@@ -31,12 +32,14 @@ public class EmailService {
             helper.setTo(verificationDTO.getEmail());
             helper.setSubject("Novara Account Verification");
             helper.setText(
-                    "<p>To activate your account please click <a href=\"" + frontendUrl + "/linkToken=" + verificationDTO.getLinkToken() + "\">here</a>.</p>" +
+                    "<p>To activate your account please click <a href=\"" + frontendUrl + "/auth/verify-link?linkToken=" + verificationDTO.getLinkToken() + "\">here</a>.</p>" +
                             "<p>Or enter this code: </p>" +
                             verificationDTO.getCode(),
 
                     true);
-        mailSender.send(mimeMessage);
+            if (emailVerificationEnabled) {
+                mailSender.send(mimeMessage);
+            }
         } catch (MessagingException | MailException ex) {
             return false;
         }

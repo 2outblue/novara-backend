@@ -24,29 +24,12 @@ public class VerificationService {
     }
 
     public VerificationToken getEntityByLinkTokenOrCode(String linkOrCode) {
-        if (linkOrCode.length() <= 7 && linkOrCode.matches("/\\d+/")) {
+        if (linkOrCode.length() <= 7 && linkOrCode.matches("\\d+")) {
             return verificationTokenRepository.findByCode(linkOrCode).orElseThrow(VerificationException::failed);
         }
         return verificationTokenRepository.findByLinkToken(linkOrCode).orElseThrow(VerificationException::failed);
     }
-
-
-//    public VerificationToken generateVerificationToken(User user) { //TODO: Maybe hash these with the passwordEncoder ?
-//        VerificationToken verificationToken = new VerificationToken();
-//        SecureRandom random = new SecureRandom();
-//        byte[] randomBytes = new byte[32];
-//        random.nextBytes(randomBytes);
-//        String linkToken = java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
-//        String code = generateVerificationCode();
-//
-//        return verificationToken
-//                .setLinkToken(linkToken)
-//                .setCode(code)
-//                .setUser(user)
-//                .setCreatedAt(Instant.now())
-//                .setExpiresAt(Instant.now().plusSeconds(verificationTokenExpiryHours * 60 * 60))
-//                .setUsed(false);
-//    }
+    
     public VerificationToken generateVerificationToken(String email) { //TODO: Maybe hash these with the passwordEncoder ?
         VerificationToken verificationToken = new VerificationToken();
         SecureRandom random = new SecureRandom();

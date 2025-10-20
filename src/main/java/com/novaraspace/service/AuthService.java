@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -62,18 +64,6 @@ public class AuthService {
         this.userMapper = userMapper;
     }
 
-//    public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
-//        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
-//        VerificationToken verificationToken = verificationService.generateVerificationToken(newUser);
-//        if (emailVerificationEnabled) {
-//            newUser.setVerification(verificationToken);
-//        }
-//        userService.persistUser(newUser);
-//        return new VerificationTokenDTO()
-//                .setEmail(newUser.getEmail())
-//                .setCode(verificationToken.getCode())
-//                .setLinkToken(verificationToken.getLinkToken());
-//    }
     public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
         User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
         VerificationToken verificationToken = verificationService.generateVerificationToken(dto.getEmail());
@@ -106,7 +96,6 @@ public class AuthService {
         User user = userService.getEntityByEmail(email).orElseThrow(VerificationException::failed);
         if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.failed();}
         VerificationToken newVerification = verificationService.generateVerificationToken(email);
-//        userService.updateUserVerification(email, null); //TODO: test if its okay to not have this
         userService.updateUserVerification(email, newVerification);
         return new VerificationTokenDTO()
                 .setEmail(user.getEmail())
@@ -126,7 +115,7 @@ public class AuthService {
 
     public TokenAuthenticationDTO generateNewTokenAuthentication(Authentication authentication) {
         String authId = userService.getAuthIdByEmail(authentication.getName())
-                .orElseThrow(UserException::notFound); // TODO: throw a generic refresh token exception here ?
+                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials."));
 
         String refreshToken = generateNewRefreshToken(authId);
         String jwt = generateJwtByAuthId(authId);
@@ -163,10 +152,10 @@ public class AuthService {
         }
 
         User userEntity = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId())
-                .orElseThrow(UserException::notFound); // TODO: throw a generic refresh token exception here ?
+                .orElseThrow(RefreshTokenException::invalid);
 
         if (!userEntity.getStatus().equals(AccountStatus.ACTIVE)) {
-            throw UserException.disabled(); // TODO: throw a generic refresh token exception here ?
+            throw RefreshTokenException.invalid();
         }
 
         String newRefreshToken = refreshExistingToken(refreshTokenEntity);
@@ -179,7 +168,7 @@ public class AuthService {
         Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
 
         User userEntity = userService.findEntityByAuthId(authId)
-                .orElseThrow(UserException::notFound); // TODO: throw a generic exception here probably authentication exc or something?
+                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials."));
 
         Set<UserRole> roles = userEntity.getRoles();
         JwtClaimsSet claims = JwtClaimsSet.builder()

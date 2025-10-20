@@ -82,10 +82,10 @@ public class GlobalExceptionHandler {
                 .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "INVALID_DATA", "NO_ERROR_MESSAGE"));
     }
 
-    @ExceptionHandler(FailedSendingEmailException.class)
-    public ResponseEntity<ApiError> handleEmailMessagingException(FailedSendingEmailException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "EMAIL_SENDING_FAILED", ex.getMessage()));
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<ApiError> handleEmailException(EmailException ex) {
+        return ResponseEntity.status(ex.getStatus())
+                .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
     }
 
     @ExceptionHandler(FailedOperationException.class)

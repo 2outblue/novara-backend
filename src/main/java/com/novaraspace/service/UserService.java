@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,13 +34,6 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-//    @Transactional
-//    public void activateUserAccount(Long userId) {
-//        User user = userRepository.findById(userId).orElseThrow(UserException::notFound);
-//        user.setStatus(AccountStatus.ACTIVE);
-//        user.setVerification(null);
-//    }
-
     @Transactional
     public void activateUserAccount(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(VerificationException::failed);
@@ -55,6 +49,12 @@ public class UserService {
 
     public User persistUser(User user) {
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void setLastLoginNow(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Bad credentials."));
+        user.setLastLoginAt(Instant.now());
     }
 
 //    @Override

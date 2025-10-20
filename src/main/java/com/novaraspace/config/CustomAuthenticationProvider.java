@@ -35,23 +35,24 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         User user = userService.getEntityByEmail(email).orElseThrow(() -> new BadCredentialsException("Bad credentials."));
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadCredentialsException("Bad credentials.");
         }
 
         AccountStatus status = user.getStatus();
         switch (status) {
-            case PENDING_ACTIVATION -> throw new UserException(ErrCode.USER_NOT_ACTIVATED, HttpStatus.FORBIDDEN, "User not activated");
-            case SUSPENDED, DEACTIVATED -> throw new UserException(ErrCode.USER_DISABLED, HttpStatus.FORBIDDEN, "User disabled");
+            case PENDING_ACTIVATION -> throw new UserException(ErrCode.USER_NOT_ACTIVATED, HttpStatus.FORBIDDEN, "User not activated.");
+            case SUSPENDED, DEACTIVATED -> throw new UserException(ErrCode.USER_DISABLED, HttpStatus.FORBIDDEN, "User disabled.");
         }
 
         if (user.getStatus().equals(AccountStatus.ACTIVE)) {
+            userService.setLastLoginNow(user.getEmail());
             List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                     .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
                     .toList();
             return new UsernamePasswordAuthenticationToken(email, password, authorities);
         }
 
-        throw new BadCredentialsException("Bad credentials");
+        throw new BadCredentialsException("Bad credentials.");
     }
 
     @Override
