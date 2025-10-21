@@ -21,6 +21,9 @@ public class UserException extends RuntimeException {
         return new UserException(ErrCode.USER_DISABLED, HttpStatus.FORBIDDEN, "User disabled.");
     }
 
+    public static UserException fieldUpdateFailed() {
+        return new UserException(ErrCode.USER_UPDATE_FAILED, HttpStatus.BAD_REQUEST, "Update failed.");
+    }
 
     public ErrCode getErrorCode() {
         return errorCode;

@@ -21,6 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u.authId as authId from User u where u.email = :email")
     Optional<String> getAuthIdByEmail(@Param("email") String email);
 
+    @Query("select u.email as email from User u where u.authId = :authId")
+    Optional<String> getEmailByAuthId(@Param("authId") String authId);
+
     @Modifying
     @Query("update User u set u.status = :newStatus where u.id = :userId")
     @Transactional

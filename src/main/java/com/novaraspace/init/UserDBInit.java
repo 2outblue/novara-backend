@@ -36,7 +36,6 @@ public class UserDBInit implements CommandLineRunner {
         if (userRepository.count() == 0) {
             userRepository.saveAll(getInitUsers());
         }
-
     }
 
 

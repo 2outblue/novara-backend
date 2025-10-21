@@ -15,6 +15,7 @@ import static java.sql.Types.VARCHAR;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    private String publicId;
     private Instant createdAt;
     @JdbcTypeCode(VARCHAR)
     @Column(unique = true)
@@ -45,6 +46,15 @@ public class User extends BaseEntity {
     private boolean marketing = false;
 
     public User() {
+    }
+
+    public String getPublicId() {
+        return publicId;
+    }
+
+    public User setPublicId(String publicId) {
+        this.publicId = publicId;
+        return this;
     }
 
     public Instant getCreatedAt() {

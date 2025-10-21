@@ -29,7 +29,7 @@ public class VerificationService {
         }
         return verificationTokenRepository.findByLinkToken(linkOrCode).orElseThrow(VerificationException::failed);
     }
-    
+
     public VerificationToken generateVerificationToken(String email) { //TODO: Maybe hash these with the passwordEncoder ?
         VerificationToken verificationToken = new VerificationToken();
         SecureRandom random = new SecureRandom();

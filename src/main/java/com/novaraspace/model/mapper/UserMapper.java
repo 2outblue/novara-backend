@@ -1,6 +1,7 @@
 package com.novaraspace.model.mapper;
 
 import com.nimbusds.jose.util.Base64;
+import com.novaraspace.model.dto.user.InitialAccountDataDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.enums.AccountStatus;
@@ -32,12 +33,15 @@ public abstract class UserMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public abstract InitialAccountDataDTO entityToInitialData(User user);
+
     @Mapping(target = "password", ignore = true)
     protected abstract User userRegisterDtoToEntity(UserRegisterDTO dto);
 
     public User registerToUser(UserRegisterDTO dto) {
         User user = userRegisterDtoToEntity(dto);
 
+        user.setPublicId(UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setCreatedAt(Instant.now());
         user.setAuthId(Base64.encode(UUID.randomUUID().toString()).toString());
@@ -50,5 +54,7 @@ public abstract class UserMapper {
 
         return user;
     }
+
+    public abstract UserRegisterDTO userToRegisterDTO(User user);
 
 }
