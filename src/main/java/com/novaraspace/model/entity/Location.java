@@ -14,6 +14,10 @@ public class Location extends BaseEntity {
     private FlightLocation location;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private String longName;
+    @Column(nullable = false)
+    private String code;
 
 
     public FlightRegion getRegion() {
@@ -40,6 +44,24 @@ public class Location extends BaseEntity {
 
     public Location setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getLongName() {
+        return longName;
+    }
+
+    public Location setLongName(String longName) {
+        this.longName = longName;
+        return this;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Location setCode(String code) {
+        this.code = code;
         return this;
     }
 }

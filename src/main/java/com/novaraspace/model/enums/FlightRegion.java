@@ -8,6 +8,4 @@ public enum FlightRegion {
     MARS,
     MARS_ORBIT,
     VENUS_ORBIT;
-
-
 }

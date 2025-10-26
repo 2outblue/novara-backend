@@ -2,14 +2,13 @@ package com.novaraspace.init;
 
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
-import com.novaraspace.model.entity.Location;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.enums.AccountStatus;
-import com.novaraspace.model.enums.FlightRegion;
 import com.novaraspace.model.enums.UserRole;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Component
+@Order(1)
 public class UserDBInit implements CommandLineRunner {
 
     private final UserMapper userMapper;

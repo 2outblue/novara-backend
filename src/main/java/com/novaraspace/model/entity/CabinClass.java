@@ -1,19 +1,29 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.enums.CabinClassEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "cabin_class")
-public class CabinClass extends BaseEntity{
+public class CabinClass {
+    @Id
+    private Long id;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private CabinClassEnum type;
     @Column(nullable = false)
     private int totalSeats;
     @Column(nullable = false)
     private boolean windowAvailable;
+
+    public Long getId() {
+        return id;
+    }
+
+    public CabinClass setId(Long id) {
+        this.id = id;
+        return this;
+    }
 
     public CabinClassEnum getType() {
         return type;

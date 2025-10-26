@@ -1,14 +1,17 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.enums.FlightRegion;
 import jakarta.persistence.*;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "vehicle")
 public class Vehicle extends BaseEntity {
     @Column(nullable = false)
-    private String code;
+    private java.lang.String code;
     @Column(nullable = false)
-    private String name;
+    private java.lang.String name;
     @Column(nullable = false)
     private boolean eva;
     @Column(nullable = false)
@@ -19,29 +22,34 @@ public class Vehicle extends BaseEntity {
     private boolean galley;
 
     @JoinColumn(name = "first_class")
-    @OneToOne
+    @ManyToOne
     private CabinClass firstClass;
     @JoinColumn(name = "middle_class")
-    @OneToOne
+    @ManyToOne
     private CabinClass middleClass;
     @JoinColumn(name = "lower_class")
-    @OneToOne
+    @ManyToOne
     private CabinClass lowerClass;
 
-    public String getCode() {
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "vehicle_regions", joinColumns = @JoinColumn(name = "vehicle_id"))
+    @Column(nullable = false)
+    private Set<FlightRegion> supportedRegions;
+
+    public java.lang.String getCode() {
         return code;
     }
 
-    public Vehicle setCode(String code) {
+    public Vehicle setCode(java.lang.String code) {
         this.code = code;
         return this;
     }
 
-    public String getName() {
+    public java.lang.String getName() {
         return name;
     }
 
-    public Vehicle setName(String name) {
+    public Vehicle setName(java.lang.String name) {
         this.name = name;
         return this;
     }
@@ -106,6 +114,15 @@ public class Vehicle extends BaseEntity {
 
     public Vehicle setLowerClass(CabinClass lowerClass) {
         this.lowerClass = lowerClass;
+        return this;
+    }
+
+    public Set<FlightRegion> getSupportedRegions() {
+        return supportedRegions;
+    }
+
+    public Vehicle setSupportedRegions(Set<FlightRegion> supportedRegions) {
+        this.supportedRegions = supportedRegions;
         return this;
     }
 }
