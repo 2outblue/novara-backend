@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/public/**", "/public/*").permitAll()
                         .requestMatchers("/manage/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
 
@@ -54,7 +55,10 @@ public class SecurityConfig {
                                 .jwtAuthenticationConverter(jwtAuthConverter())
                         )
                         .bearerTokenResolver(request -> {
-                            if (request.getRequestURI().equals("/auth/refresh") || request.getRequestURI().equals("/auth/register") || request.getRequestURI().equals("/auth/register")) {
+                            if (request.getRequestURI().equals("/auth/refresh")
+                                    || request.getRequestURI().equals("/auth/register")
+                                    || request.getRequestURI().equals("/auth/register")
+                            ) {
                                 return null;
                             }
                             return new DefaultBearerTokenResolver().resolve(request);

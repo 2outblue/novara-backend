@@ -1,242 +1,242 @@
 [
   {
+    "id": 1,
+    "location": "FRANKFURT",
+    "name": "EU Space Central",
+    "longName": "EU Central Hub 1, Frankfurt, Germany",
+    "code": "EFRX",
+    "locationNumber": "001"
+  },
+  {
+    "id": 2,
     "location": "KENNEDY",
     "name": "Kennedy Spaceport",
     "longName": "Kennedy Spaceport, Orlando, USA",
-    "code": "KSP"
+    "code": "AKSP",
+    "locationNumber": "010"
   },
   {
-    "location": "HEATHROW",
-    "name": "Heathrow Spaceport",
-    "longName": "Heathrow Spaceport, London, United Kingdom",
-    "code": "HTSP"
-  },
-  {
+    "id": 3,
     "location": "NARITA",
     "name": "Narita Spaceport",
     "longName": "Narita Spaceport, Tokyo, Japan",
-    "code": "NSP"
+    "code": "NNSP",
+    "locationNumber": "071"
   },
   {
+    "id": 4,
     "location": "BEIJING_CAPITAL",
     "name": "Beijing Capital Spaceport",
     "longName": "Beijing Capital Spaceport, Beijing, China",
-    "code": "BCS"
+    "code": "CBC",
+    "locationNumber": "089"
   },
   {
-    "location": "DUBAI_INTL",
-    "name": "Dubai Spaceport",
-    "longName": "Dubai International Spaceport, Dubai, UAE",
-    "code": "DSP"
-  },
-  {
+    "id": 5,
     "location": "SAO_PAULO_GUARULHOS",
     "name": "Sao Paulo Spaceport",
     "longName": "Sao Paulo-Guarulhos Spaceport, Sao Paulo, Brazil",
-    "code": "SPS"
+    "code": "SPGX",
+    "locationNumber": "037"
   },
   {
+    "id": 6,
     "location": "MUMBAI_CHHATRAPATI",
     "name": "Mumbai Spaceport",
     "longName": "Chhatrapati Shivaji Spaceport, Mumbai, India",
-    "code": "MSP"
+    "code": "LBOM",
+    "locationNumber": "065"
   },
   {
-    "location": "SCHIPHOL",
-    "name": "Schiphol Spaceport",
-    "longName": "Schiphol Spaceport, Amsterdam, Netherlands",
-    "code": "SSP"
+    "id": 7,
+    "location": "LOS_ANGELES",
+    "name": "Los Angeles Spaceport",
+    "longName": "Los Angeles International, California, USA",
+    "code": "LAXS",
+    "locationNumber": "058"
   },
   {
-    "location": "CHARLES_DE_GAULLE",
-    "name": "Charles de Gaulle Spaceport",
-    "longName": "Charles de Gaulle Spaceport, Paris, France",
-    "code": "CDG"
-  },
-  {
-    "location": "FRANKFURT",
-    "name": "Frankfurt Spaceport",
-    "longName": "Frankfurt Spaceport, Frankfurt, Germany",
-    "code": "FSP"
-  },
-  {
-    "location": "INCHEON",
-    "name": "Incheon Spaceport",
-    "longName": "Incheon Spaceport, Seoul, South Korea",
-    "code": "ISP"
-  },
-  {
-    "location": "SYDNEY_KINGSFORD",
-    "name": "Sydney Spaceport",
-    "longName": "Sydney Kingsford Smith Spaceport, Sydney, Australia",
-    "code": "SYD"
-  },
-  {
-    "location": "TORONTO_PEARSON",
-    "name": "Toronto Spaceport",
-    "longName": "Toronto Pearson Spaceport, Toronto, Canada",
-    "code": "TSP"
-  },
-  {
+    "id": 8,
     "location": "SINGAPORE_CHANGI",
     "name": "Singapore Spaceport",
     "longName": "Singapore Changi Spaceport, Singapore",
-    "code": "SCPS"
+    "code": "SINX",
+    "locationNumber": "076"
   },
   {
-    "location": "CAPE_TOWN",
-    "name": "Cape Town Spaceport",
-    "longName": "Cape Town International Spaceport, Cape Town, South Africa",
-    "code": "CTS"
-  },
-  {
+    "id": 21,
     "location": "ORBITAL_ALPHA",
     "name": "Orbital Alpha Station",
     "longName": "Orbital Station Alpha, Low Earth Orbit",
-    "code": "OAS"
+    "code": "OAS",
+    "locationNumber": "102"
   },
   {
-    "location": "GATEWAY_OTP",
-    "name": "Gateway Outpost",
-    "longName": "Gateway Outpost, Low Earth Orbit",
-    "code": "GWO"
-  },
-  {
+    "id": 22,
     "location": "NOVARA_CMC",
     "name": "Novara CMC Station",
-    "longName": "Novara Invest Modular Complex, Low Earth Orbit",
-    "code": "NVRC"
+    "longName": "Novara Space Modular Complex, Low Earth Orbit",
+    "code": "NVRC",
+    "locationNumber": "167"
   },
   {
+    "id": 23,
     "location": "PANGU_ORIENTAL_CMC",
     "name": "Pangu Oriental CMC Station",
     "longName": "Pangu Oriental Modular Complex, Low Earth Orbit",
-    "code": "PNGO"
+    "code": "PNGO",
+    "locationNumber": "182"
   },
   {
+    "id": 24,
     "location": "WAYFARE_INTERPLAN_CMC",
     "name": "Wayfare CMC Station",
     "longName": "Wayfare Interplanetary Modular Complex, Low Earth Orbit",
-    "code": "WYF"
+    "code": "WYF",
+    "locationNumber": "194"
   },
   {
+    "id": 25,
     "location": "POLAR_RELAY",
     "name": "Polar Relay Station",
     "longName": "Polar Relay Station, Low Earth Orbit",
-    "code": "PRS"
+    "code": "PRS",
+    "locationNumber": "138"
   },
   {
+    "id": 31,
     "location": "SOUTH_POLE",
     "name": "South Pole Base",
     "longName": "South Pole Lunar Base, Moon",
-    "code": "SPB"
+    "code": "SPB",
+    "locationNumber": "211"
   },
   {
+    "id": 32,
     "location": "SHACKLETON_CRATER",
     "name": "Shackleton Outpost",
     "longName": "Shackleton Crater Outpost, Moon",
-    "code": "SHCO"
+    "code": "SHCO",
+    "locationNumber": "202"
   },
   {
+    "id": 33,
     "location": "TRANQUILITY_LANDING_SITE",
     "name": "Tranquility Base",
     "longName": "Tranquility Landing Site, Moon",
-    "code": "TRQ"
+    "code": "TRQ",
+    "locationNumber": "258"
   },
   {
+    "id": 34,
     "location": "OCEANUS_PROCELLARUM",
     "name": "Oceanus Camp",
     "longName": "Oceanus Procellarum Camp, Moon",
-    "code": "OPCC"
+    "code": "OPCC",
+    "locationNumber": "271"
   },
   {
-    "location": "ARISTARCHUS_PLATEAU",
-    "name": "Aristarchus Station",
-    "longName": "Aristarchus Plateau Station, Moon",
-    "code": "ARPS"
-  },
-  {
+    "id": 35,
     "location": "LUNAR_ORBIT_RELAY",
     "name": "Lunar Relay",
     "longName": "Lunar Orbit Relay Station, Lunar Orbit",
-    "code": "LOR"
+    "code": "LOR",
+    "locationNumber": "203"
   },
   {
+    "id": 36,
     "location": "CISLUNAR_HABITAT",
     "name": "Cislunar Habitat",
     "longName": "Cislunar Habitat, Lunar Orbit",
-    "code": "CIS"
+    "code": "CIS",
+    "locationNumber": "264"
   },
   {
+    "id": 37,
     "location": "YAMAGUCHI_CMC",
     "name": "Yamaguchi CMC Station",
     "longName": "Yamaguchi Modular Complex, Lunar Orbit",
-    "code": "YMC"
+    "code": "YMC",
+    "locationNumber": "277"
   },
   {
+    "id": 38,
     "location": "AL_MANSOUR_CMC",
     "name": "Al Mansour CMC Station",
     "longName": "Al Mansour Group Modular Complex, Lunar Orbit",
-    "code": "AMSC"
+    "code": "AMSC",
+    "locationNumber": "295"
   },
   {
+    "id": 41,
     "location": "OLYMPUS_MONS",
     "name": "Olympus Mons Base",
     "longName": "Olympus Mons Base, Mars",
-    "code": "OMB"
+    "code": "OMB",
+    "locationNumber": "307"
   },
   {
+    "id": 42,
     "location": "VALLES_MARINERIS_OTP",
     "name": "Valles Marineris Outpost",
     "longName": "Valles Marineris Outpost, Mars",
-    "code": "VMO"
+    "code": "VMO",
+    "locationNumber": "302"
   },
   {
+    "id": 43,
     "location": "ACIDALIA_PLANITIA",
     "name": "Acidalia Station",
     "longName": "Acidalia Planitia Station, Mars",
-    "code": "APS2"
+    "code": "APS2",
+    "locationNumber": "359"
   },
   {
+    "id": 44,
     "location": "AREOSYNCHRONOUS_STATION_ALPHA",
     "name": "Areosynchronous Station",
     "longName": "Areosynchronous Station Alpha, Mars Orbit",
-    "code": "ASA"
+    "code": "ASA",
+    "locationNumber": "303"
   },
   {
+    "id": 45,
     "location": "PHOBOS_RELAY",
     "name": "Phobos Relay",
     "longName": "Phobos Relay Dock, Mars Orbit",
-    "code": "PHR"
+    "code": "PHR",
+    "locationNumber": "368"
   },
   {
-    "location": "DEIMOS_HABITAT",
-    "name": "Deimos Habitat",
-    "longName": "Deimos Habitat, Mars Orbit",
-    "code": "DMH"
-  },
-  {
+    "id": 46,
     "location": "RED_PLANET",
     "name": "Red Planet Gateway",
     "longName": "Red Planet Gateway, International Mars Joint Venture, Mars Orbit",
-    "code": "RPG"
+    "code": "RPG",
+    "locationNumber": "376"
   },
   {
+    "id": 47,
     "location": "ORBIT_LAB_OBS",
     "name": "Martian Orbit Lab",
     "longName": "Martian Orbit Laboratory Observatory, Mars Orbit",
-    "code": "MOL"
+    "code": "MOL",
+    "locationNumber": "391"
   },
   {
+    "id": 61,
     "location": "CYTHEREAN_HABITAT",
     "name": "Cytherean Habitat",
     "longName": "Cytherean Habitat, Venus Orbit",
-    "code": "CYH"
+    "code": "CYH",
+    "locationNumber": "401"
   },
   {
+    "id": 62,
     "location": "CLOUD_DOCK_OBS",
     "name": "Cloud Dock",
     "longName": "Cloud Dock Observatory, Venus Orbit",
-    "code": "CDO"
+    "code": "CDO",
+    "locationNumber": "402"
   }
 ]

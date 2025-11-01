@@ -43,11 +43,13 @@ public class LocationDBInit implements CommandLineRunner {
         for (FlightLocation fl : FlightLocation.values()) {
             LocationJSON matchingLocation = locationsMap.get(fl);
             Location location = new Location()
+                    .setId(matchingLocation.getId())
                     .setRegion(fl.getRegion())
                     .setLocation(fl)
                     .setName(matchingLocation.getName())
                     .setLongName(matchingLocation.getLongName())
-                    .setCode(matchingLocation.getCode());
+                    .setCode(matchingLocation.getCode())
+                    .setLocationNumber(matchingLocation.getLocationNumber());
             locationsToSave.add(location);
         }
         locationRepository.saveAll(locationsToSave);

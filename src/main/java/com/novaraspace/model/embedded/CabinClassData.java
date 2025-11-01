@@ -1,15 +1,25 @@
 package com.novaraspace.model.embedded;
 
 public class CabinClassData {
-    private int totalSeats;
+    private int availableSeats;
+    private int lockedSeats;
     private double basePrice;
 
-    public int getTotalSeats() {
-        return totalSeats;
+    public int getAvailableSeats() {
+        return availableSeats;
     }
 
-    public CabinClassData setTotalSeats(int totalSeats) {
-        this.totalSeats = totalSeats;
+    public CabinClassData setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
+        return this;
+    }
+
+    public int getLockedSeats() {
+        return lockedSeats;
+    }
+
+    public CabinClassData setLockedSeats(int lockedSeats) {
+        this.lockedSeats = lockedSeats;
         return this;
     }
 
