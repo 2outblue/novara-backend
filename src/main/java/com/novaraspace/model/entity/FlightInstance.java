@@ -1,0 +1,142 @@
+package com.novaraspace.model.entity;
+
+import com.novaraspace.model.embedded.CabinClassData;
+import com.novaraspace.model.enums.FlightStatus;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+public class FlightInstance extends BaseEntity {
+    @Column(nullable = false, unique = true)
+    private String publicId;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FlightStatus status;
+
+    @Embedded()
+    @AttributeOverrides({
+            @AttributeOverride(name = "availableSeats", column = @Column(name = "first_available_seats")),
+            @AttributeOverride(name = "lockedSeats", column = @Column(name = "first_locked_seats")),
+            @AttributeOverride(name = "basePrice", column = @Column(name = "first_base_price"))
+    })
+    private CabinClassData firstClass;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "availableSeats", column = @Column(name = "middle_available_seats")),
+            @AttributeOverride(name = "lockedSeats", column = @Column(name = "middle_locked_seats")),
+            @AttributeOverride(name = "basePrice", column = @Column(name = "middle_base_price"))
+    })
+    private CabinClassData middleClass;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "availableSeats", column = @Column(name = "lower_available_seats")),
+            @AttributeOverride(name = "lockedSeats", column = @Column(name = "lower_locked_seats")),
+            @AttributeOverride(name = "basePrice", column = @Column(name = "lower_base_price"))
+    })
+    private CabinClassData lowerClass;
+
+    @Column(nullable = false)
+    private LocalDateTime departureDate;
+    @Column(nullable = false)
+    private LocalDateTime arrivalDate;
+    @Column(nullable = false)
+    private int totalSeatsAvailable;
+
+    @ManyToOne
+    private FlightTemplate flightTemplate;
+
+    public static FlightInstance from(FlightInstance flight) {
+        return new FlightInstance()
+                .setPublicId(flight.getPublicId())
+                .setStatus(flight.getStatus())
+                .setFirstClass(flight.getFirstClass())
+                .setMiddleClass(flight.getMiddleClass())
+                .setLowerClass(flight.getLowerClass())
+                .setDepartureDate(flight.getDepartureDate())
+                .setArrivalDate(flight.getArrivalDate())
+                .setTotalSeatsAvailable(flight.getTotalSeatsAvailable())
+                .setFlightTemplate(flight.getFlightTemplate());
+    }
+
+    public String getPublicId() {
+        return publicId;
+    }
+
+    public FlightInstance setPublicId(String publicId) {
+        this.publicId = publicId;
+        return this;
+    }
+
+    public FlightStatus getStatus() {
+        return status;
+    }
+
+    public FlightInstance setStatus(FlightStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public CabinClassData getFirstClass() {
+        return firstClass;
+    }
+
+    public FlightInstance setFirstClass(CabinClassData firstClass) {
+        this.firstClass = firstClass;
+        return this;
+    }
+
+    public CabinClassData getMiddleClass() {
+        return middleClass;
+    }
+
+    public FlightInstance setMiddleClass(CabinClassData middleClass) {
+        this.middleClass = middleClass;
+        return this;
+    }
+
+    public CabinClassData getLowerClass() {
+        return lowerClass;
+    }
+
+    public FlightInstance setLowerClass(CabinClassData lowerClass) {
+        this.lowerClass = lowerClass;
+        return this;
+    }
+
+    public LocalDateTime getDepartureDate() {
+        return departureDate;
+    }
+
+    public FlightInstance setDepartureDate(LocalDateTime departureDate) {
+        this.departureDate = departureDate;
+        return this;
+    }
+
+    public LocalDateTime getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public FlightInstance setArrivalDate(LocalDateTime arrivalDate) {
+        this.arrivalDate = arrivalDate;
+        return this;
+    }
+
+    public int getTotalSeatsAvailable() {
+        return totalSeatsAvailable;
+    }
+
+    public FlightInstance setTotalSeatsAvailable(int totalSeatsAvailable) {
+        this.totalSeatsAvailable = totalSeatsAvailable;
+        return this;
+    }
+
+    public FlightTemplate getFlightTemplate() {
+        return flightTemplate;
+    }
+
+    public FlightInstance setFlightTemplate(FlightTemplate flightTemplate) {
+        this.flightTemplate = flightTemplate;
+        return this;
+    }
+}

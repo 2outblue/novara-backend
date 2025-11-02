@@ -1,0 +1,22 @@
+{
+  "earthOrbitalPeriod": 90,
+  "moonOrbitalPeriod": 115,
+  "venusOrbitalPeriod": 90,
+  "marsOrbitalPeriod": 120,
+
+  "nearEarthBasePrice": 1200,
+  "moonBasePrice": 3500,
+  "moonOrbitBasePrice": 3000,
+  "marsOrbitBasePrice": 7000,
+  "marsBasePrice": 7500,
+  "venusOrbitBasePrice": 6500,
+
+  "highSeasonMultiplier": 1.2,
+  "middleClassMultiplier": 1.35,
+  "firstClassMultiplier": 1.85,
+  "evaMultiplier": 1.1,
+  "galleyMultiplier": 1.12,
+  "loungeMultiplier": 1.2,
+  "vrMultiplier": 1.05,
+  "classWindowMultiplier": 1.1
+}

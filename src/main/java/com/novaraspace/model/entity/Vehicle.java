@@ -34,18 +34,19 @@ public class Vehicle extends BaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vehicle_regions", joinColumns = @JoinColumn(name = "vehicle_id"))
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Set<FlightRegion> supportedRegions;
 
-    public java.lang.String getCode() {
+    public String getCode() {
         return code;
     }
 
-    public Vehicle setCode(java.lang.String code) {
+    public Vehicle setCode(String code) {
         this.code = code;
         return this;
     }
 
-    public java.lang.String getName() {
+    public String getName() {
         return name;
     }
 

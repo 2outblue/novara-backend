@@ -1,0 +1,234 @@
+[
+  {
+    "publicIdPrefix": "E1EN21-1",
+    "flightNumber": "NVR 001-1021",
+    "basePrice": 1200,
+    "departureLocationId": 1,
+    "arrivalLocationId": 21,
+    "departureTime": "08:45",
+    "durationMinutes": 45,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 1,
+    "weeklySchedule": "1111111"
+  },
+  {
+    "publicIdPrefix": "E1EN21-2",
+    "flightNumber": "NVR 001-1022",
+    "basePrice": 1150,
+    "departureLocationId": 1,
+    "arrivalLocationId": 21,
+    "departureTime": "13:30",
+    "durationMinutes": 45,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 3,
+    "weeklySchedule": "1111111"
+  },
+  {
+    "publicIdPrefix": "E1EN21-3",
+    "flightNumber": "NVR 001-1023",
+    "basePrice": 1180,
+    "departureLocationId": 1,
+    "arrivalLocationId": 21,
+    "departureTime": "15:00",
+    "durationMinutes": 135,
+    "orbitsDeparture": 1,
+    "orbitsArrival": 0,
+    "vehicleId": 2,
+    "weeklySchedule": "1212121"
+  },
+  {
+    "publicIdPrefix": "E1EN21-4",
+    "flightNumber": "NVR 001-1024",
+    "basePrice": 1220,
+    "departureLocationId": 1,
+    "arrivalLocationId": 21,
+    "departureTime": "20:00",
+    "durationMinutes": 45,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 7,
+    "weeklySchedule": "2121212"
+  },
+
+  {
+    "publicIdPrefix": "E1EN22-1",
+    "flightNumber": "NVR 001-1671",
+    "basePrice": 1120,
+    "departureLocationId": 1,
+    "arrivalLocationId": 22,
+    "departureTime": "10:00",
+    "durationMinutes": 45,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 3,
+
+    "weeklySchedule": "1111111"
+  },
+  {
+    "publicIdPrefix": "E1EN22-2",
+    "flightNumber": "NVR 001-1672",
+    "basePrice": 1160,
+    "departureLocationId": 1,
+    "arrivalLocationId": 22,
+    "departureTime": "16:00",
+    "durationMinutes": 45,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 1,
+    "weeklySchedule": "1221111"
+  },
+  {
+    "publicIdPrefix": "E1EN22-3",
+    "flightNumber": "NVR 001-1673",
+    "basePrice": 1200,
+    "departureLocationId": 1,
+    "arrivalLocationId": 22,
+    "departureTime": "20:00",
+    "durationMinutes": 45,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 1,
+    "weeklySchedule": "1111111"
+  },
+
+
+
+
+
+
+
+
+  {
+    "publicIdPrefix": "E1L31-1",
+    "flightNumber": "NVR 001-2111",
+    "basePrice": 3500,
+    "departureLocationId": 1,
+    "arrivalLocationId": 31,
+    "departureTime": "09:45",
+    "durationMinutes": 540,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 10,
+    "weeklySchedule": "1221221"
+  },
+
+  {
+    "publicIdPrefix": "E1L31-2",
+    "flightNumber": "NVR 001-2112",
+    "basePrice": 3350,
+    "departureLocationId": 1,
+    "arrivalLocationId": 31,
+    "departureTime": "13:30",
+    "durationMinutes": 540,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 5,
+    "weeklySchedule": "1111111"
+  },
+  {
+    "publicIdPrefix": "E1L31-3",
+    "flightNumber": "NVR 001-2113",
+    "basePrice": 3420,
+    "departureLocationId": 1,
+    "arrivalLocationId": 31,
+    "departureTime": "15:50",
+    "durationMinutes": 655,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 1,
+    "vehicleId": 6,
+    "weeklySchedule": "1010011"
+  },
+
+  {
+    "publicIdPrefix": "E1L32-1",
+    "flightNumber": "NVR 001-2021",
+    "basePrice": 3390,
+    "departureLocationId": 1,
+    "arrivalLocationId": 32,
+    "departureTime": "12:00",
+    "durationMinutes": 655,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 1,
+    "vehicleId": 8,
+    "weeklySchedule": "0220221"
+  },
+  {
+    "publicIdPrefix": "E1L32-2",
+    "flightNumber": "NVR 001-2022",
+    "basePrice": 3350,
+    "departureLocationId": 1,
+    "arrivalLocationId": 32,
+    "departureTime": "16:00",
+    "durationMinutes": 540,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 5,
+    "weeklySchedule": "2110112"
+  },
+
+  {
+    "publicIdPrefix": "E1LO35-1",
+    "flightNumber": "NVR 001-2031",
+    "basePrice": 3000,
+    "departureLocationId": 1,
+    "arrivalLocationId": 35,
+    "departureTime": "14:00",
+    "durationMinutes": 610,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 9,
+    "weeklySchedule": "1222112"
+  },
+
+
+
+
+  {
+    "publicIdPrefix": "E1M41-1",
+    "flightNumber": "NVR 001-3071",
+    "basePrice": 7500,
+    "departureLocationId": 1,
+    "arrivalLocationId": 41,
+    "departureTime": "14:00",
+    "durationMinutes": 7200,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 13,
+    "weeklySchedule": "1212121"
+  },
+
+  {
+    "publicIdPrefix": "E1MO44-1",
+    "flightNumber": "NVR 001-3031",
+    "basePrice": 7000,
+    "departureLocationId": 1,
+    "arrivalLocationId": 44,
+    "departureTime": "14:00",
+    "durationMinutes": 7330,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 14,
+    "weeklySchedule": "1111111"
+  },
+
+
+
+
+
+  {
+    "publicIdPrefix": "E1VO61-0",
+    "flightNumber": "NVR 001-4010",
+    "basePrice": 6500,
+    "departureLocationId": 1,
+    "arrivalLocationId": 61,
+    "departureTime": "22:30",
+    "durationMinutes": 4410,
+    "orbitsDeparture": 1,
+    "orbitsArrival": 0,
+    "vehicleId": 11,
+    "weeklySchedule": "2232232"
+  }
+
+]
