@@ -66,33 +66,6 @@ public class FlightTemplate extends BaseEntity {
         return this;
     }
 
-    //    public double getFirstBasePrice() {
-//        return firstBasePrice;
-//    }
-//
-//    public FlightTemplate setFirstBasePrice(double firstBasePrice) {
-//        this.firstBasePrice = firstBasePrice;
-//        return this;
-//    }
-//
-//    public double getMiddleBasePrice() {
-//        return middleBasePrice;
-//    }
-//
-//    public FlightTemplate setMiddleBasePrice(double middleBasePrice) {
-//        this.middleBasePrice = middleBasePrice;
-//        return this;
-//    }
-//
-//    public double getLowerBasePrice() {
-//        return lowerBasePrice;
-//    }
-//
-//    public FlightTemplate setLowerBasePrice(double lowerBasePrice) {
-//        this.lowerBasePrice = lowerBasePrice;
-//        return this;
-//    }
-
     public LocalTime getDepartureTime() {
         return departureTime;
     }

@@ -42,7 +42,7 @@ public class FlightGenerationService {
         try {
             this.flightProps = mapper.readValue(propsResource.getInputStream(), FlightGenerationProperties.class);
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: Make exceptions for this domain and throw here correctly
+            throw new RuntimeException(e); // TODO: Make exceptions for this domain and throw here correctly?
         }
     }
 

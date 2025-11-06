@@ -27,6 +27,7 @@ public class LocationService {
 
 
 
+    // TODO: Cache this
     public List<LocationGroupDTO> getAllLocationGroups() {
         List<Location> locations = locationRepository.findAll();
         if (locations.isEmpty()) {throw new FailedOperationException();}
@@ -34,22 +35,28 @@ public class LocationService {
         Map<FlightRegion, LocationGroupDTO> locationGroups = new HashMap<>();
         for (Location location : locations) {
             LocationDTO dto = locationMapper.locationToLocationDTO(location);
-
-            if (locationGroups.containsKey(location.getRegion())) {
-                locationGroups.get(location.getRegion()).getLocations().add(dto);
-            } else {
+            if (!locationGroups.containsKey(location.getRegion())) {
                 LocationGroupDTO locationGroupDTO = new LocationGroupDTO()
                         .setRegionCode(location.getRegion())
                         .setRegionLabel(location.getRegion().getLabel())
+                        .setRegionSeparationFactor(location.getRegion().getSeparationFactor())
                         .setLocations(new ArrayList<>());
-                locationGroupDTO.getLocations().add(dto);
                 locationGroups.put(location.getRegion(), locationGroupDTO);
             }
+            locationGroups.get(location.getRegion()).getLocations().add(dto);
+
         }
 
         return locationGroups
                 .values()
                 .stream()
                 .toList();
+    }
+
+    public long getLocationIdByCode(String code) {
+        return locationRepository
+                .findByCode(code)
+                .orElseThrow(FailedOperationException::new)
+                .getId();
     }
 }

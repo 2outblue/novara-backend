@@ -15,4 +15,7 @@ public enum ErrCode {
 
     INVALID_TOKEN,
     EXPIRED_TOKEN,
+
+    FLIGHT_NOT_FOUND,
+    NO_FLIGHT_AVAILABILITY,
 }

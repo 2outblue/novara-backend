@@ -100,6 +100,12 @@ public class GlobalExceptionHandler {
                 .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
     }
 
+    @ExceptionHandler(FlightException.class)
+    public ResponseEntity<ApiError> handleFlightException(FlightException ex) {
+        return ResponseEntity.status(ex.getStatus())
+                .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
+    }
+
 //    @ExceptionHandler(VerificationTokenException.class)
 //    public ResponseEntity<ApiError> handleVerificationTokenException(VerificationTokenException ex) {
 //        String errorCode = "VERIFICATION_FAILED";
