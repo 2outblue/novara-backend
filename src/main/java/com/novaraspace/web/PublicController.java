@@ -1,5 +1,6 @@
 package com.novaraspace.web;
 
+import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.RouteAvailabilityRequestDTO;
 import com.novaraspace.model.dto.location.LocationGroupDTO;
 import com.novaraspace.service.FlightService;
@@ -33,5 +34,10 @@ public class PublicController {
     public ResponseEntity<List<LocalDate>> getFlightAvailability(@RequestBody RouteAvailabilityRequestDTO dto) {
         List<LocalDate> availabilityDates = flightService.getRouteAvailability(dto.getDepartureCode(), dto.getArrivalCode());
         return ResponseEntity.ok(availabilityDates);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> searchFlightsForQuery(@RequestBody FlightSearchQueryDTO queryDTO) {
+
     }
 }

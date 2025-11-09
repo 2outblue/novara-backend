@@ -29,16 +29,18 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
 app:
   jwt:
     issuer: "novara-space"
     secret: "${NOVARA_JWT_SECRET}"
-    expiry-minutes: 15
+    expiry-minutes: 120
     refresh-expiry-hours: 32
   verification-token-expiry-hours: 24
   enable-email-verification: true
   frontend-url: http://localhost:4200
+  flight:
+    padding-days-on-fetch: 14
 
 server:
   port: 8095
@@ -47,7 +49,7 @@ logging:
   level:
     org.hibernate.SQL: ERROR
     org.hibernate.arm.jdbc.bind: ERROR
-    org.springframework: DEBUG
+    org.springframework: ERROR
     org.springframework.boot.actuate: ERROR
     #    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     org.springframework.security: ERROR

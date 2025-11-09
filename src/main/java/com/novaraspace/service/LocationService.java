@@ -26,7 +26,6 @@ public class LocationService {
     }
 
 
-
     // TODO: Cache this
     public List<LocationGroupDTO> getAllLocationGroups() {
         List<Location> locations = locationRepository.findAll();
@@ -44,19 +43,14 @@ public class LocationService {
                 locationGroups.put(location.getRegion(), locationGroupDTO);
             }
             locationGroups.get(location.getRegion()).getLocations().add(dto);
-
         }
 
-        return locationGroups
-                .values()
-                .stream()
-                .toList();
+        return locationGroups.values().stream().toList();
     }
 
-    public long getLocationIdByCode(String code) {
+    public Location getLocationByCode(String code) {
         return locationRepository
                 .findByCode(code)
-                .orElseThrow(FailedOperationException::new)
-                .getId();
+                .orElseThrow(FailedOperationException::new);
     }
 }

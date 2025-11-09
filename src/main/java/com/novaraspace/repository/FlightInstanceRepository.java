@@ -19,4 +19,10 @@ public interface FlightInstanceRepository extends JpaRepository<FlightInstance, 
             @Param("endDate") LocalDate endDate,
             @Param("templateIds") List<Long> templateIds
     );
+
+
+    @Query("select FlightInstance fi from FlightInstance where fi.flightTemplate.id in :templateIds and cast(fi.departureDate as localdate) between :startDate and :endDate")
+    List<FlightInstance> findAllWithTemplateIdsAndWithinRange(@Param("templateIds") List<Long> templateIds,
+                                                                 @Param("startDate") LocalDate startDate,
+                                                                 @Param("endDate") LocalDate endDate);
 }
