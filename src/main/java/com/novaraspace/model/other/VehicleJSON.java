@@ -5,10 +5,13 @@ import java.util.List;
 public class VehicleJSON {
     private String code;
     private String name;
-    private boolean eva;
-    private boolean observationLounge;
-    private boolean vr;
-    private boolean galley;
+
+    private List<String> amenities;
+
+//    private boolean eva;
+//    private boolean observationLounge;
+//    private boolean vr;
+//    private boolean galley;
 
     private Long firstClassId;
     private Long middleClassId;
@@ -34,41 +37,50 @@ public class VehicleJSON {
         return this;
     }
 
-    public boolean isEva() {
-        return eva;
+    public List<String> getAmenities() {
+        return amenities;
     }
 
-    public VehicleJSON setEva(boolean eva) {
-        this.eva = eva;
+    public VehicleJSON setAmenities(List<String> amenities) {
+        this.amenities = amenities;
         return this;
     }
 
-    public boolean isObservationLounge() {
-        return observationLounge;
-    }
-
-    public VehicleJSON setObservationLounge(boolean observationLounge) {
-        this.observationLounge = observationLounge;
-        return this;
-    }
-
-    public boolean isVr() {
-        return vr;
-    }
-
-    public VehicleJSON setVr(boolean vr) {
-        this.vr = vr;
-        return this;
-    }
-
-    public boolean isGalley() {
-        return galley;
-    }
-
-    public VehicleJSON setGalley(boolean galley) {
-        this.galley = galley;
-        return this;
-    }
+    //    public boolean isEva() {
+//        return eva;
+//    }
+//
+//    public VehicleJSON setEva(boolean eva) {
+//        this.eva = eva;
+//        return this;
+//    }
+//
+//    public boolean isObservationLounge() {
+//        return observationLounge;
+//    }
+//
+//    public VehicleJSON setObservationLounge(boolean observationLounge) {
+//        this.observationLounge = observationLounge;
+//        return this;
+//    }
+//
+//    public boolean isVr() {
+//        return vr;
+//    }
+//
+//    public VehicleJSON setVr(boolean vr) {
+//        this.vr = vr;
+//        return this;
+//    }
+//
+//    public boolean isGalley() {
+//        return galley;
+//    }
+//
+//    public VehicleJSON setGalley(boolean galley) {
+//        this.galley = galley;
+//        return this;
+//    }
 
     public Long getFirstClassId() {
         return firstClassId;

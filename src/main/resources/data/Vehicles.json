@@ -2,217 +2,163 @@
   {
     "code": "SLF",
     "name": "Starlifter",
-    "eva": false,
-    "observationLounge": true,
-    "vr": true,
-    "galley": true,
     "firstClassId": 2,
     "middleClassId": 25,
     "lowerClassId": 41,
-    "supportedRegions": ["EARTH"]
+    "supportedRegions": ["EARTH"],
+    "amenities": ["OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
     "code": "ORB",
     "name": "Orbitron",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": false,
     "firstClassId": 7,
     "middleClassId": 17,
     "lowerClassId": 35,
-    "supportedRegions": ["EARTH", "MOON_ORBIT"]
+    "supportedRegions": ["EARTH", "MOON_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR"]
   },
   {
     "code": "SKY",
     "name": "Skycruiser",
-    "eva": false,
-    "observationLounge": true,
-    "vr": true,
-    "galley": true,
     "firstClassId": 6,
     "middleClassId": 26,
     "lowerClassId": 41,
-    "supportedRegions": ["EARTH"]
+    "supportedRegions": ["EARTH"],
+    "amenities": ["OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
     "code": "AST",
     "name": "Astra",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 5,
     "middleClassId": 15,
     "lowerClassId": 33,
-    "supportedRegions": ["EARTH", "MOON_ORBIT"]
+    "supportedRegions": ["EARTH", "MOON_ORBIT"],
+    "amenities": ["EVA", "GALLEY"]
   },
   {
     "code": "LUN",
     "name": "Lunar Voyager",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": true,
     "firstClassId": 8,
     "middleClassId": 24,
     "lowerClassId": 45,
-    "supportedRegions": ["MOON", "MOON_ORBIT"]
+    "supportedRegions": ["MOON", "MOON_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
     "code": "SEL",
     "name": "Selene",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 3,
     "middleClassId": 19,
     "lowerClassId": 39,
-    "supportedRegions": ["MOON"]
+    "supportedRegions": ["MOON"],
+    "amenities": ["EVA", "GALLEY"]
   },
   {
     "code": "CRE",
     "name": "Crescent",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": true,
     "firstClassId": 9,
     "middleClassId": 18,
     "lowerClassId": 37,
-    "supportedRegions": ["MOON_ORBIT", "EARTH"]
+    "supportedRegions": ["MOON_ORBIT", "EARTH"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
     "code": "TID",
     "name": "Tidal Runner",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 5,
     "middleClassId": 15,
     "lowerClassId": 33,
-    "supportedRegions": ["MOON"]
+    "supportedRegions": ["MOON"],
+    "amenities": ["EVA", "GALLEY"]
   },
   {
     "code": "APO",
     "name": "Apollo Relay",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": false,
     "firstClassId": 7,
     "middleClassId": 17,
     "lowerClassId": 35,
-    "supportedRegions": ["MOON_ORBIT"]
+    "supportedRegions": ["MOON_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR"]
   },
   {
     "code": "ARC",
     "name": "Arcus",
-    "eva": true,
-    "observationLounge": true,
-    "vr": false,
-    "galley": true,
     "firstClassId": 10,
     "middleClassId": 20,
     "lowerClassId": 40,
-    "supportedRegions": ["MOON", "MOON_ORBIT"]
+    "supportedRegions": ["MOON", "MOON_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "GALLEY"]
   },
   {
     "code": "VEN",
     "name": "Venera",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": true,
     "firstClassId": 4,
     "middleClassId": 23,
     "lowerClassId": 43,
-    "supportedRegions": ["VENUS_ORBIT"]
+    "supportedRegions": ["VENUS_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
     "code": "CYT",
     "name": "Cythera",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": false,
     "firstClassId": 11,
     "middleClassId": 22,
     "lowerClassId": 42,
-    "supportedRegions": ["VENUS_ORBIT"]
+    "supportedRegions": ["VENUS_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR"]
   },
   {
     "code": "MAR",
     "name": "Martian Trailblazer",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 3,
     "middleClassId": 16,
     "lowerClassId": 34,
-    "supportedRegions": ["MARS_ORBIT", "MARS"]
+    "supportedRegions": ["MARS_ORBIT", "MARS"],
+    "amenities": ["EVA", "GALLEY"]
   },
   {
     "code": "RED",
     "name": "Red Horizon",
-    "eva": true,
-    "observationLounge": true,
-    "vr": true,
-    "galley": true,
     "firstClassId": 8,
     "middleClassId": 27,
     "lowerClassId": 47,
-    "supportedRegions": ["MARS_ORBIT"]
+    "supportedRegions": ["MARS_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
     "code": "ORB",
     "name": "Orbitmaster",
-    "eva": true,
-    "observationLounge": true,
-    "vr": false,
-    "galley": true,
     "firstClassId": 10,
     "middleClassId": 20,
     "lowerClassId": 40,
-    "supportedRegions": ["MARS_ORBIT", "VENUS_ORBIT"]
+    "supportedRegions": ["MARS_ORBIT", "VENUS_ORBIT"],
+    "amenities": ["EVA", "OBSERVATION_LOUNGE", "GALLEY"]
   },
   {
     "code": "PHO",
     "name": "Phobos Express",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 5,
     "middleClassId": 15,
     "lowerClassId": 33,
-    "supportedRegions": ["MARS_ORBIT", "MARS"]
+    "supportedRegions": ["MARS_ORBIT", "MARS"],
+    "amenities": ["EVA", "GALLEY"]
   },
   {
     "code": "OLY",
     "name": "Olympus",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 3,
     "middleClassId": 19,
     "lowerClassId": 38,
-    "supportedRegions": ["MARS"]
+    "supportedRegions": ["MARS"],
+    "amenities": ["EVA", "GALLEY"]
   },
   {
     "code": "VAL",
     "name": "Valles",
-    "eva": true,
-    "observationLounge": false,
-    "vr": false,
-    "galley": true,
     "firstClassId": 3,
     "middleClassId": 19,
     "lowerClassId": 38,
-    "supportedRegions": ["MARS"]
+    "supportedRegions": ["MARS"],
+    "amenities": ["EVA", "GALLEY"]
   }
 ]
