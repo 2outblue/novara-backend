@@ -1,6 +1,7 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.enums.FlightRegion;
+import com.novaraspace.model.enums.VehicleAmenity;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -9,17 +10,23 @@ import java.util.Set;
 @Table(name = "vehicle")
 public class Vehicle extends BaseEntity {
     @Column(nullable = false)
-    private java.lang.String code;
+    private String code;
     @Column(nullable = false)
-    private java.lang.String name;
+    private String name;
+//    @Column(nullable = false)
+//    private boolean eva;
+//    @Column(nullable = false)
+//    private boolean observationLounge;
+//    @Column(nullable = false)
+//    private boolean vr;
+//    @Column(nullable = false)
+//    private boolean galley;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "vehicle_amenities", joinColumns = @JoinColumn(name = "vehicle_id"))
     @Column(nullable = false)
-    private boolean eva;
-    @Column(nullable = false)
-    private boolean observationLounge;
-    @Column(nullable = false)
-    private boolean vr;
-    @Column(nullable = false)
-    private boolean galley;
+    @Enumerated(EnumType.STRING)
+    private Set<VehicleAmenity> amenities;
 
     @JoinColumn(name = "first_class")
     @ManyToOne
@@ -37,6 +44,8 @@ public class Vehicle extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Set<FlightRegion> supportedRegions;
 
+
+
     public String getCode() {
         return code;
     }
@@ -50,46 +59,55 @@ public class Vehicle extends BaseEntity {
         return name;
     }
 
-    public Vehicle setName(java.lang.String name) {
+    public Vehicle setName(String name) {
         this.name = name;
         return this;
     }
 
-    public boolean isEva() {
-        return eva;
+    public Set<VehicleAmenity> getAmenities() {
+        return amenities;
     }
 
-    public Vehicle setEva(boolean eva) {
-        this.eva = eva;
+    public Vehicle setAmenities(Set<VehicleAmenity> amenities) {
+        this.amenities = amenities;
         return this;
     }
 
-    public boolean isObservationLounge() {
-        return observationLounge;
-    }
-
-    public Vehicle setObservationLounge(boolean observationLounge) {
-        this.observationLounge = observationLounge;
-        return this;
-    }
-
-    public boolean isVr() {
-        return vr;
-    }
-
-    public Vehicle setVr(boolean vr) {
-        this.vr = vr;
-        return this;
-    }
-
-    public boolean isGalley() {
-        return galley;
-    }
-
-    public Vehicle setGalley(boolean galley) {
-        this.galley = galley;
-        return this;
-    }
+    //    public boolean hasEva() {
+//        return eva;
+//    }
+//
+//    public Vehicle setEva(boolean eva) {
+//        this.eva = eva;
+//        return this;
+//    }
+//
+//    public boolean hasObservationLounge() {
+//        return observationLounge;
+//    }
+//
+//    public Vehicle setObservationLounge(boolean observationLounge) {
+//        this.observationLounge = observationLounge;
+//        return this;
+//    }
+//
+//    public boolean hasVr() {
+//        return vr;
+//    }
+//
+//    public Vehicle setVr(boolean vr) {
+//        this.vr = vr;
+//        return this;
+//    }
+//
+//    public boolean hasGalley() {
+//        return galley;
+//    }
+//
+//    public Vehicle setGalley(boolean galley) {
+//        this.galley = galley;
+//        return this;
+//    }
 
     public CabinClass getFirstClass() {
         return firstClass;

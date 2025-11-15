@@ -1,6 +1,7 @@
 package com.novaraspace.web;
 
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
+import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.dto.flight.RouteAvailabilityRequestDTO;
 import com.novaraspace.model.dto.location.LocationGroupDTO;
 import com.novaraspace.service.FlightService;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping("public")
 public class PublicController {
 
     private final LocationService locationService;
@@ -36,8 +37,9 @@ public class PublicController {
         return ResponseEntity.ok(availabilityDates);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> searchFlightsForQuery(@RequestBody FlightSearchQueryDTO queryDTO) {
-
+    @PostMapping("/flight-search")
+    public ResponseEntity<FlightSearchResultDTO> searchFlightsForQuery(@RequestBody FlightSearchQueryDTO queryDTO) {
+        FlightSearchResultDTO result = flightService.searchFlightsForQuery(queryDTO);
+        return ResponseEntity.ok(result);
     }
 }

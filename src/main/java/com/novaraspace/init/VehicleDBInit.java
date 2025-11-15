@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novaraspace.model.entity.CabinClass;
 import com.novaraspace.model.entity.Vehicle;
 import com.novaraspace.model.enums.FlightRegion;
+import com.novaraspace.model.enums.VehicleAmenity;
 import com.novaraspace.model.other.VehicleJSON;
 import com.novaraspace.repository.CabinClassRepository;
 import com.novaraspace.repository.VehicleRepository;
@@ -13,10 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -52,10 +50,11 @@ public class VehicleDBInit implements CommandLineRunner {
             return new Vehicle()
                     .setCode(v.getCode())
                     .setName(v.getName())
-                    .setEva(v.isEva())
-                    .setObservationLounge(v.isObservationLounge())
-                    .setVr(v.isVr())
-                    .setGalley(v.isGalley())
+                    .setAmenities(getVehicleAmenities(v))
+//                    .setEva(v.isEva())
+//                    .setObservationLounge(v.isObservationLounge())
+//                    .setVr(v.isVr())
+//                    .setGalley(v.isGalley())
                     .setFirstClass(ccMap.get(v.getFirstClassId()))
                     .setMiddleClass(ccMap.get(v.getMiddleClassId()))
                     .setLowerClass(ccMap.get(v.getLowerClassId()))
@@ -64,5 +63,10 @@ public class VehicleDBInit implements CommandLineRunner {
         }).toList();
 
         vehicleRepository.saveAll(vehicles);
+    }
+
+    private Set<VehicleAmenity> getVehicleAmenities(VehicleJSON json) {
+        return json.getAmenities().stream().map(VehicleAmenity::valueOf)
+                .collect(Collectors.toSet());
     }
 }

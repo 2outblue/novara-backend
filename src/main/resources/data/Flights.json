@@ -53,6 +53,35 @@
   },
 
   {
+    "publicIdPrefix": "EN21E1-1",
+    "flightNumber": "NVR 102-0011",
+    "basePrice": 1200.0,
+    "departureTime": "10:00",
+    "departureLocationId": 21,
+    "arrivalLocationId": 1,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 1,
+    "durationMinutes": 45,
+    "weeklySchedule": "1111111"
+  },
+  {
+    "publicIdPrefix": "EN21E1-2",
+    "flightNumber": "NVR 102-0012",
+    "basePrice": 1220.0,
+    "departureTime": "18:45",
+    "departureLocationId": 21,
+    "arrivalLocationId": 1,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 3,
+    "durationMinutes": 45,
+    "weeklySchedule": "1010121"
+  },
+
+
+
+  {
     "publicIdPrefix": "E1EN22-1",
     "flightNumber": "NVR 001-1671",
     "basePrice": 1120,

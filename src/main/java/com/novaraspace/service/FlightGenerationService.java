@@ -8,6 +8,7 @@ import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.entity.FlightTemplate;
 import com.novaraspace.model.entity.Vehicle;
 import com.novaraspace.model.enums.FlightStatus;
+import com.novaraspace.model.enums.VehicleAmenity;
 import com.novaraspace.model.other.FlightGenerationProperties;
 import com.novaraspace.model.other.FlightJSON;
 import org.springframework.core.io.ClassPathResource;
@@ -22,6 +23,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FlightGenerationService {
@@ -118,10 +120,18 @@ public class FlightGenerationService {
     }
 
     private double[] calculatePrices(Vehicle vehicle, double basePrice) {
-        double evaM = vehicle.isEva() ? flightProps.getEvaMultiplier() : 1.0;
-        double galleyM = vehicle.isGalley() ? flightProps.getGalleyMultiplier() : 1.0;
-        double loungeM = vehicle.isObservationLounge() ? flightProps.getLoungeMultiplier() : 1.0;
-        double vrM = vehicle.isVr() ? flightProps.getVrMultiplier() : 1.0;
+
+        Set<VehicleAmenity> amenities = vehicle.getAmenities();
+
+        double evaM = amenities.contains(VehicleAmenity.EVA) ? flightProps.getEvaMultiplier() : 1.0;
+        double galleyM = amenities.contains(VehicleAmenity.GALLEY) ? flightProps.getGalleyMultiplier() : 1.0;
+        double loungeM = amenities.contains(VehicleAmenity.OBSERVATION_LOUNGE) ? flightProps.getLoungeMultiplier() : 1.0;
+        double vrM = amenities.contains(VehicleAmenity.VR) ? flightProps.getVrMultiplier() : 1.0;
+
+//        double evaM = vehicle.hasEva() ? flightProps.getEvaMultiplier() : 1.0;
+//        double galleyM = vehicle.hasGalley() ? flightProps.getGalleyMultiplier() : 1.0;
+//        double loungeM = vehicle.hasObservationLounge() ? flightProps.getLoungeMultiplier() : 1.0;
+//        double vrM = vehicle.hasVr() ? flightProps.getVrMultiplier() : 1.0;
 
         double amenitiesMultiplier = evaM + galleyM + loungeM + vrM;
 
