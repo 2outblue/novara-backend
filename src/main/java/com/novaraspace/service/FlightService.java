@@ -1,5 +1,6 @@
 package com.novaraspace.service;
 
+import com.novaraspace.model.dto.flight.FlightLimitsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.dto.flight.FlightUiDTO;
@@ -68,7 +69,8 @@ public class FlightService {
 
         double netSeparationFactor = Math.abs(departureLocation.getRegion().getSeparationFactor() - arrivalLocation.getRegion().getSeparationFactor());
         LocalDate[] departureFlightPaddingRange = getPaddingRangeForDepartureFlight(queryDTO, netSeparationFactor);
-        LocalDate[] returnFlightPaddingRange = getPaddingRangeForReturnFlight(queryDTO, netSeparationFactor);
+        LocalDate departureUpperLimitDate = departureFlightPaddingRange[1];
+        LocalDate[] returnFlightPaddingRange = getPaddingRangeForReturnFlight(queryDTO, netSeparationFactor, departureUpperLimitDate);
 
         List<FlightUiDTO> departureFlights = getValidInstancesWithinRange(departureTemplateIds, departureFlightPaddingRange, queryDTO.getPaxCount())
                 .stream().map(flightMapper::instanceToFlightUiDTO)
@@ -78,30 +80,17 @@ public class FlightService {
                 .stream().map(flightMapper::instanceToFlightUiDTO)
                 .toList();
 
-
-//        List<FlightInstance> departureFlights = flightInstanceRepository
-//                .findAllWithTemplateIdsAndWithinRange(departureTemplateIds, departureFlightPaddingRange[0], departureFlightPaddingRange[1])
-//                .stream().filter(fi -> {
-//                    int paxCount = queryDTO.getPaxCount();
-//                    return fi.getFirstClass().getAvailableSeats() >= paxCount
-//                            || fi.getMiddleClass().getAvailableSeats() >= paxCount
-//                            || fi.getLowerClass().getAvailableSeats() >= paxCount;
-//                }).toList();
-//
-//        List<FlightInstance> returnFlights = flightInstanceRepository
-//                .findAllWithTemplateIdsAndWithinRange(returnTemplateIds, returnFlightPaddingRange[0], returnFlightPaddingRange[1])
-//                .stream().filter(fi -> {
-//                    int paxCount = queryDTO.getPaxCount();
-//                    return fi.getFirstClass().getAvailableSeats() >= paxCount
-//                            || fi.getMiddleClass().getAvailableSeats() >= paxCount
-//                            || fi.getLowerClass().getAvailableSeats() >= paxCount;
-//                }).toList();
+        FlightLimitsDTO limits = new FlightLimitsDTO()
+                .setDepartureLowerDate(departureFlightPaddingRange[0])
+                .setDepartureUpperDate(departureFlightPaddingRange[1])
+                .setArrivalLowerDate(returnFlightPaddingRange[0])
+                .setArrivalUpperDate(returnFlightPaddingRange[1]);
 
         if (departureFlights.isEmpty() || returnFlights.isEmpty()) {throw FlightException.noAvailability();}
-
         return new FlightSearchResultDTO()
                 .setDepartureFlights(departureFlights)
-                .setReturnFlights(returnFlights);
+                .setReturnFlights(returnFlights)
+                .setLimits(limits);
     }
 
     private List<FlightInstance> getValidInstancesWithinRange(List<Long> templateIds, LocalDate[] paddingRange, int paxCount) {
@@ -135,14 +124,22 @@ public class FlightService {
         return new LocalDate[]{trueEarliestDeparture, trueLatestDeparture};
     }
 
-    private LocalDate[] getPaddingRangeForReturnFlight(FlightSearchQueryDTO queryDTO, double separationFactor) {
+    private LocalDate[] getPaddingRangeForReturnFlight(
+            FlightSearchQueryDTO queryDTO,
+            double separationFactor,
+            LocalDate departureFlightUpperLimitDate
+    ) {
         int separationDays = (int) Math.round(separationFactor);
         LocalDate earliestPossibleReturn = queryDTO.getDepartureDate().plusDays(separationDays);
+
+        LocalDate earliestPossibleReturnWithinLimits = earliestPossibleReturn.isBefore(departureFlightUpperLimitDate)
+                ? departureFlightUpperLimitDate
+                : earliestPossibleReturn;
         LocalDate earliestReturnWithinPaddingRange = queryDTO.getReturnDate().minusDays(paddingRange);
 
-        LocalDate trueEarliestReturn = earliestPossibleReturn.isBefore(earliestReturnWithinPaddingRange)
+        LocalDate trueEarliestReturn = earliestPossibleReturnWithinLimits.isBefore(earliestReturnWithinPaddingRange)
                 ? earliestReturnWithinPaddingRange
-                : earliestPossibleReturn;
+                : earliestPossibleReturnWithinLimits;
         LocalDate trueLatestReturn = queryDTO.getReturnDate().plusDays(paddingRange);
         return new LocalDate[]{trueEarliestReturn, trueLatestReturn};
     }

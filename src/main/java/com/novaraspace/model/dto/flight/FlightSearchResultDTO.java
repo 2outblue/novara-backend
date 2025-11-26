@@ -7,6 +7,7 @@ import java.util.List;
 public class FlightSearchResultDTO {
     private List<FlightUiDTO> departureFlights;
     private List<FlightUiDTO> returnFlights;
+    private FlightLimitsDTO limits;
 
     public List<FlightUiDTO> getDepartureFlights() {
         return departureFlights;
@@ -23,6 +24,15 @@ public class FlightSearchResultDTO {
 
     public FlightSearchResultDTO setReturnFlights(List<FlightUiDTO> returnFlights) {
         this.returnFlights = returnFlights;
+        return this;
+    }
+
+    public FlightLimitsDTO getLimits() {
+        return limits;
+    }
+
+    public FlightSearchResultDTO setLimits(FlightLimitsDTO limits) {
+        this.limits = limits;
         return this;
     }
 }
