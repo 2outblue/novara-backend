@@ -1,8 +1,6 @@
 package com.novaraspace.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -18,7 +16,12 @@ public class Passenger extends BaseEntity {
 
     @ManyToOne
     private Booking booking;
-    @OneToOne
+
+    @Embedded()
+    @AttributeOverrides({
+            @AttributeOverride(name = "capacity", column = @Column(name = "extra_baggage_capacity")),
+            @AttributeOverride(name = "price", column = @Column(name = "extra_baggage_price"))
+    })
     private PassengerBaggage baggage;
 
     public long getIntraBookingId() {

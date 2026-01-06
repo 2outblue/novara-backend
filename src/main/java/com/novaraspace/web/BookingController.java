@@ -2,8 +2,10 @@ package com.novaraspace.web;
 
 import com.novaraspace.model.dto.booking.NewBookingDTO;
 import com.novaraspace.service.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,7 @@ public class BookingController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> createBooking(NewBookingDTO bookingDTO) {
+    public ResponseEntity<Void> createBooking(@Valid @RequestBody NewBookingDTO bookingDTO) {
         bookingService.createNewBooking(bookingDTO);
         return ResponseEntity.ok().build();
     }

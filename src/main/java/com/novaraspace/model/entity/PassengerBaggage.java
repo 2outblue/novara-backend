@@ -2,8 +2,8 @@ package com.novaraspace.model.entity;
 
 import jakarta.persistence.Entity;
 
-@Entity
-public class PassengerBaggage extends BaseEntity {
+//@Entity
+public class PassengerBaggage {
     private String capacity;
     private double price;
 

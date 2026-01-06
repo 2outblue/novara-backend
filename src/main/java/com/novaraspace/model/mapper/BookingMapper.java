@@ -1,10 +1,10 @@
 package com.novaraspace.model.mapper;
 
-import com.novaraspace.model.dto.booking.NewBookingContactDetails;
-import com.novaraspace.model.dto.booking.NewBookingDTO;
+import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.ExtraService;
 import com.novaraspace.model.entity.Passenger;
+import com.novaraspace.model.entity.PassengerBaggage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -26,7 +26,10 @@ public abstract class BookingMapper {
     @Mapping(target = "returnFlight", ignore = true)
     protected abstract Booking newBookingDtoToPartialEntity(NewBookingDTO dto);
 
-    protected abstract Passenger newPassengerDtoToEntity(Passenger passenger);
+    @Mapping(source = "id", target = "intraBookingId")
+    protected abstract Passenger newPassengerDtoToEntity(NewPassengerDTO dto);
 
-    protected abstract ExtraService newExtraServiceDtoToEntity(ExtraService extraService);
+    protected abstract ExtraService newExtraServiceDtoToEntity(ExtraServiceDTO dto);
+
+    protected abstract PassengerBaggage newPassengerBaggageDtoToEntity(NewPassengerBaggageDTO dto);
 }

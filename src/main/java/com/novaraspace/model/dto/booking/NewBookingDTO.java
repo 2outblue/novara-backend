@@ -1,5 +1,6 @@
 package com.novaraspace.model.dto.booking;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -9,9 +10,15 @@ import java.util.List;
 public class NewBookingDTO {
     @NotEmpty
     private String departureFlightId;
+    @NotEmpty
+    private String departureFlightClass;
     private String returnFlightId;
+    private String returnFlightClass;
+    @Valid
     private List<NewPassengerDTO> passengers;
+    @Valid
     private NewBookingContactDetails contactDetails;
+    @Valid
     private List<ExtraServiceDTO> extraServices;
 
     @NotEmpty
@@ -30,12 +37,30 @@ public class NewBookingDTO {
         return this;
     }
 
+    public String getDepartureFlightClass() {
+        return departureFlightClass;
+    }
+
+    public NewBookingDTO setDepartureFlightClass(String departureFlightClass) {
+        this.departureFlightClass = departureFlightClass;
+        return this;
+    }
+
     public String getReturnFlightId() {
         return returnFlightId;
     }
 
     public NewBookingDTO setReturnFlightId(String returnFlightId) {
         this.returnFlightId = returnFlightId;
+        return this;
+    }
+
+    public String getReturnFlightClass() {
+        return returnFlightClass;
+    }
+
+    public NewBookingDTO setReturnFlightClass(String returnFlightClass) {
+        this.returnFlightClass = returnFlightClass;
         return this;
     }
 
