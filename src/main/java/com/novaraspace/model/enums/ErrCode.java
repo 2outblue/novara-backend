@@ -18,4 +18,7 @@ public enum ErrCode {
 
     FLIGHT_NOT_FOUND,
     NO_FLIGHT_AVAILABILITY,
+
+    INVALID_QUOTE,
+
 }

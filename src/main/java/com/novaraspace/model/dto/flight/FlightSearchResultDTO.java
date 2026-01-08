@@ -8,6 +8,7 @@ public class FlightSearchResultDTO {
     private List<FlightUiDTO> departureFlights;
     private List<FlightUiDTO> returnFlights;
     private FlightLimitsDTO limits;
+    private String bookingQuoteRef;
 
     public List<FlightUiDTO> getDepartureFlights() {
         return departureFlights;
@@ -33,6 +34,15 @@ public class FlightSearchResultDTO {
 
     public FlightSearchResultDTO setLimits(FlightLimitsDTO limits) {
         this.limits = limits;
+        return this;
+    }
+
+    public String getBookingQuoteRef() {
+        return bookingQuoteRef;
+    }
+
+    public FlightSearchResultDTO setBookingQuoteRef(String bookingQuoteRef) {
+        this.bookingQuoteRef = bookingQuoteRef;
         return this;
     }
 }

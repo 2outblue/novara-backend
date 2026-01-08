@@ -1,16 +1,16 @@
 package com.novaraspace.model.mapper;
 
 import com.novaraspace.model.dto.booking.*;
-import com.novaraspace.model.entity.Booking;
-import com.novaraspace.model.entity.ExtraService;
-import com.novaraspace.model.entity.Passenger;
-import com.novaraspace.model.entity.PassengerBaggage;
+import com.novaraspace.model.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class BookingMapper {
+
+    public abstract BookingQuote bookingQuoteDtoToEntity(BookingQuoteDTO dto);
+    public abstract BookingQuoteDTO entityToBookingQuoteDto(BookingQuote entity);
 
     public Booking newBookingDtoToEntity(NewBookingDTO dto) {
         Booking booking = this.newBookingDtoToPartialEntity(dto);

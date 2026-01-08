@@ -9,6 +9,7 @@ public class FlightSearchQueryDTO {
     private LocalDate departureDate;
     private LocalDate returnDate;
     private int paxCount;
+    private boolean returnFlight;
 
     public String getDepartureCode() {
         return departureCode;
@@ -52,6 +53,15 @@ public class FlightSearchQueryDTO {
 
     public FlightSearchQueryDTO setPaxCount(int paxCount) {
         this.paxCount = paxCount;
+        return this;
+    }
+
+    public boolean hasReturnFlight() {
+        return returnFlight;
+    }
+
+    public FlightSearchQueryDTO setReturnFlight(boolean returnFlight) {
+        this.returnFlight = returnFlight;
         return this;
     }
 }

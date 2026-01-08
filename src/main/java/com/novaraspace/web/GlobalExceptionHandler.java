@@ -41,6 +41,12 @@ public class GlobalExceptionHandler {
                 .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
     }
 
+    @ExceptionHandler(BookingException.class)
+    public ResponseEntity<ApiError> handleBookingException(BookingException ex) {
+        return ResponseEntity.status(ex.getStatus())
+                .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
+    }
+
 //    @ExceptionHandler(UserNotFoundException.class)
 //    public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex) {
 //        return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -69,7 +75,8 @@ public class GlobalExceptionHandler {
                 fieldErrors.put(error.getField(), error.getDefaultMessage()));
 
         String errorCode = "INVALID_DATA";
-        if (fieldErrors.get("email").equals("Email already exists.")) {
+
+        if (fieldErrors.containsKey("email") && fieldErrors.get("email").equals("Email already exists.")) {
             errorCode = "EMAIL_IN_USE";
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

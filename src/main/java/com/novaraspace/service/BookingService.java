@@ -16,24 +16,15 @@ public class BookingService {
     }
 
     public void createNewBooking(NewBookingDTO dto) {
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println("#####################################################");
-        System.out.println(dto);
         Booking booking = bookingMapper.newBookingDtoToEntity(dto);
         System.out.println(booking);
     }
+
+    private void validateBooking(Booking booking) {
+
+    }
+
+
+
 
 }
