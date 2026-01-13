@@ -1,14 +1,16 @@
 package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.validation.annotations.ValidBaggageCapacity;
+import com.novaraspace.validation.annotations.ValidNewPassengerBaggage;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
+@ValidNewPassengerBaggage
 public class NewPassengerBaggageDTO {
-    @NotEmpty
-    @ValidBaggageCapacity
+//    @NotEmpty
+//    @ValidBaggageCapacity
     private String capacity;
-    @Positive
+//    @Positive
     private double price;
 
     public String getCapacity() {

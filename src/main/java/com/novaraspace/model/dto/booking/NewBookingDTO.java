@@ -1,5 +1,6 @@
 package com.novaraspace.model.dto.booking;
 
+import com.novaraspace.validation.annotations.ValidPassengerIntraIds;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+@ValidPassengerIntraIds
 public class NewBookingDTO {
     @NotEmpty
     private String departureFlightId;
@@ -27,6 +29,14 @@ public class NewBookingDTO {
     @NotEmpty
     @Size(min = 5, max = 15)
     private String billingMobile;
+    @NotEmpty
+    private String cardHolder;
+    @NotEmpty
+    @Size(min = 4, max = 4)
+    private String lastFourDigitsCard;
+
+    @NotEmpty
+    private String quoteReference;
 
     public String getDepartureFlightId() {
         return departureFlightId;
@@ -106,6 +116,33 @@ public class NewBookingDTO {
 
     public NewBookingDTO setBillingMobile(String billingMobile) {
         this.billingMobile = billingMobile;
+        return this;
+    }
+
+    public String getCardHolder() {
+        return cardHolder;
+    }
+
+    public NewBookingDTO setCardHolder(String cardHolder) {
+        this.cardHolder = cardHolder;
+        return this;
+    }
+
+    public String getLastFourDigitsCard() {
+        return lastFourDigitsCard;
+    }
+
+    public NewBookingDTO setLastFourDigitsCard(String lastFourDigitsCard) {
+        this.lastFourDigitsCard = lastFourDigitsCard;
+        return this;
+    }
+
+    public String getQuoteReference() {
+        return quoteReference;
+    }
+
+    public NewBookingDTO setQuoteReference(String quoteReference) {
+        this.quoteReference = quoteReference;
         return this;
     }
 }

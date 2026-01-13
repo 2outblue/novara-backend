@@ -54,7 +54,7 @@ public class FlightService {
     }
 
 
-    public FlightSearchResultDTO searchFlightsForQuery(FlightSearchQueryDTO queryDTO) {
+    public FlightSearchResultDTO getFlightSearchResult(FlightSearchQueryDTO queryDTO) {
         Location departureLocation = locationService.getLocationByCode(queryDTO.getDepartureCode());
         Location arrivalLocation = locationService.getLocationByCode(queryDTO.getArrivalCode());
 
@@ -103,6 +103,11 @@ public class FlightService {
                 }).toList();
     }
 
+    //TODO: You need to refactor the padding range methods, also make the separation between the flights
+    // more equal (if there are 6 possible days of separation between departure and return, you can split
+    // 3/3 for each instead of 6 for departure and 0 for return) - maybe if the actual separation is at least
+    // 2x the minimum, you can just split in half ? (And if the sep days are an odd number assign the bigger
+    // half randomly ?)
 
     private LocalDate[] getPaddingRangeForDepartureFlight(FlightSearchQueryDTO queryDTO, double separationFactor) {
         LocalDate earliestPossibleDeparture = LocalDate.now().plusDays(1);
@@ -143,61 +148,6 @@ public class FlightService {
         LocalDate trueLatestReturn = queryDTO.getReturnDate().plusDays(paddingRange);
         return new LocalDate[]{trueEarliestReturn, trueLatestReturn};
     }
-
-//    private FlightUiDTO toFlightUiDTO(FlightInstance instance) {
-//        FlightTemplate template = instance.getFlightTemplate();
-//        Vehicle vehicle = template.getVehicle();
-//
-//        FlightUiDTO.FlightLeg departure = new FlightUiDTO.FlightLeg()
-//                .setRegion(template.getDepartureLocation().getRegion())
-//                .setLocation(template.getDepartureLocation().getName())
-//                .setDate(instance.getDepartureDate())
-//                .setMinimumOrbits(template.getOrbitsDeparture());
-//
-//        FlightUiDTO.FlightLeg arrival = new FlightUiDTO.FlightLeg()
-//                .setRegion(template.getArrivalLocation().getRegion())
-//                .setLocation(template.getArrivalLocation().getName())
-//                .setDate(instance.getArrivalDate())
-//                .setMinimumOrbits(template.getOrbitsArrival());
-//
-//        FlightUiDTO.CabinClassUi firstClass = new FlightUiDTO.CabinClassUi()
-//                .setTotal(vehicle.getFirstClass().getTotalSeats())
-//                .setAvailable(instance.getFirstClass().getAvailableSeats())
-//                .setPrice(instance.getFirstClass().getBasePrice())
-//                .setWindow(vehicle.getFirstClass().isWindowAvailable());
-//
-//        FlightUiDTO.CabinClassUi middleClass = new FlightUiDTO.CabinClassUi()
-//                .setTotal(vehicle.getMiddleClass().getTotalSeats())
-//                .setAvailable(instance.getMiddleClass().getAvailableSeats())
-//                .setPrice(instance.getMiddleClass().getBasePrice())
-//                .setWindow(vehicle.getMiddleClass().isWindowAvailable());
-//
-//        FlightUiDTO.CabinClassUi lowerClass = new FlightUiDTO.CabinClassUi()
-//                .setTotal(vehicle.getLowerClass().getTotalSeats())
-//                .setAvailable(instance.getLowerClass().getAvailableSeats())
-//                .setPrice(instance.getLowerClass().getBasePrice())
-//                .setWindow(vehicle.getLowerClass().isWindowAvailable());
-//
-//        FlightUiDTO.FlightCabinsUi cabins = new FlightUiDTO.FlightCabinsUi()
-//                .setFirst(firstClass)
-//                .setMiddle(middleClass)
-//                .setLower(lowerClass);
-//
-//        return new FlightUiDTO()
-//                .setId(instance.getPublicId())
-//                .setStatus(instance.getStatus())
-//                .setFlightNumber(template.getFlightNumber())
-//                .setEva(vehicle.getAmenities().contains(VehicleAmenity.EVA))
-//                .setDeparture(departure)
-//                .setArrival(arrival)
-//                .setTotalDurationMinutes(template.getDurationMinutes())
-//                .setRequiredCertifs(new String[]{})
-//                .setVehicleType(vehicle.getName())
-//                .setAmenities(vehicle.getAmenities())
-//                .setCabins(cabins)
-//                .setTotalSpacesAvailable(instance.getTotalSeatsAvailable());
-//
-//    }
 
 
 }

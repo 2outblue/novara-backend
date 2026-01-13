@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class BookingQuoteDTO {
     @NotBlank
-    private String quoteId;
+    private String reference;
     @NotNull
     @Future
     private LocalDateTime expiresAt;
@@ -29,12 +29,12 @@ public class BookingQuoteDTO {
     @NotNull
     private LocalDate arrivalUpperDate;
 
-    public String getQuoteId() {
-        return quoteId;
+    public String getReference() {
+        return reference;
     }
 
-    public BookingQuoteDTO setQuoteId(String quoteId) {
-        this.quoteId = quoteId;
+    public BookingQuoteDTO setReference(String reference) {
+        this.reference = reference;
         return this;
     }
 

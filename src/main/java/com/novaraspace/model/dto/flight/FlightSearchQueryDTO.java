@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class FlightSearchQueryDTO {
 
+//    TODO: do validation on this
     private String departureCode;
     private String arrivalCode;
     private LocalDate departureDate;

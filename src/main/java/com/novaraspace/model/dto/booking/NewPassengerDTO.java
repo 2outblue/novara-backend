@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 public class NewPassengerDTO {
     @NotNull
-    private Long id;
+    private Long id; //intraBookingId
     @NotEmpty
     @ValidPassengerTitle
     private String title;

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 //TODO: need a scheduled task to clean these up if expired
 @Entity
 public class BookingQuote extends BaseEntity {
-    private String quoteId;
+    private String reference;
     private LocalDateTime expiresAt;
 
     private boolean oneWay;
@@ -21,12 +21,12 @@ public class BookingQuote extends BaseEntity {
     private LocalDate arrivalLowerDate;
     private LocalDate arrivalUpperDate;
 
-    public String getQuoteId() {
-        return quoteId;
+    public String getReference() {
+        return reference;
     }
 
-    public BookingQuote setQuoteId(String quoteId) {
-        this.quoteId = quoteId;
+    public BookingQuote setReference(String quoteId) {
+        this.reference = quoteId;
         return this;
     }
 

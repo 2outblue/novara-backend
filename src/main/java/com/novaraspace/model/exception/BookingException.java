@@ -14,7 +14,15 @@ public class BookingException extends RuntimeException {
     }
 
     public static BookingException invalidQuote() {
-        return new BookingException(ErrCode.INVALID_QUOTE, HttpStatus.BAD_REQUEST, "Could not validate booking quote");
+        return new BookingException(ErrCode.INVALID_QUOTE, HttpStatus.BAD_REQUEST, "Invalid booking quote");
+    }
+
+    public static BookingException invalidCreationData() {
+        return new BookingException(ErrCode.INVALID_BOOKING_REQUEST, HttpStatus.BAD_REQUEST, "Invalid booking request data");
+    }
+
+    public static BookingException invalidCreationData(String message) {
+        return new BookingException(ErrCode.INVALID_BOOKING_REQUEST, HttpStatus.BAD_REQUEST, message);
     }
 
     public ErrCode getErrorCode() {

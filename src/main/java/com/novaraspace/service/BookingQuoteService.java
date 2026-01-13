@@ -13,6 +13,7 @@ import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,17 +22,22 @@ public class BookingQuoteService {
 
     private final Validator validator;
     private final BookingMapper bookingMapper;
-    private final BookingQuoteRepository bookingQuoteRepository;
+    private final BookingQuoteRepository quoteRepository;
 
-    public BookingQuoteService(Validator validator, BookingMapper bookingMapper, BookingQuoteRepository bookingQuoteRepository) {
+    public BookingQuoteService(Validator validator, BookingMapper bookingMapper, BookingQuoteRepository quoteRepository) {
         this.validator = validator;
         this.bookingMapper = bookingMapper;
-        this.bookingQuoteRepository = bookingQuoteRepository;
+        this.quoteRepository = quoteRepository;
+    }
+
+    public Optional<BookingQuoteDTO> getQuoteByReference(String reference) {
+        return quoteRepository.findByReference(reference)
+                .map(bookingMapper::entityToBookingQuoteDto);
     }
 
     public BookingQuoteDTO createNewQuote(FlightSearchQueryDTO searchQuery, FlightSearchResultDTO searchResult) {
         BookingQuoteDTO dto = new BookingQuoteDTO()
-                .setQuoteId(Base64.encode(UUID.randomUUID().toString()).toString())
+                .setReference(Base64.encode(UUID.randomUUID().toString()).toString())
                 .setExpiresAt(LocalDateTime.now().plusHours(1))
                 .setOneWay(!searchQuery.hasReturnFlight())
                 .setPaxCount(searchQuery.getPaxCount())
@@ -47,7 +53,7 @@ public class BookingQuoteService {
         }
 
         BookingQuote newQuote = bookingMapper.bookingQuoteDtoToEntity(dto);
-        BookingQuote persistedQuote = bookingQuoteRepository.save(newQuote);
+        BookingQuote persistedQuote = quoteRepository.save(newQuote);
         return bookingMapper.entityToBookingQuoteDto(persistedQuote);
     }
 

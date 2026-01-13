@@ -1,5 +1,6 @@
 package com.novaraspace.web;
 
+import com.novaraspace.model.dto.booking.BookingRequestResultDTO;
 import com.novaraspace.model.dto.booking.NewBookingDTO;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
@@ -25,15 +26,17 @@ public class BookingController {
         this.flightService = flightService;
     }
 
-    @PostMapping("/new")
+    @PostMapping("/start")
+    public ResponseEntity<BookingRequestResultDTO> startBookingProcess(@RequestBody FlightSearchQueryDTO queryDTO) {
+        BookingRequestResultDTO result = bookingService.getResultForNewBookingStart(queryDTO);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/complete")
     public ResponseEntity<Void> createBooking(@Valid @RequestBody NewBookingDTO bookingDTO) {
         bookingService.createNewBooking(bookingDTO);
         return ResponseEntity.ok().build();
     }
 
-//    @PostMapping("/flight-search")
-//    public ResponseEntity<FlightSearchResultDTO> searchFlightsForQuery(@RequestBody FlightSearchQueryDTO queryDTO) {
-//        FlightSearchResultDTO result = flightService.searchFlightsForQuery(queryDTO);
-//        return ResponseEntity.ok(result);
-//    }
+
 }

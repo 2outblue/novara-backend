@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("public")
@@ -35,11 +34,5 @@ public class PublicController {
     public ResponseEntity<List<LocalDate>> getFlightAvailability(@RequestBody RouteAvailabilityRequestDTO dto) {
         List<LocalDate> availabilityDates = flightService.getRouteAvailability(dto.getDepartureCode(), dto.getArrivalCode());
         return ResponseEntity.ok(availabilityDates);
-    }
-
-    @PostMapping("/flight-search")
-    public ResponseEntity<FlightSearchResultDTO> searchFlightsForQuery(@RequestBody FlightSearchQueryDTO queryDTO) {
-        FlightSearchResultDTO result = flightService.searchFlightsForQuery(queryDTO);
-        return ResponseEntity.ok(result);
     }
 }

@@ -20,5 +20,6 @@ public enum ErrCode {
     NO_FLIGHT_AVAILABILITY,
 
     INVALID_QUOTE,
+    INVALID_BOOKING_REQUEST,
 
 }
