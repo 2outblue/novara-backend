@@ -17,12 +17,12 @@ public class BookingException extends RuntimeException {
         return new BookingException(ErrCode.INVALID_QUOTE, HttpStatus.BAD_REQUEST, "Invalid booking quote");
     }
 
-    public static BookingException invalidCreationData() {
-        return new BookingException(ErrCode.INVALID_BOOKING_REQUEST, HttpStatus.BAD_REQUEST, "Invalid booking request data");
+    public static BookingException creationFailed() {
+        return new BookingException(ErrCode.BOOKING_CREATION_FAILED, HttpStatus.BAD_REQUEST, "Invalid booking request data");
     }
 
-    public static BookingException invalidCreationData(String message) {
-        return new BookingException(ErrCode.INVALID_BOOKING_REQUEST, HttpStatus.BAD_REQUEST, message);
+    public static BookingException creationFailed(String message) {
+        return new BookingException(ErrCode.BOOKING_CREATION_FAILED, HttpStatus.BAD_REQUEST, message);
     }
 
     public ErrCode getErrorCode() {

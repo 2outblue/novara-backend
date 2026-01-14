@@ -1,13 +1,17 @@
 package com.novaraspace.model.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 public class Booking extends BaseEntity {
+    @Column(unique = true)
+    private String reference;
     @ManyToOne
     private FlightInstance departureFlight;
     @ManyToOne
@@ -25,6 +29,18 @@ public class Booking extends BaseEntity {
 
     private String billingEmail;
     private String billingMobile;
+
+    private LocalDateTime createdAt;
+    private boolean cancelled = false;
+
+    public String getReference() {
+        return reference;
+    }
+
+    public Booking setReference(String reference) {
+        this.reference = reference;
+        return this;
+    }
 
     public FlightInstance getDepartureFlight() {
         return departureFlight;
@@ -104,6 +120,24 @@ public class Booking extends BaseEntity {
 
     public Booking setBillingMobile(String billingMobile) {
         this.billingMobile = billingMobile;
+        return this;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public Booking setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public Booking setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
         return this;
     }
 }

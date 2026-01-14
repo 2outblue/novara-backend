@@ -47,8 +47,9 @@ public class BookingService {
     public void createNewBooking(NewBookingDTO dto) {
         Booking booking = bookingMapper.newBookingDtoToEntity(dto);
         boolean validBooking = validateNewBooking(booking, dto.getQuoteReference());
-        if (!validBooking) {throw BookingException.invalidCreationData();}
+        if (!validBooking) {throw BookingException.creationFailed();}
         //TODO: Create a payment entity and persist the booking in the DB
+        bookingRepository.save(booking);
 
     }
 
