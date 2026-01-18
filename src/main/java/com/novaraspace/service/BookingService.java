@@ -6,17 +6,15 @@ import com.novaraspace.model.dto.booking.NewBookingDTO;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.Booking;
+import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.entity.FlightInstance;
+import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.repository.BookingRepository;
+import com.novaraspace.validation.business.BookingValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -26,12 +24,14 @@ public class BookingService {
     private final FlightService flightService;
     private final BookingQuoteService bookingQuoteService;
     private final BookingRepository bookingRepository;
+    private final BookingValidator bookingValidator;
 
-    public BookingService(BookingMapper bookingMapper, FlightService flightService, BookingQuoteService bookingQuoteService, BookingRepository bookingRepository) {
+    public BookingService(BookingMapper bookingMapper, FlightService flightService, BookingQuoteService bookingQuoteService, BookingRepository bookingRepository, BookingValidator bookingValidator) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;
         this.bookingRepository = bookingRepository;
+        this.bookingValidator = bookingValidator;
     }
 
     public BookingRequestResultDTO getResultForNewBookingStart(FlightSearchQueryDTO flightSearchQueryDTO) {
@@ -46,43 +46,60 @@ public class BookingService {
     @Transactional
     public void createNewBooking(NewBookingDTO dto) {
         Booking booking = bookingMapper.newBookingDtoToEntity(dto);
-        boolean validBooking = validateNewBooking(booking, dto.getQuoteReference());
+        
+        FlightInstance departureFlight = flightService.findFlightByPublicId(dto.getDepartureFlightId())
+                .orElseThrow(BookingException::creationFailed);
+        FlightInstance returnFlight = flightService.findFlightByPublicId(dto.getReturnFlightId())
+                .orElse(null);
+        booking.setDepartureFlight(departureFlight);
+        booking.setReturnFlight(returnFlight);
+
+        boolean validBooking = bookingValidator.validateNewBooking(booking, dto.getQuoteReference());
         if (!validBooking) {throw BookingException.creationFailed();}
+
+        int paxCount = booking.getPassengers().size();
+        departureFlight.reserveSeats(booking.getDepartureClass(), paxCount);
+        if (returnFlight != null) {
+            returnFlight.reserveSeats(booking.getReturnClass(), paxCount);
+        }
+
         //TODO: Create a payment entity and persist the booking in the DB
         bookingRepository.save(booking);
 
     }
 
-    private boolean validateNewBooking(Booking booking, String bookingQuoteRef) {
-        //TODO: Also need validation for pax age group when that is correctly implemented in the frontend,
-        // + pricing validation (the quote needs to be modified)
-        Optional<BookingQuoteDTO> optionalQuote = bookingQuoteService.getQuoteByReference(bookingQuoteRef);
-        if (optionalQuote.isEmpty()) {return false;}
-        BookingQuoteDTO quoteDTO = optionalQuote.get();
+//    private boolean validateNewBooking(Booking booking, String bookingQuoteRef) {
+//        //TODO: Also need validation for pax age group when that is correctly implemented in the frontend,
+//        // + pricing validation (the quote needs to be modified)
+//        Optional<BookingQuoteDTO> optionalQuote = bookingQuoteService.getQuoteByReference(bookingQuoteRef);
+//        if (optionalQuote.isEmpty()) {return false;}
+//        BookingQuoteDTO quoteDTO = optionalQuote.get();
+//
+//        boolean returnFlightExistOnTwoWayBooking =
+//                booking.getReturnFlight() != null && !quoteDTO.isOneWay();
+//        boolean departureFlightValidDates = checkFlightDatesWithinQuotedLimits(booking.getDepartureFlight(), quoteDTO);
+//        boolean returnFlightValidDates = booking.getReturnFlight() == null
+//                        || checkFlightDatesWithinQuotedLimits(booking.getReturnFlight(), quoteDTO);
+//
+//        return returnFlightExistOnTwoWayBooking
+//                && departureFlightValidDates
+//                && returnFlightValidDates;
+//    }
+//
+//    private boolean checkFlightDatesWithinQuotedLimits(FlightInstance flight, BookingQuoteDTO quote) {
+//        LocalDateTime date = flight.getDepartureDate();
+//        LocalDate lowerLimitDate = quote.getDepartureLowerDate();
+//        LocalDate upperLimitDate = quote.getDepartureUpperDate();
+//
+//        boolean notBeforeLowerLimit = date.isAfter(lowerLimitDate.minusDays(1).atTime(LocalTime.MAX));
+//        boolean notAfterUpperLimit = date.isBefore(upperLimitDate.plusDays(1).atTime(LocalTime.MIN));
+//        return notBeforeLowerLimit && notAfterUpperLimit;
+//    }
 
-        boolean returnFlightExistOnTwoWayBooking =
-                booking.getReturnFlight() != null && !quoteDTO.isOneWay();
-        boolean departureFlightValidDates = checkFlightDatesWithinQuotedLimits(booking.getDepartureFlight(), quoteDTO);
-        boolean returnFlightValidDates = booking.getReturnFlight() == null
-                        || checkFlightDatesWithinQuotedLimits(booking.getReturnFlight(), quoteDTO);
 
-        return returnFlightExistOnTwoWayBooking
-                && departureFlightValidDates
-                && returnFlightValidDates;
+
+    private void reserveFlightsOnNewBooking(Booking booking) {
+        CabinClassEnum departureClass = booking.getDepartureClass();
     }
-
-    private boolean checkFlightDatesWithinQuotedLimits(FlightInstance flight, BookingQuoteDTO quote) {
-        LocalDateTime date = flight.getDepartureDate();
-        LocalDate lowerLimitDate = quote.getDepartureLowerDate();
-        LocalDate upperLimitDate = quote.getDepartureUpperDate();
-
-        boolean notBeforeLowerLimit = date.isAfter(lowerLimitDate.minusDays(1).atTime(LocalTime.MAX));
-        boolean notAfterUpperLimit = date.isBefore(upperLimitDate.plusDays(1).atTime(LocalTime.MIN));
-        return notBeforeLowerLimit && notAfterUpperLimit;
-    }
-
-
-
-
 
 }

@@ -2,9 +2,12 @@ package com.novaraspace.model.mapper;
 
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.entity.*;
+import com.novaraspace.model.enums.CabinClassEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+
+import java.util.Arrays;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class BookingMapper {
@@ -19,11 +22,22 @@ public abstract class BookingMapper {
         booking.setContactEmail(contactDetails.getContactEmail());
         booking.setContactCountryCode(contactDetails.getContactCountryCode());
         booking.setContactMobile(contactDetails.getContactMobile());
+
+        for (CabinClassEnum enumClass : CabinClassEnum.values()) {
+            if (enumClass.getDisplayName().equals(dto.getDepartureFlightClass())) {
+                booking.setDepartureClass(enumClass);
+            }
+            if (enumClass.getDisplayName().equals(dto.getReturnFlightClass())) {
+                booking.setReturnClass(enumClass);
+            }
+        }
         return booking;
     }
 
     @Mapping(target = "departureFlight", ignore = true)
     @Mapping(target = "returnFlight", ignore = true)
+    @Mapping(target = "departureClass", ignore = true)
+    @Mapping(target = "returnClass", ignore = true)
     protected abstract Booking newBookingDtoToPartialEntity(NewBookingDTO dto);
 
     @Mapping(source = "id", target = "intraBookingId")

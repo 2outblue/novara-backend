@@ -1,7 +1,9 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.embedded.CabinClassData;
+import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.enums.FlightStatus;
+import com.novaraspace.model.exception.FlightException;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -57,6 +59,21 @@ public class FlightInstance extends BaseEntity {
                 .setArrivalDate(flight.getArrivalDate())
                 .setTotalSeatsAvailable(flight.getTotalSeatsAvailable())
                 .setFlightTemplate(flight.getFlightTemplate());
+    }
+
+    public void reserveSeats(CabinClassEnum cabinClass, int count) {
+        int unreservedSeats = switch (cabinClass) {
+            case FIRST -> firstClass.getAvailableSeats() - firstClass.getLockedSeats();
+            case MIDDLE -> middleClass.getAvailableSeats() - middleClass.getLockedSeats();
+            case LOWER -> lowerClass.getAvailableSeats() - lowerClass.getLockedSeats();
+        };
+        if (unreservedSeats < count) {throw FlightException.reservationFailed();}
+
+        switch (cabinClass) {
+            case FIRST -> firstClass.setAvailableSeats(firstClass.getAvailableSeats() - count);
+            case MIDDLE -> middleClass.setAvailableSeats(middleClass.getAvailableSeats() - count);
+            case LOWER -> lowerClass.setAvailableSeats(lowerClass.getAvailableSeats() - count);
+        }
     }
 
     public String getPublicId() {

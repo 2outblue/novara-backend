@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class CountryCodeLoader {
+public class CountryCodeLoader { //TODO: Move this to the component package ?
     private final ObjectMapper mapper;
     private List<CountryCode> cachedData;
 

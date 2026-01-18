@@ -30,9 +30,8 @@ public class BookingQuoteService {
         this.quoteRepository = quoteRepository;
     }
 
-    public Optional<BookingQuoteDTO> getQuoteByReference(String reference) {
-        return quoteRepository.findByReference(reference)
-                .map(bookingMapper::entityToBookingQuoteDto);
+    Optional<BookingQuote> findQuoteByReference(String reference) {
+        return quoteRepository.findByReference(reference);
     }
 
     public BookingQuoteDTO createNewQuote(FlightSearchQueryDTO searchQuery, FlightSearchResultDTO searchResult) {
@@ -56,8 +55,6 @@ public class BookingQuoteService {
         BookingQuote persistedQuote = quoteRepository.save(newQuote);
         return bookingMapper.entityToBookingQuoteDto(persistedQuote);
     }
-
-
 
     private boolean checkBookingQuoteDTOValid(BookingQuoteDTO dto) {
         Set<ConstraintViolation<BookingQuoteDTO>> violations = validator.validate(dto);

@@ -1,5 +1,6 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.enums.CabinClassEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -14,8 +15,10 @@ public class Booking extends BaseEntity {
     private String reference;
     @ManyToOne
     private FlightInstance departureFlight;
+    private CabinClassEnum departureClass;
     @ManyToOne
     private FlightInstance returnFlight;
+    private CabinClassEnum returnClass;
 
     @OneToMany
     private List<Passenger> passengers;
@@ -51,12 +54,30 @@ public class Booking extends BaseEntity {
         return this;
     }
 
+    public CabinClassEnum getDepartureClass() {
+        return departureClass;
+    }
+
+    public Booking setDepartureClass(CabinClassEnum departureClass) {
+        this.departureClass = departureClass;
+        return this;
+    }
+
     public FlightInstance getReturnFlight() {
         return returnFlight;
     }
 
     public Booking setReturnFlight(FlightInstance returnFlight) {
         this.returnFlight = returnFlight;
+        return this;
+    }
+
+    public CabinClassEnum getReturnClass() {
+        return returnClass;
+    }
+
+    public Booking setReturnClass(CabinClassEnum returnClass) {
+        this.returnClass = returnClass;
         return this;
     }
 

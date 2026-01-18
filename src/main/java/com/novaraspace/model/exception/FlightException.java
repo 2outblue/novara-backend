@@ -21,6 +21,10 @@ public class FlightException extends RuntimeException{
         return new FlightException(ErrCode.NO_FLIGHT_AVAILABILITY, HttpStatus.BAD_REQUEST, "No flight availability");
     }
 
+    public static FlightException reservationFailed() {
+        return new FlightException(ErrCode.NO_FLIGHT_AVAILABILITY, HttpStatus.BAD_REQUEST, "Could not reserve flight");
+    }
+
     public ErrCode getErrorCode() {
         return errorCode;
     }

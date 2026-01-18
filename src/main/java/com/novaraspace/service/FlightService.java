@@ -1,5 +1,6 @@
 package com.novaraspace.service;
 
+import com.novaraspace.model.domain.FlightReserveContext;
 import com.novaraspace.model.dto.flight.FlightLimitsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FlightService {
@@ -35,6 +37,11 @@ public class FlightService {
         this.flightInstanceRepository = flightInstanceRepository;
         this.locationService = locationService;
         this.flightMapper = flightMapper;
+    }
+
+
+    void reserveFlight(FlightReserveContext context) {
+
     }
 
     public List<LocalDate> getRouteAvailability(String departureCode, String arrivalCode) {
@@ -149,5 +156,9 @@ public class FlightService {
         return new LocalDate[]{trueEarliestReturn, trueLatestReturn};
     }
 
+
+    Optional<FlightInstance> findFlightByPublicId(String publicId) {
+        return flightInstanceRepository.findByPublicId(publicId);
+    }
 
 }
