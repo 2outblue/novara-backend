@@ -15,6 +15,7 @@ public class Passenger extends BaseEntity {
     private long cabinId;
 
     @ManyToOne
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
     @Embedded()

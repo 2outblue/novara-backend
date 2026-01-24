@@ -1,6 +1,5 @@
 package com.novaraspace.repository;
 
-import com.novaraspace.model.domain.FlightReserveContext;
 import com.novaraspace.model.entity.FlightInstance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

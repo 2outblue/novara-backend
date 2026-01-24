@@ -1,13 +1,16 @@
 package com.novaraspace.service;
 
+import com.novaraspace.component.BookingReferenceGenerator;
+import com.novaraspace.model.domain.CreatePaymentCommand;
+import com.novaraspace.model.dto.booking.BookingConfirmedDTO;
 import com.novaraspace.model.dto.booking.BookingQuoteDTO;
-import com.novaraspace.model.dto.booking.BookingRequestResultDTO;
+import com.novaraspace.model.dto.booking.BookingStartResultDTO;
 import com.novaraspace.model.dto.booking.NewBookingDTO;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.Booking;
-import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.entity.FlightInstance;
+import com.novaraspace.model.entity.Payment;
 import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
@@ -15,6 +18,8 @@ import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.validation.business.BookingValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class BookingService {
@@ -25,26 +30,37 @@ public class BookingService {
     private final BookingQuoteService bookingQuoteService;
     private final BookingRepository bookingRepository;
     private final BookingValidator bookingValidator;
+    private final BookingReferenceGenerator bookingReferenceGenerator;
+    private final PaymentService paymentService;
 
-    public BookingService(BookingMapper bookingMapper, FlightService flightService, BookingQuoteService bookingQuoteService, BookingRepository bookingRepository, BookingValidator bookingValidator) {
+    public BookingService(
+            BookingMapper bookingMapper,
+            FlightService flightService,
+            BookingQuoteService bookingQuoteService,
+            BookingRepository bookingRepository,
+            BookingValidator bookingValidator,
+            BookingReferenceGenerator bookingReferenceGenerator,
+            PaymentService paymentService) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;
         this.bookingRepository = bookingRepository;
         this.bookingValidator = bookingValidator;
+        this.bookingReferenceGenerator = bookingReferenceGenerator;
+        this.paymentService = paymentService;
     }
 
-    public BookingRequestResultDTO getResultForNewBookingStart(FlightSearchQueryDTO flightSearchQueryDTO) {
+    public BookingStartResultDTO getResultForNewBookingStart(FlightSearchQueryDTO flightSearchQueryDTO) {
         FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(flightSearchQueryDTO);
         BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(flightSearchQueryDTO, flightSearchResultDTO);
 
-        return new BookingRequestResultDTO()
+        return new BookingStartResultDTO()
                 .setFlightSearchResult(flightSearchResultDTO)
                 .setQuoteRef(bookingQuote.getReference());
     }
 
     @Transactional
-    public void createNewBooking(NewBookingDTO dto) {
+    public BookingConfirmedDTO createNewBooking(NewBookingDTO dto) {
         Booking booking = bookingMapper.newBookingDtoToEntity(dto);
         
         FlightInstance departureFlight = flightService.findFlightByPublicId(dto.getDepartureFlightId())
@@ -62,44 +78,24 @@ public class BookingService {
         if (returnFlight != null) {
             returnFlight.reserveSeats(booking.getReturnClass(), paxCount);
         }
+        String bookingReference = bookingReferenceGenerator.generateUniqueReference();
+        CreatePaymentCommand paymentData = new CreatePaymentCommand(
+                bookingReference,
+                dto.getLastFourDigitsCard(),
+                dto.getCardHolder(),
+                dto.getBillingEmail(),
+                dto.getBillingMobile()
+        );
+        Payment payment = paymentService.createNewPayment(paymentData);
+        booking.setReference(bookingReference);
+        booking.setPayment(payment);
+        booking.setCreatedAt(LocalDateTime.now());
 
-        //TODO: Create a payment entity and persist the booking in the DB
-        bookingRepository.save(booking);
-
+        Booking confirmedBooking = bookingRepository.save(booking);
+        return bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
     }
 
-//    private boolean validateNewBooking(Booking booking, String bookingQuoteRef) {
-//        //TODO: Also need validation for pax age group when that is correctly implemented in the frontend,
-//        // + pricing validation (the quote needs to be modified)
-//        Optional<BookingQuoteDTO> optionalQuote = bookingQuoteService.getQuoteByReference(bookingQuoteRef);
-//        if (optionalQuote.isEmpty()) {return false;}
-//        BookingQuoteDTO quoteDTO = optionalQuote.get();
-//
-//        boolean returnFlightExistOnTwoWayBooking =
-//                booking.getReturnFlight() != null && !quoteDTO.isOneWay();
-//        boolean departureFlightValidDates = checkFlightDatesWithinQuotedLimits(booking.getDepartureFlight(), quoteDTO);
-//        boolean returnFlightValidDates = booking.getReturnFlight() == null
-//                        || checkFlightDatesWithinQuotedLimits(booking.getReturnFlight(), quoteDTO);
-//
-//        return returnFlightExistOnTwoWayBooking
-//                && departureFlightValidDates
-//                && returnFlightValidDates;
-//    }
-//
-//    private boolean checkFlightDatesWithinQuotedLimits(FlightInstance flight, BookingQuoteDTO quote) {
-//        LocalDateTime date = flight.getDepartureDate();
-//        LocalDate lowerLimitDate = quote.getDepartureLowerDate();
-//        LocalDate upperLimitDate = quote.getDepartureUpperDate();
-//
-//        boolean notBeforeLowerLimit = date.isAfter(lowerLimitDate.minusDays(1).atTime(LocalTime.MAX));
-//        boolean notAfterUpperLimit = date.isBefore(upperLimitDate.plusDays(1).atTime(LocalTime.MIN));
-//        return notBeforeLowerLimit && notAfterUpperLimit;
-//    }
 
 
-
-    private void reserveFlightsOnNewBooking(Booking booking) {
-        CabinClassEnum departureClass = booking.getDepartureClass();
-    }
 
 }

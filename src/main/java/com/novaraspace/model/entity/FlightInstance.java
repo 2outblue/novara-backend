@@ -6,7 +6,9 @@ import com.novaraspace.model.enums.FlightStatus;
 import com.novaraspace.model.exception.FlightException;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 public class FlightInstance extends BaseEntity {
@@ -74,6 +76,19 @@ public class FlightInstance extends BaseEntity {
             case MIDDLE -> middleClass.setAvailableSeats(middleClass.getAvailableSeats() - count);
             case LOWER -> lowerClass.setAvailableSeats(lowerClass.getAvailableSeats() - count);
         }
+        recalculateTotalSeats();
+    }
+
+    public boolean departureDateIsBetween(LocalDate lowerDate, LocalDate upperDate) {
+        boolean notBeforeLower = departureDate.isAfter(lowerDate.minusDays(1).atTime(LocalTime.MAX));
+        boolean notAfterUpper = departureDate.isBefore(upperDate.plusDays(1).atTime(LocalTime.MIN));
+        return notBeforeLower && notAfterUpper;
+    }
+
+    private void recalculateTotalSeats() {
+        totalSeatsAvailable = firstClass.getAvailableSeats()
+                + middleClass.getAvailableSeats()
+                + lowerClass.getAvailableSeats();
     }
 
     public String getPublicId() {

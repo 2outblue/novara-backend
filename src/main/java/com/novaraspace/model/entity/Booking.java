@@ -1,12 +1,10 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.enums.CabinClassEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,18 +18,19 @@ public class Booking extends BaseEntity {
     private FlightInstance returnFlight;
     private CabinClassEnum returnClass;
 
-    @OneToMany
-    private List<Passenger> passengers;
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<Passenger> passengers = new ArrayList<>();
 
-    @OneToMany
-    private List<ExtraService> extraServices;
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<ExtraService> extraServices = new ArrayList<>();
 
     private String contactCountryCode;
     private String contactMobile;
     private String contactEmail;
 
-    private String billingEmail;
-    private String billingMobile;
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     private LocalDateTime createdAt;
     private boolean cancelled = false;
@@ -126,21 +125,12 @@ public class Booking extends BaseEntity {
         return this;
     }
 
-    public String getBillingEmail() {
-        return billingEmail;
+    public Payment getPayment() {
+        return payment;
     }
 
-    public Booking setBillingEmail(String billingEmail) {
-        this.billingEmail = billingEmail;
-        return this;
-    }
-
-    public String getBillingMobile() {
-        return billingMobile;
-    }
-
-    public Booking setBillingMobile(String billingMobile) {
-        this.billingMobile = billingMobile;
+    public Booking setPayment(Payment payment) {
+        this.payment = payment;
         return this;
     }
 

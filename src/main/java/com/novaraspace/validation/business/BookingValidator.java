@@ -29,11 +29,16 @@ public class BookingValidator {
         if (optionalQuote.isEmpty()) {return false;}
         BookingQuote quote = optionalQuote.get();
 
-        boolean departureFlightExists = booking.getDepartureFlight() != null;
-        boolean returnFlightExistOnTwoWayBooking = booking.getReturnFlight() != null && !quote.isOneWay();
-        boolean departureFlightValidDates = checkFlightDatesWithinQuotedLimits(booking.getDepartureFlight(), quote);
-        boolean returnFlightValidDates = booking.getReturnFlight() == null
-                || checkFlightDatesWithinQuotedLimits(booking.getReturnFlight(), quote);
+        FlightInstance departureFlight = booking.getDepartureFlight();
+        FlightInstance returnFlight = booking.getReturnFlight();
+
+        boolean departureFlightExists = departureFlight != null;
+        boolean returnFlightExistOnTwoWayBooking = returnFlight != null && !quote.isOneWay();
+
+        boolean departureFlightValidDates = departureFlight == null
+                || departureFlight.departureDateIsBetween(quote.getDepartureLowerDate(), quote.getDepartureUpperDate());
+        boolean returnFlightValidDates = returnFlight == null
+                || returnFlight.departureDateIsBetween(quote.getArrivalLowerDate(), quote.getArrivalUpperDate());
 
         boolean validFlightClasses = checkValidCabinClasses(booking);
 
@@ -44,15 +49,15 @@ public class BookingValidator {
                 && validFlightClasses;
     }
 
-    private boolean checkFlightDatesWithinQuotedLimits(FlightInstance flight, BookingQuote quote) {
-        LocalDateTime date = flight.getDepartureDate();
-        LocalDate lowerLimitDate = quote.getDepartureLowerDate();
-        LocalDate upperLimitDate = quote.getDepartureUpperDate();
-
-        boolean notBeforeLowerLimit = date.isAfter(lowerLimitDate.minusDays(1).atTime(LocalTime.MAX));
-        boolean notAfterUpperLimit = date.isBefore(upperLimitDate.plusDays(1).atTime(LocalTime.MIN));
-        return notBeforeLowerLimit && notAfterUpperLimit;
-    }
+//    private boolean checkFlightDatesWithinQuotedLimits(FlightInstance flight, BookingQuote quote) {
+//        LocalDateTime date = flight.getDepartureDate();
+//        LocalDate lowerLimitDate = quote.getDepartureLowerDate();
+//        LocalDate upperLimitDate = quote.getDepartureUpperDate();
+//
+//        boolean notBeforeLowerLimit = date.isAfter(lowerLimitDate.minusDays(1).atTime(LocalTime.MAX));
+//        boolean notAfterUpperLimit = date.isBefore(upperLimitDate.plusDays(1).atTime(LocalTime.MIN));
+//        return notBeforeLowerLimit && notAfterUpperLimit;
+//    }
 
     private boolean checkValidCabinClasses(Booking booking) {
         boolean validDepartureClass = booking.getDepartureClass() != null;

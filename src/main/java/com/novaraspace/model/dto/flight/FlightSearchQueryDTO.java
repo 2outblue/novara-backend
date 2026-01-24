@@ -9,7 +9,7 @@ public class FlightSearchQueryDTO {
     private String arrivalCode;
     private LocalDate departureDate;
     private LocalDate returnDate;
-    private int paxCount;
+    private int totalPaxCount;
     private boolean returnFlight;
 
     public String getDepartureCode() {
@@ -48,12 +48,12 @@ public class FlightSearchQueryDTO {
         return this;
     }
 
-    public int getPaxCount() {
-        return paxCount;
+    public int getTotalPaxCount() {
+        return totalPaxCount;
     }
 
-    public FlightSearchQueryDTO setPaxCount(int paxCount) {
-        this.paxCount = paxCount;
+    public FlightSearchQueryDTO setTotalPaxCount(int totalPaxCount) {
+        this.totalPaxCount = totalPaxCount;
         return this;
     }
 

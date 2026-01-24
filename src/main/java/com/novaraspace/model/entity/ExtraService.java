@@ -1,6 +1,7 @@
 package com.novaraspace.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -9,6 +10,7 @@ public class ExtraService extends BaseEntity {
     private double price;
 
     @ManyToOne
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
     public String getCode() {

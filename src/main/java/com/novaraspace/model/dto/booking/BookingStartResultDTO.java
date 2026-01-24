@@ -2,7 +2,7 @@ package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 
-public class BookingRequestResultDTO {
+public class BookingStartResultDTO {
     private FlightSearchResultDTO flightSearchResult;
     private String quoteRef;
 
@@ -10,7 +10,7 @@ public class BookingRequestResultDTO {
         return flightSearchResult;
     }
 
-    public BookingRequestResultDTO setFlightSearchResult(FlightSearchResultDTO flightSearchResult) {
+    public BookingStartResultDTO setFlightSearchResult(FlightSearchResultDTO flightSearchResult) {
         this.flightSearchResult = flightSearchResult;
         return this;
     }
@@ -19,7 +19,7 @@ public class BookingRequestResultDTO {
         return quoteRef;
     }
 
-    public BookingRequestResultDTO setQuoteRef(String quoteRef) {
+    public BookingStartResultDTO setQuoteRef(String quoteRef) {
         this.quoteRef = quoteRef;
         return this;
     }

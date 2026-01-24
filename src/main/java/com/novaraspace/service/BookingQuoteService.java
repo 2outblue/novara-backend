@@ -39,7 +39,7 @@ public class BookingQuoteService {
                 .setReference(Base64.encode(UUID.randomUUID().toString()).toString())
                 .setExpiresAt(LocalDateTime.now().plusHours(1))
                 .setOneWay(!searchQuery.hasReturnFlight())
-                .setPaxCount(searchQuery.getPaxCount())
+                .setPaxCount(searchQuery.getTotalPaxCount())
                 .setDepartureCode(searchQuery.getDepartureCode())
                 .setArrivalCode(searchQuery.getArrivalCode())
                 .setDepartureLowerDate(searchResult.getLimits().getDepartureLowerDate())

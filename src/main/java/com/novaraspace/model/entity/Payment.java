@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Payment extends BaseEntity{
     private String reference;
+    private String serviceReference;
 
     private String firstFour;
     private String lastFour;
@@ -24,6 +25,15 @@ public class Payment extends BaseEntity{
 
     public Payment setReference(String reference) {
         this.reference = reference;
+        return this;
+    }
+
+    public String getServiceReference() {
+        return serviceReference;
+    }
+
+    public Payment setServiceReference(String serviceReference) {
+        this.serviceReference = serviceReference;
         return this;
     }
 

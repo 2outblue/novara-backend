@@ -1,6 +1,5 @@
 package com.novaraspace.service;
 
-import com.novaraspace.model.domain.FlightReserveContext;
 import com.novaraspace.model.dto.flight.FlightLimitsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
@@ -40,10 +39,6 @@ public class FlightService {
     }
 
 
-    void reserveFlight(FlightReserveContext context) {
-
-    }
-
     public List<LocalDate> getRouteAvailability(String departureCode, String arrivalCode) {
         long dptId = locationService.getLocationByCode(departureCode).getId();
         long arrId = locationService.getLocationByCode(arrivalCode).getId();
@@ -79,11 +74,11 @@ public class FlightService {
         LocalDate departureUpperLimitDate = departureFlightPaddingRange[1];
         LocalDate[] returnFlightPaddingRange = getPaddingRangeForReturnFlight(queryDTO, netSeparationFactor, departureUpperLimitDate);
 
-        List<FlightUiDTO> departureFlights = getValidInstancesWithinRange(departureTemplateIds, departureFlightPaddingRange, queryDTO.getPaxCount())
+        List<FlightUiDTO> departureFlights = getValidInstancesWithinRange(departureTemplateIds, departureFlightPaddingRange, queryDTO.getTotalPaxCount())
                 .stream().map(flightMapper::instanceToFlightUiDTO)
                 .toList();
 
-        List<FlightUiDTO> returnFlights = getValidInstancesWithinRange(returnTemplateIds, returnFlightPaddingRange, queryDTO.getPaxCount())
+        List<FlightUiDTO> returnFlights = getValidInstancesWithinRange(returnTemplateIds, returnFlightPaddingRange, queryDTO.getTotalPaxCount())
                 .stream().map(flightMapper::instanceToFlightUiDTO)
                 .toList();
 

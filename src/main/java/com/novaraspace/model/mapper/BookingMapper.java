@@ -7,13 +7,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Arrays;
-
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class BookingMapper {
 
     public abstract BookingQuote bookingQuoteDtoToEntity(BookingQuoteDTO dto);
     public abstract BookingQuoteDTO entityToBookingQuoteDto(BookingQuote entity);
+
+    public abstract BookingConfirmedDTO bookingEntityToConfirmedDTO(Booking entity);
 
     public Booking newBookingDtoToEntity(NewBookingDTO dto) {
         Booking booking = this.newBookingDtoToPartialEntity(dto);
@@ -31,6 +31,8 @@ public abstract class BookingMapper {
                 booking.setReturnClass(enumClass);
             }
         }
+        booking.getPassengers().forEach(pax -> pax.setBooking(booking));
+
         return booking;
     }
 
@@ -41,9 +43,8 @@ public abstract class BookingMapper {
     protected abstract Booking newBookingDtoToPartialEntity(NewBookingDTO dto);
 
     @Mapping(source = "id", target = "intraBookingId")
+    @Mapping(target = "id", ignore = true)
     protected abstract Passenger newPassengerDtoToEntity(NewPassengerDTO dto);
-
     protected abstract ExtraService newExtraServiceDtoToEntity(ExtraServiceDTO dto);
-
     protected abstract PassengerBaggage newPassengerBaggageDtoToEntity(NewPassengerBaggageDTO dto);
 }

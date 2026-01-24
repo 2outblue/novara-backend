@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class FlightLimitsDTO {
     private LocalDate departureLowerDate;
     private LocalDate departureUpperDate;
-    private LocalDate arrivalLowerDate;
+    private LocalDate arrivalLowerDate;  // TODO: Why is that 'arrival' - it should be 'return' ????
     private LocalDate arrivalUpperDate;
 
     public LocalDate getDepartureLowerDate() {

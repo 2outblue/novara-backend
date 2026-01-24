@@ -12,7 +12,7 @@ public class BookingReferenceGenerator {
 
     private final String ALPHA_NUM_CHARS = "ABCDEFG1HIJ2KL3MN4OP5QR6STU7VW8XYZ9";
     private final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final String DIGITS = "0123456789";
+    private final String DIGITS = "123456789";
     private final int CODE_LENGTH = 6;
     private final Random random = new SecureRandom();
     private final BookingRepository bookingRepository;
@@ -36,9 +36,14 @@ public class BookingReferenceGenerator {
 
         int firstCharIndex = random.nextInt(LETTERS.length());
         int lastCharIndex = random.nextInt(LETTERS.length());
+        int fourthCharIndex = random.nextInt(DIGITS.length());
 
         sb.append(LETTERS.charAt(firstCharIndex));
         for (int i = 0; i < CODE_LENGTH - 2; i++) {
+            if (i == 2) {
+                sb.append(DIGITS.charAt(fourthCharIndex));
+                continue;
+            }
             int index = random.nextInt(ALPHA_NUM_CHARS.length());
             sb.append(ALPHA_NUM_CHARS.charAt(index));
         }
