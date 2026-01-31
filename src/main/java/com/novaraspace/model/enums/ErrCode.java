@@ -1,6 +1,7 @@
 package com.novaraspace.model.enums;
 
 public enum ErrCode {
+    NOT_FOUND,
     BAD_CREDENTIALS,
     USER_NOT_FOUND,
     USER_DISABLED,

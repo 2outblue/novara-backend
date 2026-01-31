@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
 @ValidNewPassengerBaggage
-public class NewPassengerBaggageDTO {
+public class PassengerBaggageDTO {
 //    @NotEmpty
 //    @ValidBaggageCapacity
     private String capacity;
@@ -17,7 +17,7 @@ public class NewPassengerBaggageDTO {
         return capacity;
     }
 
-    public NewPassengerBaggageDTO setCapacity(String capacity) {
+    public PassengerBaggageDTO setCapacity(String capacity) {
         this.capacity = capacity;
         return this;
     }
@@ -26,7 +26,7 @@ public class NewPassengerBaggageDTO {
         return price;
     }
 
-    public NewPassengerBaggageDTO setPrice(double price) {
+    public PassengerBaggageDTO setPrice(double price) {
         this.price = price;
         return this;
     }

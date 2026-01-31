@@ -1,17 +1,13 @@
 package com.novaraspace.service;
 
 import com.novaraspace.component.BookingReferenceGenerator;
-import com.novaraspace.model.domain.CreatePaymentCommand;
-import com.novaraspace.model.dto.booking.BookingConfirmedDTO;
-import com.novaraspace.model.dto.booking.BookingQuoteDTO;
-import com.novaraspace.model.dto.booking.BookingStartResultDTO;
-import com.novaraspace.model.dto.booking.NewBookingDTO;
+import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.FlightInstance;
+import com.novaraspace.model.entity.Passenger;
 import com.novaraspace.model.entity.Payment;
-import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.repository.BookingRepository;
@@ -20,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BookingService {
@@ -60,42 +57,39 @@ public class BookingService {
     }
 
     @Transactional
-    public BookingConfirmedDTO createNewBooking(NewBookingDTO dto) {
-        Booking booking = bookingMapper.newBookingDtoToEntity(dto);
-        
-        FlightInstance departureFlight = flightService.findFlightByPublicId(dto.getDepartureFlightId())
+    public BookingConfirmedDTO createNewBooking(BookingCreateRequest request) {
+        NewBookingDTO bookingDTO = request.getBookingDTO();
+        Booking booking = bookingMapper.newBookingDtoToEntity(bookingDTO);
+
+        FlightInstance departureFlight = flightService.findFlightByPublicId(bookingDTO.getDepartureFlightId())
                 .orElseThrow(BookingException::creationFailed);
-        FlightInstance returnFlight = flightService.findFlightByPublicId(dto.getReturnFlightId())
+        FlightInstance returnFlight = flightService.findFlightByPublicId(bookingDTO.getReturnFlightId())
                 .orElse(null);
         booking.setDepartureFlight(departureFlight);
         booking.setReturnFlight(returnFlight);
 
-        boolean validBooking = bookingValidator.validateNewBooking(booking, dto.getQuoteReference());
-        if (!validBooking) {throw BookingException.creationFailed();}
+        String bookingReference = bookingReferenceGenerator.generateUniqueReference();
+        Payment payment = paymentService.createNewPayment(request.getPaymentDTO(), bookingReference);
+
+        boolean validBooking = bookingValidator.validateNewBooking(booking, bookingDTO.getQuoteReference());
+        boolean validBookingPayment = bookingValidator.validateBookingAgainstPayment(booking, payment);
+        if (!validBooking || !validBookingPayment) {throw BookingException.creationFailed();}
 
         int paxCount = booking.getPassengers().size();
         departureFlight.reserveSeats(booking.getDepartureClass(), paxCount);
         if (returnFlight != null) {
             returnFlight.reserveSeats(booking.getReturnClass(), paxCount);
         }
-        String bookingReference = bookingReferenceGenerator.generateUniqueReference();
-        CreatePaymentCommand paymentData = new CreatePaymentCommand(
-                bookingReference,
-                dto.getLastFourDigitsCard(),
-                dto.getCardHolder(),
-                dto.getBillingEmail(),
-                dto.getBillingMobile()
-        );
-        Payment payment = paymentService.createNewPayment(paymentData);
         booking.setReference(bookingReference);
         booking.setPayment(payment);
         booking.setCreatedAt(LocalDateTime.now());
 
+        //TODO: Maybe normalize the prices before saving the booking ? If you do - normalize the payment as well.
         Booking confirmedBooking = bookingRepository.save(booking);
         return bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
     }
 
-
+    
 
 
 }

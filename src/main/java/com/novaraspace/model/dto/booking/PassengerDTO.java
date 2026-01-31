@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public class NewPassengerDTO {
+public class PassengerDTO {
     @NotNull
     private Long id; //intraBookingId
     @NotEmpty
@@ -32,13 +32,13 @@ public class NewPassengerDTO {
     private Long cabinId;
     @NotNull
     @Valid
-    private NewPassengerBaggageDTO baggage;
+    private PassengerBaggageDTO baggage;
 
     public Long getId() {
         return id;
     }
 
-    public NewPassengerDTO setId(Long id) {
+    public PassengerDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -47,7 +47,7 @@ public class NewPassengerDTO {
         return title;
     }
 
-    public NewPassengerDTO setTitle(String title) {
+    public PassengerDTO setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -56,7 +56,7 @@ public class NewPassengerDTO {
         return firstName;
     }
 
-    public NewPassengerDTO setFirstName(String firstName) {
+    public PassengerDTO setFirstName(String firstName) {
         this.firstName = firstName;
         return this;
     }
@@ -65,7 +65,7 @@ public class NewPassengerDTO {
         return lastName;
     }
 
-    public NewPassengerDTO setLastName(String lastName) {
+    public PassengerDTO setLastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
@@ -74,7 +74,7 @@ public class NewPassengerDTO {
         return dob;
     }
 
-    public NewPassengerDTO setDob(LocalDate dob) {
+    public PassengerDTO setDob(LocalDate dob) {
         this.dob = dob;
         return this;
     }
@@ -83,7 +83,7 @@ public class NewPassengerDTO {
         return ageGroup;
     }
 
-    public NewPassengerDTO setAgeGroup(String ageGroup) {
+    public PassengerDTO setAgeGroup(String ageGroup) {
         this.ageGroup = ageGroup;
         return this;
     }
@@ -92,16 +92,16 @@ public class NewPassengerDTO {
         return cabinId;
     }
 
-    public NewPassengerDTO setCabinId(Long cabinId) {
+    public PassengerDTO setCabinId(Long cabinId) {
         this.cabinId = cabinId;
         return this;
     }
 
-    public NewPassengerBaggageDTO getBaggage() {
+    public PassengerBaggageDTO getBaggage() {
         return baggage;
     }
 
-    public NewPassengerDTO setBaggage(NewPassengerBaggageDTO baggage) {
+    public PassengerDTO setBaggage(PassengerBaggageDTO baggage) {
         this.baggage = baggage;
         return this;
     }

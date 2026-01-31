@@ -63,6 +63,15 @@ public class FlightInstance extends BaseEntity {
                 .setFlightTemplate(flight.getFlightTemplate());
     }
 
+    public double getPrice(CabinClassEnum cabinClass) {
+        return switch (cabinClass) {
+            case FIRST -> firstClass.getBasePrice();
+            case MIDDLE -> middleClass.getBasePrice();
+            case LOWER -> lowerClass.getBasePrice();
+        };
+    }
+
+    //TODO: Cant you just get the correct cabin class with one switch statement, then do the rest without a second switch?
     public void reserveSeats(CabinClassEnum cabinClass, int count) {
         int unreservedSeats = switch (cabinClass) {
             case FIRST -> firstClass.getAvailableSeats() - firstClass.getLockedSeats();

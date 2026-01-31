@@ -1,7 +1,7 @@
 package com.novaraspace.validation.validators;
 
 import com.novaraspace.model.dto.booking.NewBookingDTO;
-import com.novaraspace.model.dto.booking.NewPassengerDTO;
+import com.novaraspace.model.dto.booking.PassengerDTO;
 import com.novaraspace.validation.annotations.ValidPassengerIntraIds;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -14,10 +14,10 @@ public class PassengerIntraIdsValidator implements ConstraintValidator<ValidPass
 
     @Override
     public boolean isValid(NewBookingDTO bookingDTO, ConstraintValidatorContext context) {
-        List<NewPassengerDTO> passengers = bookingDTO.getPassengers();
+        List<PassengerDTO> passengers = bookingDTO.getPassengers();
         if (passengers.isEmpty()) {return false;}
-        Set<Long> intraBookingIds = passengers.stream().map(NewPassengerDTO::getId).collect(Collectors.toSet());
-        Set<Long> cabinIds = passengers.stream().map(NewPassengerDTO::getCabinId).collect(Collectors.toSet());
+        Set<Long> intraBookingIds = passengers.stream().map(PassengerDTO::getId).collect(Collectors.toSet());
+        Set<Long> cabinIds = passengers.stream().map(PassengerDTO::getCabinId).collect(Collectors.toSet());
 
         boolean allPaxHaveUniqueIntraId = intraBookingIds.size() == passengers.size();
         boolean allPaxAreInExistingCabins = intraBookingIds.containsAll(cabinIds);

@@ -16,6 +16,7 @@ public class Payment extends BaseEntity{
 
     private String email;
     private String phoneNumber;
+    private Double amount;
 
     private LocalDateTime createdAt;
 
@@ -88,6 +89,15 @@ public class Payment extends BaseEntity{
 
     public Payment setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public Payment setAmount(Double amount) {
+        this.amount = amount;
         return this;
     }
 

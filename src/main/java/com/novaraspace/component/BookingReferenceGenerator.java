@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 @Component
 public class BookingReferenceGenerator {
@@ -22,8 +23,12 @@ public class BookingReferenceGenerator {
     }
 
     public String generateUniqueReference() {
+        String pattern = "^[A-Z][A-Z0-9]{2}\\d[A-Z0-9][A-Z]$";
         for (int i = 0; i < 10; i++) {
             String reference = generateReference();
+            if (!Pattern.matches(pattern, reference)) {
+                continue;
+            }
             if (!bookingRepository.existsByReference(reference)) {
                 return reference;
             }

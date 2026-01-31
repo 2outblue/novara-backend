@@ -1,5 +1,6 @@
 package com.novaraspace.model.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

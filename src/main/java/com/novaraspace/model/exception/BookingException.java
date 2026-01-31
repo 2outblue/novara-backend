@@ -13,6 +13,10 @@ public class BookingException extends RuntimeException {
         this.status = status;
     }
 
+    public static BookingException notFound() {
+        return new BookingException(ErrCode.NOT_FOUND, HttpStatus.BAD_REQUEST, "Booking not found.");
+    }
+
     public static BookingException invalidQuote() {
         return new BookingException(ErrCode.INVALID_QUOTE, HttpStatus.BAD_REQUEST, "Invalid booking quote");
     }

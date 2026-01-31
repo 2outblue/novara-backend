@@ -14,9 +14,11 @@ public class Booking extends BaseEntity {
     @ManyToOne
     private FlightInstance departureFlight;
     private CabinClassEnum departureClass;
+    private Double departureFlightPrice;
     @ManyToOne
     private FlightInstance returnFlight;
     private CabinClassEnum returnClass;
+    private Double returnFlightPrice;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Passenger> passengers = new ArrayList<>();
@@ -34,6 +36,26 @@ public class Booking extends BaseEntity {
 
     private LocalDateTime createdAt;
     private boolean cancelled = false;
+
+    public double getTotalPrice() {
+        double servicesPrice = extraServices.stream()
+                .map(ExtraService::getPrice)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+
+        double validReturnPrice = returnFlightPrice == null
+                ? 0
+                : returnFlightPrice;
+        double validDeparturePrice = departureFlightPrice == null
+                ? 0
+                : departureFlightPrice;
+        double flightsPrice = validDeparturePrice + validReturnPrice;
+        return servicesPrice + flightsPrice;
+    }
+
+//    TODO:
+//    Already exists in the BookingValidator - if you need it here, move it
+//    private boolean checkPaxBaggageMatchesServicePrice(Booking booking)
 
     public String getReference() {
         return reference;
@@ -62,6 +84,15 @@ public class Booking extends BaseEntity {
         return this;
     }
 
+    public Double getDepartureFlightPrice() {
+        return departureFlightPrice;
+    }
+
+    public Booking setDepartureFlightPrice(Double departureFlightPrice) {
+        this.departureFlightPrice = departureFlightPrice;
+        return this;
+    }
+
     public FlightInstance getReturnFlight() {
         return returnFlight;
     }
@@ -77,6 +108,15 @@ public class Booking extends BaseEntity {
 
     public Booking setReturnClass(CabinClassEnum returnClass) {
         this.returnClass = returnClass;
+        return this;
+    }
+
+    public Double getReturnFlightPrice() {
+        return returnFlightPrice;
+    }
+
+    public Booking setReturnFlightPrice(Double returnFlightPrice) {
+        this.returnFlightPrice = returnFlightPrice;
         return this;
     }
 

@@ -7,6 +7,7 @@ import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
+import com.novaraspace.model.mapper.BookingQuoteMapper;
 import com.novaraspace.repository.BookingQuoteRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -21,12 +22,12 @@ import java.util.UUID;
 public class BookingQuoteService {
 
     private final Validator validator;
-    private final BookingMapper bookingMapper;
+    private final BookingQuoteMapper mapper;
     private final BookingQuoteRepository quoteRepository;
 
-    public BookingQuoteService(Validator validator, BookingMapper bookingMapper, BookingQuoteRepository quoteRepository) {
+    public BookingQuoteService(Validator validator, BookingQuoteMapper mapper, BookingQuoteRepository quoteRepository) {
         this.validator = validator;
-        this.bookingMapper = bookingMapper;
+        this.mapper = mapper;
         this.quoteRepository = quoteRepository;
     }
 
@@ -51,9 +52,9 @@ public class BookingQuoteService {
             throw BookingException.invalidQuote();
         }
 
-        BookingQuote newQuote = bookingMapper.bookingQuoteDtoToEntity(dto);
+        BookingQuote newQuote = mapper.dtoToEntity(dto);
         BookingQuote persistedQuote = quoteRepository.save(newQuote);
-        return bookingMapper.entityToBookingQuoteDto(persistedQuote);
+        return mapper.entityToDto(persistedQuote);
     }
 
     private boolean checkBookingQuoteDTOValid(BookingQuoteDTO dto) {

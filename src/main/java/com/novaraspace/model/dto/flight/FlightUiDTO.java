@@ -7,6 +7,9 @@ import com.novaraspace.model.enums.VehicleAmenity;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+//TODO: Rename this to something like AvailableFlightDTO or something like that
+// Its not a general UI model as it contains the cabin classes with available seats,
+// and other data which is used only on flight selection...
 public class FlightUiDTO {
     private String id;
     private FlightStatus status;
@@ -97,48 +100,48 @@ public class FlightUiDTO {
         }
     }
 
-    public static class FlightLeg {
-        private FlightRegion region;
-        private String location;
-        private LocalDateTime date;
-        private int minimumOrbits;
-
-        public FlightRegion getRegion() {
-            return region;
-        }
-
-        public FlightLeg setRegion(FlightRegion region) {
-            this.region = region;
-            return this;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public FlightLeg setLocation(String location) {
-            this.location = location;
-            return this;
-        }
-
-        public LocalDateTime getDate() {
-            return date;
-        }
-
-        public FlightLeg setDate(LocalDateTime date) {
-            this.date = date;
-            return this;
-        }
-
-        public int getMinimumOrbits() {
-            return minimumOrbits;
-        }
-
-        public FlightLeg setMinimumOrbits(int minimumOrbits) {
-            this.minimumOrbits = minimumOrbits;
-            return this;
-        }
-    }
+//    public static class FlightLeg {
+//        private FlightRegion region;
+//        private String location;
+//        private LocalDateTime date;
+//        private int minimumOrbits;
+//
+//        public FlightRegion getRegion() {
+//            return region;
+//        }
+//
+//        public FlightLeg setRegion(FlightRegion region) {
+//            this.region = region;
+//            return this;
+//        }
+//
+//        public String getLocation() {
+//            return location;
+//        }
+//
+//        public FlightLeg setLocation(String location) {
+//            this.location = location;
+//            return this;
+//        }
+//
+//        public LocalDateTime getDate() {
+//            return date;
+//        }
+//
+//        public FlightLeg setDate(LocalDateTime date) {
+//            this.date = date;
+//            return this;
+//        }
+//
+//        public int getMinimumOrbits() {
+//            return minimumOrbits;
+//        }
+//
+//        public FlightLeg setMinimumOrbits(int minimumOrbits) {
+//            this.minimumOrbits = minimumOrbits;
+//            return this;
+//        }
+//    }
 
     public String getId() {
         return id;

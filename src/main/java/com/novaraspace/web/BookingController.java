@@ -1,8 +1,6 @@
 package com.novaraspace.web;
 
-import com.novaraspace.model.dto.booking.BookingConfirmedDTO;
-import com.novaraspace.model.dto.booking.BookingStartResultDTO;
-import com.novaraspace.model.dto.booking.NewBookingDTO;
+import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.service.BookingService;
 import com.novaraspace.service.FlightService;
@@ -18,12 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingController {
 
     private final BookingService bookingService;
-    private final FlightService flightService;
 
-
-    public BookingController(BookingService bookingService, FlightService flightService) {
+    public BookingController(BookingService bookingService ) {
         this.bookingService = bookingService;
-        this.flightService = flightService;
     }
 
     @PostMapping("/start")
@@ -33,9 +28,15 @@ public class BookingController {
     }
 
     @PostMapping("/complete")
-    public ResponseEntity<BookingConfirmedDTO> createBooking(@Valid @RequestBody NewBookingDTO bookingDTO) {
-        BookingConfirmedDTO confirmedBooking = bookingService.createNewBooking(bookingDTO);
+    public ResponseEntity<BookingConfirmedDTO> createBooking(@Valid @RequestBody BookingCreateRequest createRequest) {
+        BookingConfirmedDTO confirmedBooking = bookingService.createNewBooking(createRequest);
         return ResponseEntity.ok(confirmedBooking);
+    }
+
+    @PostMapping("/manage")
+    public ResponseEntity<Void> manageBooking(@Valid @RequestBody BookingSearchParams searchParams) {
+
+        return ResponseEntity.ok().build();
     }
 
 
