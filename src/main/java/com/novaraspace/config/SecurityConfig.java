@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers("/public/**", "/public/*").permitAll()
                         .requestMatchers("/booking/start").permitAll()
                         .requestMatchers("/booking/complete").permitAll()
+                        .requestMatchers("/booking/manage").permitAll()
+                        .requestMatchers("/booking/cancel").permitAll()
                         .requestMatchers("/manage/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
 

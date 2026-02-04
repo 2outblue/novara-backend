@@ -71,20 +71,54 @@ public class FlightInstance extends BaseEntity {
         };
     }
 
-    //TODO: Cant you just get the correct cabin class with one switch statement, then do the rest without a second switch?
-    public void reserveSeats(CabinClassEnum cabinClass, int count) {
-        int unreservedSeats = switch (cabinClass) {
-            case FIRST -> firstClass.getAvailableSeats() - firstClass.getLockedSeats();
-            case MIDDLE -> middleClass.getAvailableSeats() - middleClass.getLockedSeats();
-            case LOWER -> lowerClass.getAvailableSeats() - lowerClass.getLockedSeats();
-        };
-        if (unreservedSeats < count) {throw FlightException.reservationFailed();}
+    public boolean departsAtLeast3HoursFromNow() {
+        LocalDateTime threeHoursFromNow = LocalDateTime.now().plusMinutes(179);
+        return this.departureDate.isAfter(threeHoursFromNow);
+    }
 
-        switch (cabinClass) {
-            case FIRST -> firstClass.setAvailableSeats(firstClass.getAvailableSeats() - count);
-            case MIDDLE -> middleClass.setAvailableSeats(middleClass.getAvailableSeats() - count);
-            case LOWER -> lowerClass.setAvailableSeats(lowerClass.getAvailableSeats() - count);
+    //TODO: Cant you just get the correct cabin class with one switch statement, then do the rest without a second switch?
+//    public void reserveSeats(CabinClassEnum cabinClass, int count) {
+//        int unreservedSeats = switch (cabinClass) {
+//            case FIRST -> firstClass.getAvailableSeats() - firstClass.getLockedSeats();
+//            case MIDDLE -> middleClass.getAvailableSeats() - middleClass.getLockedSeats();
+//            case LOWER -> lowerClass.getAvailableSeats() - lowerClass.getLockedSeats();
+//        };
+//        if (unreservedSeats < count) {throw FlightException.reservationFailed();}
+//
+//        switch (cabinClass) {
+//            case FIRST -> firstClass.setAvailableSeats(firstClass.getAvailableSeats() - count);
+//            case MIDDLE -> middleClass.setAvailableSeats(middleClass.getAvailableSeats() - count);
+//            case LOWER -> lowerClass.setAvailableSeats(lowerClass.getAvailableSeats() - count);
+//        }
+//        recalculateTotalSeats();
+//    }
+
+    // TODO: Test this
+    public void reserveSeats(CabinClassEnum cabinClass, int count) {
+        if (cabinClass == null) {return;}
+        CabinClassData selectedClass = getCabinClassData(cabinClass);
+        int availableSeats = selectedClass.getAvailableSeats();
+        int unreservedSeats = availableSeats - selectedClass.getLockedSeats();
+
+        if (unreservedSeats < count) {throw FlightException.reservationFailed();}
+        selectedClass.setAvailableSeats(availableSeats - count);
+        recalculateTotalSeats();
+    }
+
+    public void unReserveSeats(CabinClassEnum cabinClass, int count) {
+        if (cabinClass == null) {return;}
+        CabinClassData selectedClass = this.getCabinClassData(cabinClass);
+        Vehicle vehicle = this.flightTemplate.getVehicle();
+        int cabinTotalSeats = vehicle
+                .getClassByEnum(cabinClass)
+                .getTotalSeats();
+
+        int availableSeatsAfterUnReserve = selectedClass.getAvailableSeats() + count;
+        if (availableSeatsAfterUnReserve > cabinTotalSeats) {
+            //TODO: Throw some error here
+            return;
         }
+        selectedClass.setAvailableSeats(availableSeatsAfterUnReserve);
         recalculateTotalSeats();
     }
 
@@ -92,6 +126,14 @@ public class FlightInstance extends BaseEntity {
         boolean notBeforeLower = departureDate.isAfter(lowerDate.minusDays(1).atTime(LocalTime.MAX));
         boolean notAfterUpper = departureDate.isBefore(upperDate.plusDays(1).atTime(LocalTime.MIN));
         return notBeforeLower && notAfterUpper;
+    }
+
+    public CabinClassData getCabinClassData(CabinClassEnum cabinEnum) {
+        return switch (cabinEnum) {
+            case FIRST -> this.getFirstClass();
+            case MIDDLE -> this.getMiddleClass();
+            case LOWER -> this.getLowerClass();
+        };
     }
 
     private void recalculateTotalSeats() {

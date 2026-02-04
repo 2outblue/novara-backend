@@ -1,6 +1,7 @@
 package com.novaraspace.service;
 
 import com.novaraspace.component.BookingReferenceGenerator;
+import com.novaraspace.component.DataMasker;
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
@@ -12,8 +13,9 @@ import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.validation.business.BookingValidator;
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +31,10 @@ public class BookingService {
     private final BookingValidator bookingValidator;
     private final BookingReferenceGenerator bookingReferenceGenerator;
     private final PaymentService paymentService;
+    private final DataMasker dataMasker;
 
+    //TODO: Maybe rename this to something like BookingCreationService and keep the getResultForNewBookingStart
+    // and createNewBooking methods, and move the others to a BookingManageService
     public BookingService(
             BookingMapper bookingMapper,
             FlightService flightService,
@@ -37,7 +42,8 @@ public class BookingService {
             BookingRepository bookingRepository,
             BookingValidator bookingValidator,
             BookingReferenceGenerator bookingReferenceGenerator,
-            PaymentService paymentService) {
+            PaymentService paymentService,
+            DataMasker dataMasker) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;
@@ -45,6 +51,7 @@ public class BookingService {
         this.bookingValidator = bookingValidator;
         this.bookingReferenceGenerator = bookingReferenceGenerator;
         this.paymentService = paymentService;
+        this.dataMasker = dataMasker;
     }
 
     public BookingStartResultDTO getResultForNewBookingStart(FlightSearchQueryDTO flightSearchQueryDTO) {
@@ -89,7 +96,57 @@ public class BookingService {
         return bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
     }
 
-    
+    @Transactional(readOnly = true)
+    public BookingDTO findBooking(BookingSearchParams params) {
+//        Booking booking = bookingRepository
+//                .findByReference(params.getReference())
+//                .orElseThrow(BookingException::notFound);
+//
+//        List<Passenger> passengers = booking.getPassengers();
+//        String lastName = params.getLastName();
+//        boolean lastNameIsOneOfThePassengers =  passengers.stream()
+//                .anyMatch(pax -> pax.getLastName().equals(lastName));
+//        if (!lastNameIsOneOfThePassengers) { throw BookingException.notFound(); }
+
+        Booking booking = findValidBooking(params);
+
+        BookingDTO dto = bookingMapper.entityToDTO(booking);
+        String maskedEmail = dataMasker.maskEmail(booking.getContactEmail());
+        String maskedMobile = dataMasker.maskPhoneNumber(booking.getContactMobile());
+
+        dto.setContactEmailMasked(maskedEmail)
+                .setContactMobileMasked(maskedMobile);
+
+        return dto;
+    }
+
+    @Transactional
+    public BookingDTO cancelBooking(BookingSearchParams params) {
+        //TODO: If the booking was already cancelled - prevent this ?
+        //TODO: Maybe make 'reverse' payments of refundable amount to show them as refunds on user account?
+        Booking booking = findValidBooking(params);
+        FlightInstance departureFlight = booking.getDepartureFlight();
+        if (!departureFlight.departsAtLeast3HoursFromNow()) {
+            throw BookingException.changeFailed();
+        }
+        booking.cancel();
+        Booking cancelledBooking = bookingRepository.save(booking);
+        return bookingMapper.entityToDTO(cancelledBooking);
+    }
+
+
+    private Booking findValidBooking(BookingSearchParams params) {
+        Booking booking = bookingRepository
+                .findByReference(params.getReference())
+                .orElseThrow(BookingException::notFound);
+
+        List<Passenger> passengers = booking.getPassengers();
+        String lastName = params.getLastName();
+        boolean lastNameIsOneOfThePassengers =  passengers.stream()
+                .anyMatch(pax -> pax.getLastName().equals(lastName));
+        if (!lastNameIsOneOfThePassengers) { throw BookingException.notFound(); }
+        return booking;
+    }
 
 
 }

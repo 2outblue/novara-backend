@@ -1,6 +1,7 @@
 package com.novaraspace.model.enums;
 
 public enum ErrCode {
+    BAD_REQUEST,
     NOT_FOUND,
     BAD_CREDENTIALS,
     USER_NOT_FOUND,
@@ -22,5 +23,6 @@ public enum ErrCode {
 
     INVALID_QUOTE,
     BOOKING_CREATION_FAILED,
+    BOOKING_CHANGE_FAILED,
 
 }

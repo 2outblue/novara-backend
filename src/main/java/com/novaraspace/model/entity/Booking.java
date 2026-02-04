@@ -23,7 +23,7 @@ public class Booking extends BaseEntity {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Passenger> passengers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ExtraService> extraServices = new ArrayList<>();
 
     private String contactCountryCode;
@@ -51,6 +51,15 @@ public class Booking extends BaseEntity {
                 : departureFlightPrice;
         double flightsPrice = validDeparturePrice + validReturnPrice;
         return servicesPrice + flightsPrice;
+    }
+
+    public void cancel() {
+        int paxCount = this.passengers.size();
+        this.departureFlight.unReserveSeats(this.departureClass, paxCount);
+        if (this.returnFlight != null) {
+            this.returnFlight.unReserveSeats(this.returnClass, paxCount);
+        }
+        this.cancelled = true;
     }
 
 //    TODO:
@@ -187,8 +196,8 @@ public class Booking extends BaseEntity {
         return cancelled;
     }
 
-    public Booking setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-        return this;
-    }
+//    public Booking setCancelled(boolean cancelled) {
+//        this.cancelled = cancelled;
+//        return this;
+//    }
 }

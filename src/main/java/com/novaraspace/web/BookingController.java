@@ -34,9 +34,15 @@ public class BookingController {
     }
 
     @PostMapping("/manage")
-    public ResponseEntity<Void> manageBooking(@Valid @RequestBody BookingSearchParams searchParams) {
+    public ResponseEntity<BookingDTO> manageBooking(@Valid @RequestBody BookingSearchParams searchParams) {
+        BookingDTO dto = bookingService.findBooking(searchParams);
+        return ResponseEntity.ok(dto);
+    }
 
-        return ResponseEntity.ok().build();
+    @PostMapping("/cancel")
+    public ResponseEntity<BookingDTO> cancelBooking(@Valid @RequestBody BookingSearchParams searchParams) {
+        BookingDTO dto = bookingService.cancelBooking(searchParams);
+        return ResponseEntity.ok(dto);
     }
 
 

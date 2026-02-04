@@ -1,5 +1,6 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.enums.FlightRegion;
 import com.novaraspace.model.enums.VehicleAmenity;
 import jakarta.persistence.*;
@@ -29,13 +30,13 @@ public class Vehicle extends BaseEntity {
     private Set<VehicleAmenity> amenities;
 
     @JoinColumn(name = "first_class")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private CabinClass firstClass;
     @JoinColumn(name = "middle_class")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private CabinClass middleClass;
     @JoinColumn(name = "lower_class")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private CabinClass lowerClass;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -45,6 +46,19 @@ public class Vehicle extends BaseEntity {
     private Set<FlightRegion> supportedRegions;
 
 
+    public int getTotalSeats() {
+        return firstClass.getTotalSeats()
+                + middleClass.getTotalSeats()
+                + lowerClass.getTotalSeats();
+    }
+
+    public CabinClass getClassByEnum(CabinClassEnum cabinEnum) {
+        return switch (cabinEnum) {
+            case FIRST -> getFirstClass();
+            case MIDDLE -> getMiddleClass();
+            case LOWER -> getLowerClass();
+        };
+    }
 
     public String getCode() {
         return code;

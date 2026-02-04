@@ -9,9 +9,9 @@ public class ExtraService extends BaseEntity {
     private String code;
     private double price;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
+//    @ManyToOne
+//    @JoinColumn(name = "booking_id")
+//    private Booking booking;
 
     public String getCode() {
         return code;
@@ -31,12 +31,12 @@ public class ExtraService extends BaseEntity {
         return this;
     }
 
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public ExtraService setBooking(Booking booking) {
-        this.booking = booking;
-        return this;
-    }
+//    public Booking getBooking() {
+//        return booking;
+//    }
+//
+//    public ExtraService setBooking(Booking booking) {
+//        this.booking = booking;
+//        return this;
+//    }
 }

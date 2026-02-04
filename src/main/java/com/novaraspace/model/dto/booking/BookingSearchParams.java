@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 public class BookingSearchParams {
     @NotBlank
     @Length(min = 6, max = 6)
-    @Pattern(regexp = "^[A-Z][A-Z0-9]{2}\\d[A-Z0-9][A-Z]$")
+    @Pattern(regexp = "^[A-Z][A-Z0-9]{2}\\d[A-Z0-9][A-Z]$", message = "Invalid booking reference")
     private String reference;
     @NotBlank
     private String lastName;
