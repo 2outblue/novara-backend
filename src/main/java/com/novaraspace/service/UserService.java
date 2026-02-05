@@ -12,7 +12,7 @@ import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.UserRepository;
 import com.novaraspace.util.CountryCodeLoader;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.security.authentication.BadCredentialsException;
