@@ -20,10 +20,10 @@ public class Booking extends BaseEntity {
     private CabinClassEnum returnClass;
     private Double returnFlightPrice;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Passenger> passengers = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExtraService> extraServices = new ArrayList<>();
 
     private String contactCountryCode;
