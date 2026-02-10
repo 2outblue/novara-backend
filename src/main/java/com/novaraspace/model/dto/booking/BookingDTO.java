@@ -14,6 +14,7 @@ public class BookingDTO {
     private String contactMobileMasked;
     private List<ExtraServiceDTO> extraServices;
     private boolean cancelled;
+    private double minimumSeparationDays = 0;
 
     public String getReference() {
         return reference;
@@ -93,6 +94,15 @@ public class BookingDTO {
 
     public BookingDTO setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
+        return this;
+    }
+
+    public double getMinimumSeparationDays() {
+        return minimumSeparationDays;
+    }
+
+    public BookingDTO setMinimumSeparationDays(double minimumSeparationDays) {
+        this.minimumSeparationDays = minimumSeparationDays;
         return this;
     }
 }

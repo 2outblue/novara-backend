@@ -66,6 +66,12 @@ public class Booking extends BaseEntity {
 //    Already exists in the BookingValidator - if you need it here, move it
 //    private boolean checkPaxBaggageMatchesServicePrice(Booking booking)
 
+    public double getMinimumSeparationDays() {
+        double departureSep = departureFlight.getFlightTemplate().getDepartureLocation().getRegion().getSeparationFactor();
+        double arrivalSep = departureFlight.getFlightTemplate().getArrivalLocation().getRegion().getSeparationFactor();
+        return Math.abs(departureSep - arrivalSep);
+    }
+
     public String getReference() {
         return reference;
     }

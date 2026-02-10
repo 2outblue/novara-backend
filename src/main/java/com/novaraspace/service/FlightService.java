@@ -109,7 +109,9 @@ public class FlightService {
     // more equal (if there are 6 possible days of separation between departure and return, you can split
     // 3/3 for each instead of 6 for departure and 0 for return) - maybe if the actual separation is at least
     // 2x the minimum, you can just split in half ? (And if the sep days are an odd number assign the bigger
-    // half randomly ?)
+    // half randomly ?).
+    // Or you can calculate the remainder separation days after minimum separation days, and split the remainder
+    // in half
 
     private LocalDate[] getPaddingRangeForDepartureFlight(FlightSearchQueryDTO queryDTO, double separationFactor) {
         LocalDate earliestPossibleDeparture = LocalDate.now().plusDays(1);
