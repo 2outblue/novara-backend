@@ -18,8 +18,8 @@ public class BookingQuote extends BaseEntity {
     private String arrivalCode;
     private LocalDate departureLowerDate;
     private LocalDate departureUpperDate;
-    private LocalDate arrivalLowerDate; //TODO: WHY ARRIVAL ??? THIS IS **RETURN DATE** - Nothing to do with the arrival...?
-    private LocalDate arrivalUpperDate;
+    private LocalDate returnLowerDate; //TODO: WHY ARRIVAL ??? THIS IS **RETURN DATE** - Nothing to do with the arrival...?
+    private LocalDate returnUpperDate;
 
     public String getReference() {
         return reference;
@@ -94,21 +94,21 @@ public class BookingQuote extends BaseEntity {
         return this;
     }
 
-    public LocalDate getArrivalLowerDate() {
-        return arrivalLowerDate;
+    public LocalDate getReturnLowerDate() {
+        return returnLowerDate;
     }
 
-    public BookingQuote setArrivalLowerDate(LocalDate arrivalLowerDate) {
-        this.arrivalLowerDate = arrivalLowerDate;
+    public BookingQuote setReturnLowerDate(LocalDate arrivalLowerDate) {
+        this.returnLowerDate = arrivalLowerDate;
         return this;
     }
 
-    public LocalDate getArrivalUpperDate() {
-        return arrivalUpperDate;
+    public LocalDate getReturnUpperDate() {
+        return returnUpperDate;
     }
 
-    public BookingQuote setArrivalUpperDate(LocalDate arrivalUpperDate) {
-        this.arrivalUpperDate = arrivalUpperDate;
+    public BookingQuote setReturnUpperDate(LocalDate arrivalUpperDate) {
+        this.returnUpperDate = arrivalUpperDate;
         return this;
     }
 }

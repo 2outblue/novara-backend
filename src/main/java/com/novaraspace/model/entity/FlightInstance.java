@@ -76,6 +76,11 @@ public class FlightInstance extends BaseEntity {
         return this.departureDate.isAfter(threeHoursFromNow);
     }
 
+    public boolean departsAtLeast24HoursFromNow() {
+        LocalDateTime aDayFromNow = LocalDateTime.now().plusMinutes(1439);
+        return this.departureDate.isAfter(aDayFromNow);
+    }
+
     //TODO: Cant you just get the correct cabin class with one switch statement, then do the rest without a second switch?
 //    public void reserveSeats(CabinClassEnum cabinClass, int count) {
 //        int unreservedSeats = switch (cabinClass) {

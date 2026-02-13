@@ -85,8 +85,8 @@ public class FlightService {
         FlightLimitsDTO limits = new FlightLimitsDTO()
                 .setDepartureLowerDate(departureFlightPaddingRange[0])
                 .setDepartureUpperDate(departureFlightPaddingRange[1])
-                .setArrivalLowerDate(returnFlightPaddingRange[0])
-                .setArrivalUpperDate(returnFlightPaddingRange[1]);
+                .setReturnLowerDate(returnFlightPaddingRange[0])
+                .setReturnUpperDate(returnFlightPaddingRange[1]);
 
         if (departureFlights.isEmpty() || returnFlights.isEmpty()) {throw FlightException.noAvailability();}
         return new FlightSearchResultDTO()

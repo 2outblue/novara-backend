@@ -38,12 +38,12 @@ public class BookingValidator {
         FlightInstance returnFlight = booking.getReturnFlight();
 
         boolean departureFlightExists = departureFlight != null;
-        boolean returnFlightExistOnTwoWayBooking = returnFlight != null && !quote.isOneWay();
+        boolean returnFlightExistOnTwoWayBooking = returnFlight == null || !quote.isOneWay();
 
         boolean departureFlightValidDates = departureFlight == null
                 || departureFlight.departureDateIsBetween(quote.getDepartureLowerDate(), quote.getDepartureUpperDate());
         boolean returnFlightValidDates = returnFlight == null
-                || returnFlight.departureDateIsBetween(quote.getArrivalLowerDate(), quote.getArrivalUpperDate());
+                || returnFlight.departureDateIsBetween(quote.getReturnLowerDate(), quote.getReturnUpperDate());
 
         boolean validFlightClasses = checkValidCabinClasses(booking);
         boolean validPrices = validatePrices(booking);
@@ -63,6 +63,7 @@ public class BookingValidator {
     }
 
     //TODO: Include a small error margin anyway.
+    //TODO: Just use the DoublePriceUtil to check equality
     private boolean validatePrices(Booking booking) {
         boolean validFlightPrices = checkValidFlightPrices(booking);
         boolean matchingPaxBaggagePrices = checkPaxBaggageMatchesServicePrice(booking);

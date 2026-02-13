@@ -6,7 +6,6 @@ import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.exception.BookingException;
-import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.model.mapper.BookingQuoteMapper;
 import com.novaraspace.repository.BookingQuoteRepository;
 import jakarta.validation.ConstraintViolation;
@@ -45,8 +44,8 @@ public class BookingQuoteService {
                 .setArrivalCode(searchQuery.getArrivalCode())
                 .setDepartureLowerDate(searchResult.getLimits().getDepartureLowerDate())
                 .setDepartureUpperDate(searchResult.getLimits().getDepartureUpperDate())
-                .setArrivalLowerDate(searchResult.getLimits().getArrivalLowerDate())
-                .setArrivalUpperDate(searchResult.getLimits().getArrivalUpperDate());
+                .setArrivalLowerDate(searchResult.getLimits().getReturnLowerDate())
+                .setArrivalUpperDate(searchResult.getLimits().getReturnUpperDate());
         boolean bookingQuoteValid = checkBookingQuoteDTOValid(dto);
         if (!bookingQuoteValid) {
             throw BookingException.invalidQuote();

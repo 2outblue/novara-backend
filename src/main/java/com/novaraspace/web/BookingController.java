@@ -3,7 +3,6 @@ package com.novaraspace.web;
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.service.BookingService;
-import com.novaraspace.service.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +44,16 @@ public class BookingController {
         return ResponseEntity.ok(dto);
     }
 
+    @PostMapping("/change-flights-start")
+    public ResponseEntity<ChangeFlightsStartResponse> changeFlightsStart(@RequestBody FlightSearchQueryDTO queryDTO) {
+        ChangeFlightsStartResponse response = bookingService.getResultForFlightChangeStart(queryDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/change-flights-complete")
+    public ResponseEntity<BookingDTO> performFlightChange(@Valid @RequestBody ChangeFlightsRequest request) {
+        BookingDTO bookingDTO = bookingService.changeFlights(request);
+        return ResponseEntity.ok(bookingDTO);
+    }
 
 }

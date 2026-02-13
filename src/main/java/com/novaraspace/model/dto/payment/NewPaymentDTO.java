@@ -17,7 +17,7 @@ public class NewPaymentDTO {
     @NotBlank
     private String cardHolder;
     @NotNull
-    @Positive
+    @PositiveOrZero
     private Double amount;
 
     public String getFirstFour() {

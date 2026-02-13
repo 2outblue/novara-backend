@@ -10,6 +10,7 @@ import java.util.List;
 @ValidPassengerIntraIds
 @ValidReturnFlightComponents
 public class NewBookingDTO {
+    //TODO: Replace with the FlightReserveDTO i guess.
     @NotEmpty
     private String departureFlightId;
     @NotEmpty

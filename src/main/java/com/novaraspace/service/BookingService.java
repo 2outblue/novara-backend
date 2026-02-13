@@ -12,8 +12,10 @@ import com.novaraspace.model.entity.Payment;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.repository.BookingRepository;
+import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.validation.business.BookingValidator;
 //import jakarta.transaction.Transactional;
+import com.novaraspace.validation.business.ChangeFlightValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class BookingService {
     private final BookingReferenceGenerator bookingReferenceGenerator;
     private final PaymentService paymentService;
     private final DataMasker dataMasker;
+    private final ChangeFlightValidator changeFlightValidator;
 
     //TODO: Maybe rename this to something like BookingCreationService and keep the getResultForNewBookingStart
     // and createNewBooking methods, and move the others to a BookingManageService
@@ -43,7 +46,7 @@ public class BookingService {
             BookingValidator bookingValidator,
             BookingReferenceGenerator bookingReferenceGenerator,
             PaymentService paymentService,
-            DataMasker dataMasker) {
+            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;
@@ -52,6 +55,7 @@ public class BookingService {
         this.bookingReferenceGenerator = bookingReferenceGenerator;
         this.paymentService = paymentService;
         this.dataMasker = dataMasker;
+        this.changeFlightValidator = changeFlightValidator;
     }
 
     public BookingStartResultDTO getResultForNewBookingStart(FlightSearchQueryDTO flightSearchQueryDTO) {
@@ -98,16 +102,6 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public BookingDTO findBooking(BookingSearchParams params) {
-//        Booking booking = bookingRepository
-//                .findByReference(params.getReference())
-//                .orElseThrow(BookingException::notFound);
-//
-//        List<Passenger> passengers = booking.getPassengers();
-//        String lastName = params.getLastName();
-//        boolean lastNameIsOneOfThePassengers =  passengers.stream()
-//                .anyMatch(pax -> pax.getLastName().equals(lastName));
-//        if (!lastNameIsOneOfThePassengers) { throw BookingException.notFound(); }
-
         Booking booking = findValidBooking(params);
 
         BookingDTO dto = bookingMapper.entityToDTO(booking);
@@ -126,12 +120,46 @@ public class BookingService {
         //TODO: Maybe make 'reverse' payments of refundable amount to show them as refunds on user account?
         Booking booking = findValidBooking(params);
         FlightInstance departureFlight = booking.getDepartureFlight();
-        if (!departureFlight.departsAtLeast3HoursFromNow()) {
+        if (!departureFlight.departsAtLeast3HoursFromNow() || booking.isCancelled()) {
             throw BookingException.changeFailed();
         }
         booking.cancel();
         Booking cancelledBooking = bookingRepository.save(booking);
         return bookingMapper.entityToDTO(cancelledBooking);
+    }
+
+    @Transactional
+    public ChangeFlightsStartResponse getResultForFlightChangeStart(FlightSearchQueryDTO queryDTO) {
+        FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(queryDTO);
+        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(queryDTO, flightSearchResultDTO);
+
+        return new ChangeFlightsStartResponse()
+                .setFlightSearchResult(flightSearchResultDTO)
+                .setQuoteReference(bookingQuote.getReference());
+    }
+
+    @Transactional
+    public BookingDTO changeFlights(ChangeFlightsRequest request) {
+        Booking booking = findValidBooking(request.getBookingParams());
+        boolean validChange = changeFlightValidator.validateFlightChange(booking, request);
+        if (!validChange) {throw BookingException.changeFailed();}
+
+        String newDepFlightPublicId = request.getDepartureFlight().getId();
+        FlightInstance newDepartureFlight = flightService.findFlightByPublicId(newDepFlightPublicId)
+                .orElseThrow(BookingException::changeFailed);
+
+        if (request.getReturnFlight() != null) {
+            String newRetFlightPublicId = request.getReturnFlight().getId();
+            FlightInstance newRetFlight = flightService.findFlightByPublicId(newRetFlightPublicId)
+                    .orElseThrow(BookingException::changeFailed);
+            booking.setReturnFlight(newRetFlight);
+        }
+        booking.setDepartureFlight(newDepartureFlight);
+
+        //TODO: Normalize prices?
+        Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
+        Booking changedBooking = bookingRepository.save(booking);
+        return bookingMapper.entityToDTO(changedBooking);
     }
 
 

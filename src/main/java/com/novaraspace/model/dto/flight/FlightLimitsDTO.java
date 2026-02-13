@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class FlightLimitsDTO {
     private LocalDate departureLowerDate;
     private LocalDate departureUpperDate;
-    private LocalDate arrivalLowerDate;  // TODO: Why is that 'arrival' - it should be 'return' ????
-    private LocalDate arrivalUpperDate;
+    private LocalDate returnLowerDate;
+    private LocalDate returnUpperDate;
 
     public LocalDate getDepartureLowerDate() {
         return departureLowerDate;
@@ -26,21 +26,21 @@ public class FlightLimitsDTO {
         return this;
     }
 
-    public LocalDate getArrivalLowerDate() {
-        return arrivalLowerDate;
+    public LocalDate getReturnLowerDate() {
+        return returnLowerDate;
     }
 
-    public FlightLimitsDTO setArrivalLowerDate(LocalDate arrivalLowerDate) {
-        this.arrivalLowerDate = arrivalLowerDate;
+    public FlightLimitsDTO setReturnLowerDate(LocalDate returnLowerDate) {
+        this.returnLowerDate = returnLowerDate;
         return this;
     }
 
-    public LocalDate getArrivalUpperDate() {
-        return arrivalUpperDate;
+    public LocalDate getReturnUpperDate() {
+        return returnUpperDate;
     }
 
-    public FlightLimitsDTO setArrivalUpperDate(LocalDate arrivalUpperDate) {
-        this.arrivalUpperDate = arrivalUpperDate;
+    public FlightLimitsDTO setReturnUpperDate(LocalDate returnUpperDate) {
+        this.returnUpperDate = returnUpperDate;
         return this;
     }
 }
