@@ -44,8 +44,8 @@ public class BookingQuoteService {
                 .setArrivalCode(searchQuery.getArrivalCode())
                 .setDepartureLowerDate(searchResult.getLimits().getDepartureLowerDate())
                 .setDepartureUpperDate(searchResult.getLimits().getDepartureUpperDate())
-                .setArrivalLowerDate(searchResult.getLimits().getReturnLowerDate())
-                .setArrivalUpperDate(searchResult.getLimits().getReturnUpperDate());
+                .setReturnLowerDate(searchResult.getLimits().getReturnLowerDate())
+                .setReturnUpperDate(searchResult.getLimits().getReturnUpperDate());
         boolean bookingQuoteValid = checkBookingQuoteDTOValid(dto);
         if (!bookingQuoteValid) {
             throw BookingException.invalidQuote();

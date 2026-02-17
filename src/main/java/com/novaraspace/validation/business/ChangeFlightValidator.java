@@ -5,7 +5,7 @@ import com.novaraspace.model.dto.booking.ChangeFlightsRequest;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.entity.FlightInstance;
-import com.novaraspace.model.exception.BookingException;
+import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.repository.BookingQuoteRepository;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.util.DoublePricesUtil;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChangeFlightValidator {
-
     private final FlightInstanceRepository flightInstanceRepository;
     private final BookingQuoteRepository bookingQuoteRepository;
 
@@ -22,54 +21,84 @@ public class ChangeFlightValidator {
         this.bookingQuoteRepository = bookingQuoteRepository;
     }
 
-
     public boolean validateFlightChange(Booking booking, ChangeFlightsRequest request) {
-        boolean validDepartureDate = booking.getDepartureFlight().departsAtLeast24HoursFromNow();
-        boolean validReturnDate = booking.getReturnFlight() == null
-                || booking.getReturnFlight().departsAtLeast24HoursFromNow();
-        boolean validPaymentAmount = validateChangeAgainstPayment(booking, request.getPayment().getAmount());
-        boolean validNewFlights = validateNewFlights(request);
+        boolean flightChangePossible = booking.getDepartureFlight().departsAtLeast24HoursFromNow();
+        boolean validPaymentAmount = validateChangeAgainstPayment(booking, request);
+        boolean validNewFlights = validateNewFlights(booking, request);
 
-        return validDepartureDate
-                && validReturnDate
+        return flightChangePossible
                 && validPaymentAmount
                 && validNewFlights
                 && !booking.isCancelled();
     }
 
-    private boolean validateChangeAgainstPayment(Booking booking, double paymentAmount) {
+    private boolean validateChangeAgainstPayment(Booking booking, ChangeFlightsRequest request) {
         int paxCount = booking.getPassengers().size();
+        double paymentAmount = request.getPayment().getAmount();
         double depChangeFee = booking.getDepartureClass().getChangeFee() * paxCount;
         double retChangeFee = booking.getReturnFlight() == null
                 ? 0
                 : booking.getReturnClass().getChangeFee() * paxCount;
+        double totalFeesAmount = depChangeFee + retChangeFee;
 
-        double totalChangePrice = depChangeFee + retChangeFee;
+        double totalFlightDifferenceCost = getTotalFlightDifferenceCost(booking, request);
+
+        double totalChangePrice = totalFeesAmount + totalFlightDifferenceCost;
         return DoublePricesUtil.areEqual(totalChangePrice, paymentAmount);
     }
 
-    //TODO: Maybe don't throw in here - just return false?
-    private boolean validateNewFlights(ChangeFlightsRequest request) {
-        BookingQuote quote = bookingQuoteRepository.findByReference(request.getQuoteReference())
-                .orElseThrow(BookingException::changeFailed);
+    private double getTotalFlightDifferenceCost(Booking booking, ChangeFlightsRequest request) {
+        double totalFlightDifferenceCost = 0;
+        double oldDeparturePrice = booking.getDepartureFlightPrice();
+        double newDeparturePrice = request.getDepartureFlight().getPrice();
+        double priceDiff = newDeparturePrice - oldDeparturePrice;
+        if (priceDiff > 0) { totalFlightDifferenceCost += priceDiff; }
 
-        String departurePublicId = request.getDepartureFlight().getId();
-        String returnPublicId = request.getReturnFlight() == null
+        if (booking.getReturnFlight() != null && request.getReturnFlight() != null) {
+            double oldReturnPrice = booking.getReturnFlightPrice();
+            double newReturnPrice = request.getReturnFlight().getPrice();
+            double returnPriceDiff = newReturnPrice - oldReturnPrice;
+            if (returnPriceDiff > 0) { totalFlightDifferenceCost += returnPriceDiff; }
+        }
+        int paxCount = booking.getPassengers().size();
+        return totalFlightDifferenceCost * paxCount;
+    }
+
+    private boolean validateNewFlights(Booking booking, ChangeFlightsRequest request) {
+        BookingQuote quote = bookingQuoteRepository.findByReference(request.getQuoteReference())
+                .orElse(null);
+        if (quote == null) {return false;};
+
+        String newDeparturePublicId = request.getDepartureFlight().getId();
+        String newReturnPublicId = request.getReturnFlight() == null
                 ? null
                 : request.getReturnFlight().getId();
-        FlightInstance departureFlight = flightInstanceRepository.findByPublicId(departurePublicId)
-                .orElseThrow(BookingException::changeFailed);
-        FlightInstance returnFlight = flightInstanceRepository.findByPublicId(returnPublicId)
+        FlightInstance newDepartureFlight = flightInstanceRepository.findByPublicId(newDeparturePublicId)
                 .orElse(null);
+        FlightInstance newReturnFlight = flightInstanceRepository.findByPublicId(newReturnPublicId)
+                .orElse(null);
+        if (newDepartureFlight == null) {return false;}
 
-        boolean validDepartureDate = departureFlight.departureDateIsBetween(
+        boolean validDepartureDate = newDepartureFlight.departureDateIsBetween(
                 quote.getDepartureLowerDate(), quote.getDepartureUpperDate());
-        boolean validReturnDate = returnFlight == null
-                || returnFlight.departureDateIsBetween(quote.getReturnLowerDate(), quote.getReturnUpperDate());
+        boolean validReturnDate = newReturnFlight == null
+                || newReturnFlight.departureDateIsBetween(quote.getReturnLowerDate(), quote.getReturnUpperDate());
 
-        boolean returnFlightChangeExistOnTwoWayBooking = returnFlight == null || !quote.isOneWay(); //TODO: Remove/change this if im going to implement departure change only
+        boolean newDepFlightNotIdenticalToOld = !newDepartureFlight.getPublicId()
+                .equals(booking.getDepartureFlight().getPublicId());
+        boolean newRetFlightNotIdenticalToOld = true;
+        if (booking.getReturnFlight() != null) {
+            newRetFlightNotIdenticalToOld = newReturnFlight == null
+                    || !newReturnFlight.getPublicId().equals(booking.getReturnFlight().getPublicId());
+        }
 
-        return validDepartureDate && validReturnDate && returnFlightChangeExistOnTwoWayBooking;
+        boolean returnFlightChangeExistOnTwoWayQuote = (newReturnFlight != null && !quote.isOneWay())
+                || (newReturnFlight == null && quote.isOneWay());
+        return validDepartureDate
+                && validReturnDate
+                && returnFlightChangeExistOnTwoWayQuote
+                && newDepFlightNotIdenticalToOld
+                && newRetFlightNotIdenticalToOld;
     }
 
 

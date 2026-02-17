@@ -1,6 +1,8 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.dto.flight.FlightReserveDTO;
 import com.novaraspace.model.enums.CabinClassEnum;
+import com.novaraspace.model.exception.BookingException;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -60,6 +62,37 @@ public class Booking extends BaseEntity {
             this.returnFlight.unReserveSeats(this.returnClass, paxCount);
         }
         this.cancelled = true;
+    }
+
+    //TODO: Probably a way to combine the changeFlight methods?
+    public void changeDepartureFlight(FlightInstance newFlight, FlightReserveDTO reserveDTO) {
+        if (newFlight == null || reserveDTO == null) {throw BookingException.changeFailed();}
+        CabinClassEnum newCabinClass = CabinClassEnum.getEnumFromDisplayName(reserveDTO.getFlightClass());
+        if (newCabinClass == null || reserveDTO.getPrice() == null || reserveDTO.getPrice() <= 0) {
+            throw BookingException.changeFailed();
+        }
+        int paxCount = this.passengers.size();
+        this.departureFlight.unReserveSeats(this.departureClass, paxCount);
+        this.setDepartureFlight(newFlight);
+        this.setDepartureClass(newCabinClass);
+        this.setDepartureFlightPrice(reserveDTO.getPrice());
+        this.departureFlight.reserveSeats(newCabinClass, paxCount);
+    }
+
+    public void changeReturnFlight(FlightInstance newFlight, FlightReserveDTO reserveDTO) {
+        if (this.returnFlight == null || newFlight == null || reserveDTO == null) {
+            throw BookingException.changeFailed();
+        }
+        CabinClassEnum newCabinClass = CabinClassEnum.getEnumFromDisplayName(reserveDTO.getFlightClass());
+        if (newCabinClass == null || reserveDTO.getPrice() == null || reserveDTO.getPrice() <= 0) {
+            throw BookingException.changeFailed();
+        }
+        int paxCount = this.passengers.size();
+        this.returnFlight.unReserveSeats(this.returnClass, paxCount);
+        this.setReturnFlight(newFlight);
+        this.setReturnClass(newCabinClass);
+        this.setReturnFlightPrice(reserveDTO.getPrice());
+        this.returnFlight.reserveSeats(newCabinClass, paxCount);
     }
 
 //    TODO:

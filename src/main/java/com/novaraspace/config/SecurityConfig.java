@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers("/booking/complete").permitAll()
                         .requestMatchers("/booking/manage").permitAll()
                         .requestMatchers("/booking/cancel").permitAll()
+                        .requestMatchers("/booking/change-flights-start").permitAll()
+                        .requestMatchers("/booking/change-flights-complete").permitAll()
                         .requestMatchers("/flight/search").permitAll()
                         .requestMatchers("/manage/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

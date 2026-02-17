@@ -144,6 +144,20 @@
   },
 
   {
+    "publicIdPrefix": "L31E1-1",
+    "flightNumber": "NVR 211-0011",
+    "basePrice": 3550.0,
+    "departureTime": "20:00",
+    "departureLocationId": 31,
+    "arrivalLocationId": 1,
+    "orbitsDeparture": 0,
+    "orbitsArrival": 0,
+    "vehicleId": 10,
+    "durationMinutes": 540,
+    "weeklySchedule": "1221221"
+  },
+
+  {
     "publicIdPrefix": "E1L31-2",
     "flightNumber": "NVR 001-2112",
     "basePrice": 3350,

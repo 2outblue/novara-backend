@@ -1,5 +1,6 @@
 package com.novaraspace.repository;
 
+import com.novaraspace.model.domain.FlightsWithinRangeRequest;
 import com.novaraspace.model.entity.FlightInstance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +28,9 @@ public interface FlightInstanceRepository extends JpaRepository<FlightInstance, 
     List<FlightInstance> findAllWithTemplateIdsAndWithinRange(@Param("templateIds") List<Long> templateIds,
                                                                  @Param("startDate") LocalDate startDate,
                                                                  @Param("endDate") LocalDate endDate);
+
+    @Query("select fi from FlightInstance fi where fi.flightTemplate.id in :#{#req.templateIds} and cast(fi.departureDate as localdate) between :#{#req.startDate} and :#{#req.endDate}")
+    List<FlightInstance> findAllForWithinRangeRequest(@Param("req") FlightsWithinRangeRequest req);
 
 
 }

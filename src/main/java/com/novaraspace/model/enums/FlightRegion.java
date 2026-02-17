@@ -2,7 +2,7 @@ package com.novaraspace.model.enums;
 
 public enum FlightRegion {
     EARTH("Earth", "E", 0, 0),
-    NEAR_EARTH("Near Earth", "EN", 45, 0.1),
+    NEAR_EARTH("Near Earth", "EN", 45, 0.9),
     MOON("Moon", "L", 540, 1),
     MOON_ORBIT("Moon Orbit", "LO", 610, 1.2),
     MARS("Mars", "M", 7200, 6),

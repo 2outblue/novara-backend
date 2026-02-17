@@ -5,6 +5,7 @@ import com.novaraspace.component.DataMasker;
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
+import com.novaraspace.model.dto.flight.FlightUiDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.entity.Passenger;
@@ -12,7 +13,6 @@ import com.novaraspace.model.entity.Payment;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.repository.BookingRepository;
-import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.validation.business.BookingValidator;
 //import jakarta.transaction.Transactional;
 import com.novaraspace.validation.business.ChangeFlightValidator;
@@ -116,7 +116,6 @@ public class BookingService {
 
     @Transactional
     public BookingDTO cancelBooking(BookingSearchParams params) {
-        //TODO: If the booking was already cancelled - prevent this ?
         //TODO: Maybe make 'reverse' payments of refundable amount to show them as refunds on user account?
         Booking booking = findValidBooking(params);
         FlightInstance departureFlight = booking.getDepartureFlight();
@@ -147,15 +146,14 @@ public class BookingService {
         String newDepFlightPublicId = request.getDepartureFlight().getId();
         FlightInstance newDepartureFlight = flightService.findFlightByPublicId(newDepFlightPublicId)
                 .orElseThrow(BookingException::changeFailed);
+        booking.changeDepartureFlight(newDepartureFlight, request.getDepartureFlight());
 
-        if (request.getReturnFlight() != null) {
+        if (request.getReturnFlight() != null && booking.getReturnFlight() != null) {
             String newRetFlightPublicId = request.getReturnFlight().getId();
             FlightInstance newRetFlight = flightService.findFlightByPublicId(newRetFlightPublicId)
                     .orElseThrow(BookingException::changeFailed);
-            booking.setReturnFlight(newRetFlight);
+            booking.changeReturnFlight(newRetFlight, request.getReturnFlight());
         }
-        booking.setDepartureFlight(newDepartureFlight);
-
         //TODO: Normalize prices?
         Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
         Booking changedBooking = bookingRepository.save(booking);

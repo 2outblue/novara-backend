@@ -25,9 +25,9 @@ public class BookingQuoteDTO {
     @NotNull
     private LocalDate departureUpperDate;
     @NotNull
-    private LocalDate arrivalLowerDate;
+    private LocalDate returnLowerDate;
     @NotNull
-    private LocalDate arrivalUpperDate;
+    private LocalDate returnUpperDate;
 
     public String getReference() {
         return reference;
@@ -101,21 +101,21 @@ public class BookingQuoteDTO {
         return this;
     }
 
-    public LocalDate getArrivalLowerDate() {
-        return arrivalLowerDate;
+    public LocalDate getReturnLowerDate() {
+        return returnLowerDate;
     }
 
-    public BookingQuoteDTO setArrivalLowerDate(LocalDate arrivalLowerDate) {
-        this.arrivalLowerDate = arrivalLowerDate;
+    public BookingQuoteDTO setReturnLowerDate(LocalDate returnLowerDate) {
+        this.returnLowerDate = returnLowerDate;
         return this;
     }
 
-    public LocalDate getArrivalUpperDate() {
-        return arrivalUpperDate;
+    public LocalDate getReturnUpperDate() {
+        return returnUpperDate;
     }
 
-    public BookingQuoteDTO setArrivalUpperDate(LocalDate arrivalUpperDate) {
-        this.arrivalUpperDate = arrivalUpperDate;
+    public BookingQuoteDTO setReturnUpperDate(LocalDate returnUpperDate) {
+        this.returnUpperDate = returnUpperDate;
         return this;
     }
 }

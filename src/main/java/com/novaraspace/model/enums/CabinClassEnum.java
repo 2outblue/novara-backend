@@ -19,6 +19,18 @@ public enum CabinClassEnum {
         this.refundFee = refundFee;
     }
 
+    public static CabinClassEnum getEnumFromDisplayName(String displayName) {
+        if (displayName.equals(CabinClassEnum.FIRST.getDisplayName())) {
+            return CabinClassEnum.FIRST;
+        } else if (displayName.equals(CabinClassEnum.MIDDLE.getDisplayName())) {
+            return CabinClassEnum.MIDDLE;
+        } else if (displayName.equals(CabinClassEnum.LOWER.getDisplayName())) {
+            return CabinClassEnum.LOWER;
+        } else {
+            return null;
+        }
+    }
+
     public String getDisplayName() {
         return displayName;
     }

@@ -21,11 +21,11 @@ public class ChangeFlightsRequest {
     @NotEmpty
     private String quoteReference;
 
-    public @Valid BookingSearchParams getBookingParams() {
+    public BookingSearchParams getBookingParams() {
         return bookingParams;
     }
 
-    public ChangeFlightsRequest setBookingParams(@Valid BookingSearchParams bookingParams) {
+    public ChangeFlightsRequest setBookingParams(BookingSearchParams bookingParams) {
         this.bookingParams = bookingParams;
         return this;
     }

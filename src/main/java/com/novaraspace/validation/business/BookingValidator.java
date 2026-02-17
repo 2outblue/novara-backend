@@ -5,7 +5,11 @@ import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.repository.BookingQuoteRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BookingValidator {
@@ -47,13 +51,15 @@ public class BookingValidator {
 
         boolean validFlightClasses = checkValidCabinClasses(booking);
         boolean validPrices = validatePrices(booking);
+        boolean uniqueExtraServices = uniqueExtraServices(booking);
 
         return departureFlightExists
                 && returnFlightExistOnTwoWayBooking
                 && departureFlightValidDates
                 && returnFlightValidDates
                 && validFlightClasses
-                && validPrices;
+                && validPrices
+                && uniqueExtraServices;
     }
 
     private boolean checkValidCabinClasses(Booking booking) {
@@ -92,6 +98,17 @@ public class BookingValidator {
                 == normalizeDoublePrice(actualReturnPrice);
 
         return validDeparturePrice && validReturnPrice;
+    }
+
+    private boolean uniqueExtraServices(Booking booking) {
+        if (booking == null || booking.getExtraServices() == null) {
+            return true;
+        }
+        List<ExtraService> services = booking.getExtraServices();
+        return services.stream()
+                .map(ExtraService::getCode)
+                .distinct()
+                .count() == services.size();
     }
 
     // If you need that anywhere else, put it in the booking entity;
