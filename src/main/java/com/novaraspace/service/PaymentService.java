@@ -1,6 +1,5 @@
 package com.novaraspace.service;
 
-import com.novaraspace.model.domain.CreatePaymentCommand;
 import com.novaraspace.model.dto.payment.NewPaymentDTO;
 import com.novaraspace.model.entity.Payment;
 import com.novaraspace.model.mapper.PaymentMapper;

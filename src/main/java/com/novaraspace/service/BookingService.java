@@ -128,12 +128,28 @@ public class BookingService {
     }
 
     @Transactional
-    public ChangeFlightsStartResponse getResultForFlightChangeStart(FlightSearchQueryDTO queryDTO) {
-        FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(queryDTO);
-        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(queryDTO, flightSearchResultDTO);
+    public ChangeFlightsStartResponse getChangeFlightsStartResponse(ChangeFlightsStartRequest request) {
+        FlightSearchResultDTO initialResult = flightService
+                .getFlightSearchResult(request.getFlightSearchQuery());
+
+        String existingDepFlightId = request.getExistingDepFlightId();
+        List<FlightUiDTO> depFlightsWithoutExisting = initialResult.getDepartureFlights()
+                .stream().filter(f -> !f.getId().equals(existingDepFlightId))
+                .toList();
+
+        String existingRetFlightId = request.getExistingRetFlightId();
+        List<FlightUiDTO> retFlightsWithoutExisting = initialResult.getReturnFlights()
+                .stream().filter(f -> !f.getId().equals(existingRetFlightId))
+                .toList();
+
+        FlightSearchResultDTO finalResult = new FlightSearchResultDTO()
+                .setDepartureFlights(depFlightsWithoutExisting)
+                .setReturnFlights(retFlightsWithoutExisting)
+                .setLimits(initialResult.getLimits());
+        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(request.getFlightSearchQuery(), finalResult);
 
         return new ChangeFlightsStartResponse()
-                .setFlightSearchResult(flightSearchResultDTO)
+                .setFlightSearchResult(finalResult)
                 .setQuoteReference(bookingQuote.getReference());
     }
 

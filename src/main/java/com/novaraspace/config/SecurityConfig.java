@@ -54,7 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/booking/change-flights-start").permitAll()
                         .requestMatchers("/booking/change-flights-complete").permitAll()
                         .requestMatchers("/flight/search").permitAll()
-                        .requestMatchers("/manage/**").hasRole("ADMIN")
+//                        .requestMatchers("/manage/**").hasRole("ADMIN") //This interferes with the manage-booking routes - when an error response is returned in the manage-booking flow, sometimes its converted to a 401 by this
                         .anyRequest().authenticated()
 
                 )

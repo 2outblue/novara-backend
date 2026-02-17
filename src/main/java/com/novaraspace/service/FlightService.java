@@ -111,55 +111,6 @@ public class FlightService {
                 }).toList();
     }
 
-//    TODO: You need to refactor the padding range methods, also make the separation between the flights
-//     more equal (if there are 6 possible days of separation between departure and return, you can split
-//     3/3 for each instead of 6 for departure and 0 for return) - maybe if the actual separation is at least
-//     2x the minimum, you can just split in half ? (And if the sep days are an odd number assign the bigger
-//     half randomly ?).
-//     Or you can calculate the remainder separation days after minimum separation days, and split the remainder
-//     in half
-
-//    private LocalDate[] getPaddingRangeForDepartureFlight(FlightSearchQueryDTO queryDTO, double separationFactor) {
-//        LocalDate earliestPossibleDeparture = LocalDate.now().plusDays(1);
-//        LocalDate earliestDepartureWithinPaddingRange = queryDTO.getDepartureDate().minusDays(paddingRange);
-//
-//        int separationDays = (int) Math.round(separationFactor);
-//
-//        LocalDate latestPossibleDeparture = queryDTO.getReturnDate().minusDays(separationDays);
-//        LocalDate latestDepartureWithinPaddingRange = queryDTO.getDepartureDate().plusDays(paddingRange);
-//
-//        LocalDate trueEarliestDeparture = earliestPossibleDeparture.isBefore(earliestDepartureWithinPaddingRange)
-//                ? earliestDepartureWithinPaddingRange
-//                : earliestPossibleDeparture;
-//
-//        LocalDate trueLatestDeparture = latestPossibleDeparture.isAfter(latestDepartureWithinPaddingRange)
-//                ? latestDepartureWithinPaddingRange
-//                : latestPossibleDeparture;
-//
-//        return new LocalDate[]{trueEarliestDeparture, trueLatestDeparture};
-//    }
-//
-//    private LocalDate[] getPaddingRangeForReturnFlight(
-//            FlightSearchQueryDTO queryDTO,
-//            double separationFactor,
-//            LocalDate departureFlightUpperLimitDate
-//    ) {
-//        int separationDays = (int) Math.round(separationFactor);
-//        LocalDate earliestPossibleReturn = queryDTO.getDepartureDate().plusDays(separationDays);
-//
-//        LocalDate earliestPossibleReturnWithinLimits = earliestPossibleReturn.isBefore(departureFlightUpperLimitDate)
-//                ? departureFlightUpperLimitDate
-//                : earliestPossibleReturn;
-//        LocalDate earliestReturnWithinPaddingRange = queryDTO.getReturnDate().minusDays(paddingRange);
-//
-//        LocalDate trueEarliestReturn = earliestPossibleReturnWithinLimits.isBefore(earliestReturnWithinPaddingRange)
-//                ? earliestReturnWithinPaddingRange
-//                : earliestPossibleReturnWithinLimits;
-//        LocalDate trueLatestReturn = queryDTO.getReturnDate().plusDays(paddingRange);
-//        return new LocalDate[]{trueEarliestReturn, trueLatestReturn};
-//    }
-
-
     Optional<FlightInstance> findFlightByPublicId(String publicId) {
         return flightInstanceRepository.findByPublicId(publicId);
     }
