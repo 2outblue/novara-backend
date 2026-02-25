@@ -48,6 +48,9 @@ public class LocationService {
         return locationGroups.values().stream().toList();
     }
 
+    //TODO: Cache this OR better fetch all locations in @PostConstruct and then have them
+    // in memory as long as the app is alive - and just use this collection of locations
+    // instead of the repository in every other method as well
     public Location getLocationByCode(String code) {
         return locationRepository
                 .findByCode(code)

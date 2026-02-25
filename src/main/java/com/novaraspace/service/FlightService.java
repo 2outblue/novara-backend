@@ -2,19 +2,22 @@ package com.novaraspace.service;
 
 import com.novaraspace.component.FlightLimitsGenerator;
 import com.novaraspace.model.domain.FlightsWithinRangeRequest;
-import com.novaraspace.model.dto.flight.FlightLimitsDTO;
-import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
-import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
-import com.novaraspace.model.dto.flight.FlightUiDTO;
+import com.novaraspace.model.dto.flight.*;
 import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.entity.FlightTemplate;
 import com.novaraspace.model.entity.Location;
 import com.novaraspace.model.exception.FlightException;
 import com.novaraspace.model.mapper.FlightMapper;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.repository.FlightTemplateRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -61,16 +64,20 @@ public class FlightService {
 
 
     public FlightSearchResultDTO getFlightSearchResult(FlightSearchQueryDTO queryDTO) {
-        Location departureLocation = locationService.getLocationByCode(queryDTO.getDepartureCode());
-        Location arrivalLocation = locationService.getLocationByCode(queryDTO.getArrivalCode());
+//        Location departureLocation = locationService.getLocationByCode(queryDTO.getDepartureCode());
+//        Location arrivalLocation = locationService.getLocationByCode(queryDTO.getArrivalCode());
 
-        List<Long> departureTemplateIds = flightTemplateRepository
-                .findAllByDepartureAndArrivalLocationIds(departureLocation.getId(), arrivalLocation.getId())
-                .stream().map(fi -> fi.getId()).toList();
+//        List<Long> departureTemplateIds = flightTemplateRepository
+//                .findAllByDepartureAndArrivalLocationIds(departureLocation.getId(), arrivalLocation.getId())
+//                .stream().map(fi -> fi.getId()).toList();
 
-        List<Long> returnTemplateIds = flightTemplateRepository
-                .findAllByDepartureAndArrivalLocationIds(arrivalLocation.getId(), departureLocation.getId())
-                .stream().map(fi -> fi.getId()).toList();
+        //        List<Long> returnTemplateIds = flightTemplateRepository
+//                .findAllByDepartureAndArrivalLocationIds(arrivalLocation.getId(), departureLocation.getId())
+//                .stream().map(fi -> fi.getId()).toList();
+        String departureCode = queryDTO.getDepartureCode();
+        String arrivalCode = queryDTO.getArrivalCode();
+        List<Long> departureTemplateIds = getTemplateIdsByRouteCodes(departureCode, arrivalCode);
+        List<Long> returnTemplateIds = getTemplateIdsByRouteCodes(arrivalCode, departureCode);
         if (departureTemplateIds.isEmpty() || returnTemplateIds.isEmpty()) {throw FlightException.noAvailability();}
 
         FlightLimitsDTO limits = limitsGenerator.generateLimits(queryDTO);
@@ -98,6 +105,47 @@ public class FlightService {
                 .setDepartureFlights(departureFlights)
                 .setReturnFlights(returnFlights)
                 .setLimits(limits);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<FlightScheduleDTO> getFlightsScheduleResponse(FlightScheduleRequestDTO request) {
+        if (request.getDepartureDate() == null) {
+            request.setDepartureDate(LocalDate.now());
+        }
+
+        List<Long> templateIds = getTemplateIdsByRouteCodes(
+                request.getDepartureLocationCode(),
+                request.getArrivalLocationCode());
+        FlightsScheduleFetchParams params = new FlightsScheduleFetchParams(
+                templateIds,
+                request.getDepartureDate(),
+                request.getDepartureDate().plusDays(45)
+        );
+        Pageable pageable = PageRequest.of(
+                request.getPage(),
+                request.getSize(),
+                Sort.by("departureDate").ascending()
+        );
+
+        Page<FlightInstance> page = flightInstanceRepository.getFlightsForSchedule(params, pageable);
+        List<FlightScheduleDTO> flights = page.getContent().stream()
+                .map(flightMapper::instanceToScheduleDTO)
+                .toList();
+        return new PageResponse<FlightScheduleDTO>()
+                .setContent(flights)
+                .setPage(page.getNumber())
+                .setSize(page.getSize())
+                .setTotalElements(page.getTotalElements())
+                .setTotalPages(page.getTotalPages());
+    }
+
+    private List<Long> getTemplateIdsByRouteCodes(String departureCode, String arrivalCode) {
+        Location departureLocation = locationService.getLocationByCode(departureCode);
+        Location arrivalLocation = locationService.getLocationByCode(arrivalCode);
+
+        return flightTemplateRepository
+                .findAllByDepartureAndArrivalLocationIds(departureLocation.getId(), arrivalLocation.getId())
+                .stream().map(fi -> fi.getId()).toList();
     }
 
     private List<FlightInstance> getValidInstancesWithinRange(FlightsWithinRangeRequest request) {

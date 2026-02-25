@@ -2,6 +2,7 @@ package com.novaraspace.model.mapper;
 
 import com.novaraspace.model.dto.flight.BookedFlightDTO;
 import com.novaraspace.model.dto.flight.FlightLeg;
+import com.novaraspace.model.dto.flight.FlightScheduleDTO;
 import com.novaraspace.model.dto.flight.FlightUiDTO;
 import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.entity.FlightTemplate;
@@ -33,6 +34,25 @@ public abstract class FlightMapper {
                 .setVehicleType(vehicleName)
                 .setSelectedClass(null)
                 .setPrice(0.0);
+    }
+
+    public FlightScheduleDTO instanceToScheduleDTO(FlightInstance instance) {
+        FlightTemplate template = instance.getFlightTemplate();
+        String vehicleName = template.getVehicle().getName();
+
+        String schedule = template.getWeeklySchedule();
+        String regularity = schedule.equals("1111111")
+                ? "Daily flight"
+                : "Non-daily flight";
+
+        return new FlightScheduleDTO()
+                .setVehicleName(vehicleName)
+                .setFlightNumber(template.getFlightNumber())
+                .setRegularity(regularity)
+                .setDepartDate(instance.getDepartureDate())
+                .setArrivalDate(instance.getArrivalDate())
+                .setDepartCode(template.getDepartureLocation().getCode())
+                .setArriveCode(template.getArrivalLocation().getCode());
     }
 
     public FlightUiDTO instanceToFlightUiDTO(FlightInstance instance) {

@@ -120,7 +120,7 @@ public class FlightInstance extends BaseEntity {
 
         int availableSeatsAfterUnReserve = selectedClass.getAvailableSeats() + count;
         if (availableSeatsAfterUnReserve > cabinTotalSeats) {
-            //TODO: Throw some error here
+            //TODO: Throw some error here, (when finished with testing cancel features)
             return;
         }
         selectedClass.setAvailableSeats(availableSeatsAfterUnReserve);
