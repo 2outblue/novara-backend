@@ -1,16 +1,14 @@
 package com.novaraspace.model.dto.flight;
 
-import com.novaraspace.model.enums.FlightRegion;
 import com.novaraspace.model.enums.FlightStatus;
 import com.novaraspace.model.enums.VehicleAmenity;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 //TODO: Rename this to something like AvailableFlightDTO or something like that
 // Its not a general UI model as it contains the cabin classes with available seats,
 // and other data which is used only on flight selection...
-public class FlightUiDTO {
+public class AvailableFlightDTO {
     private String id;
     private FlightStatus status;
     private String flightNumber;
@@ -21,43 +19,43 @@ public class FlightUiDTO {
     private String[] requiredCertifs;
     private String vehicleType;
     private Set<VehicleAmenity> amenities;
-    private FlightCabinsUi cabins;
+    private AvailableCabinsDTO cabins;
     private int totalSpacesAvailable;
 
-    public static class FlightCabinsUi {
-        private CabinClassUi first;
-        private CabinClassUi middle;
-        private CabinClassUi lower;
+    public static class AvailableCabinsDTO {
+        private AvailableCabinClassDTO first;
+        private AvailableCabinClassDTO middle;
+        private AvailableCabinClassDTO lower;
 
-        public CabinClassUi getFirst() {
+        public AvailableCabinClassDTO getFirst() {
             return first;
         }
 
-        public FlightCabinsUi setFirst(CabinClassUi first) {
+        public AvailableCabinsDTO setFirst(AvailableCabinClassDTO first) {
             this.first = first;
             return this;
         }
 
-        public CabinClassUi getMiddle() {
+        public AvailableCabinClassDTO getMiddle() {
             return middle;
         }
 
-        public FlightCabinsUi setMiddle(CabinClassUi middle) {
+        public AvailableCabinsDTO setMiddle(AvailableCabinClassDTO middle) {
             this.middle = middle;
             return this;
         }
 
-        public CabinClassUi getLower() {
+        public AvailableCabinClassDTO getLower() {
             return lower;
         }
 
-        public FlightCabinsUi setLower(CabinClassUi lower) {
+        public AvailableCabinsDTO setLower(AvailableCabinClassDTO lower) {
             this.lower = lower;
             return this;
         }
     }
 
-    public static class CabinClassUi {
+    public static class AvailableCabinClassDTO {
         private int total;
         private int available;
         private double price;
@@ -67,7 +65,7 @@ public class FlightUiDTO {
             return total;
         }
 
-        public CabinClassUi setTotal(int total) {
+        public AvailableCabinClassDTO setTotal(int total) {
             this.total = total;
             return this;
         }
@@ -76,7 +74,7 @@ public class FlightUiDTO {
             return available;
         }
 
-        public CabinClassUi setAvailable(int available) {
+        public AvailableCabinClassDTO setAvailable(int available) {
             this.available = available;
             return this;
         }
@@ -85,7 +83,7 @@ public class FlightUiDTO {
             return price;
         }
 
-        public CabinClassUi setPrice(double price) {
+        public AvailableCabinClassDTO setPrice(double price) {
             this.price = price;
             return this;
         }
@@ -94,60 +92,18 @@ public class FlightUiDTO {
             return window;
         }
 
-        public CabinClassUi setWindow(boolean window) {
+        public AvailableCabinClassDTO setWindow(boolean window) {
             this.window = window;
             return this;
         }
     }
 
-//    public static class FlightLeg {
-//        private FlightRegion region;
-//        private String location;
-//        private LocalDateTime date;
-//        private int minimumOrbits;
-//
-//        public FlightRegion getRegion() {
-//            return region;
-//        }
-//
-//        public FlightLeg setRegion(FlightRegion region) {
-//            this.region = region;
-//            return this;
-//        }
-//
-//        public String getLocation() {
-//            return location;
-//        }
-//
-//        public FlightLeg setLocation(String location) {
-//            this.location = location;
-//            return this;
-//        }
-//
-//        public LocalDateTime getDate() {
-//            return date;
-//        }
-//
-//        public FlightLeg setDate(LocalDateTime date) {
-//            this.date = date;
-//            return this;
-//        }
-//
-//        public int getMinimumOrbits() {
-//            return minimumOrbits;
-//        }
-//
-//        public FlightLeg setMinimumOrbits(int minimumOrbits) {
-//            this.minimumOrbits = minimumOrbits;
-//            return this;
-//        }
-//    }
 
     public String getId() {
         return id;
     }
 
-    public FlightUiDTO setId(String id) {
+    public AvailableFlightDTO setId(String id) {
         this.id = id;
         return this;
     }
@@ -156,7 +112,7 @@ public class FlightUiDTO {
         return status;
     }
 
-    public FlightUiDTO setStatus(FlightStatus status) {
+    public AvailableFlightDTO setStatus(FlightStatus status) {
         this.status = status;
         return this;
     }
@@ -165,7 +121,7 @@ public class FlightUiDTO {
         return flightNumber;
     }
 
-    public FlightUiDTO setFlightNumber(String flightNumber) {
+    public AvailableFlightDTO setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
         return this;
     }
@@ -174,7 +130,7 @@ public class FlightUiDTO {
         return eva;
     }
 
-    public FlightUiDTO setEva(boolean eva) {
+    public AvailableFlightDTO setEva(boolean eva) {
         this.eva = eva;
         return this;
     }
@@ -183,7 +139,7 @@ public class FlightUiDTO {
         return departure;
     }
 
-    public FlightUiDTO setDeparture(FlightLeg departure) {
+    public AvailableFlightDTO setDeparture(FlightLeg departure) {
         this.departure = departure;
         return this;
     }
@@ -192,7 +148,7 @@ public class FlightUiDTO {
         return arrival;
     }
 
-    public FlightUiDTO setArrival(FlightLeg arrival) {
+    public AvailableFlightDTO setArrival(FlightLeg arrival) {
         this.arrival = arrival;
         return this;
     }
@@ -201,7 +157,7 @@ public class FlightUiDTO {
         return totalDurationMinutes;
     }
 
-    public FlightUiDTO setTotalDurationMinutes(int totalDurationMinutes) {
+    public AvailableFlightDTO setTotalDurationMinutes(int totalDurationMinutes) {
         this.totalDurationMinutes = totalDurationMinutes;
         return this;
     }
@@ -210,7 +166,7 @@ public class FlightUiDTO {
         return requiredCertifs;
     }
 
-    public FlightUiDTO setRequiredCertifs(String[] requiredCertifs) {
+    public AvailableFlightDTO setRequiredCertifs(String[] requiredCertifs) {
         this.requiredCertifs = requiredCertifs;
         return this;
     }
@@ -219,7 +175,7 @@ public class FlightUiDTO {
         return vehicleType;
     }
 
-    public FlightUiDTO setVehicleType(String vehicleType) {
+    public AvailableFlightDTO setVehicleType(String vehicleType) {
         this.vehicleType = vehicleType;
         return this;
     }
@@ -228,16 +184,16 @@ public class FlightUiDTO {
         return amenities;
     }
 
-    public FlightUiDTO setAmenities(Set<VehicleAmenity> amenities) {
+    public AvailableFlightDTO setAmenities(Set<VehicleAmenity> amenities) {
         this.amenities = amenities;
         return this;
     }
 
-    public FlightCabinsUi getCabins() {
+    public AvailableCabinsDTO getCabins() {
         return cabins;
     }
 
-    public FlightUiDTO setCabins(FlightCabinsUi cabins) {
+    public AvailableFlightDTO setCabins(AvailableCabinsDTO cabins) {
         this.cabins = cabins;
         return this;
     }
@@ -246,7 +202,7 @@ public class FlightUiDTO {
         return totalSpacesAvailable;
     }
 
-    public FlightUiDTO setTotalSpacesAvailable(int totalSpacesAvailable) {
+    public AvailableFlightDTO setTotalSpacesAvailable(int totalSpacesAvailable) {
         this.totalSpacesAvailable = totalSpacesAvailable;
         return this;
     }

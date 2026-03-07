@@ -1,5 +1,6 @@
 package com.novaraspace.model.dto.booking;
 
+import com.novaraspace.model.dto.flight.FlightReserveDTO;
 import com.novaraspace.validation.annotations.ValidPassengerIntraIds;
 import com.novaraspace.validation.annotations.ValidReturnFlightComponents;
 import jakarta.validation.Valid;
@@ -8,19 +9,12 @@ import jakarta.validation.constraints.*;
 import java.util.List;
 
 @ValidPassengerIntraIds
-@ValidReturnFlightComponents
 public class NewBookingDTO {
-    //TODO: Replace with the FlightReserveDTO i guess.
-    @NotEmpty
-    private String departureFlightId;
-    @NotEmpty
-    private String departureFlightClass;
+    @Valid
     @NotNull
-    @Positive
-    private Double departureFlightPrice;
-    private String returnFlightId;
-    private String returnFlightClass;
-    private Double returnFlightPrice;
+    private FlightReserveDTO departureFlight;
+    @Valid
+    private FlightReserveDTO returnFlight;
     @Valid
     private List<PassengerDTO> passengers;
     @Valid
@@ -28,72 +22,44 @@ public class NewBookingDTO {
     @Valid
     private List<ExtraServiceDTO> extraServices;
 
-//    @NotEmpty
-//    @Email
-//    private String billingEmail;
-//    @NotEmpty
-//    @Size(min = 5, max = 15)
-//    private String billingMobile;
-//    @NotEmpty
-//    private String cardHolder;
-//    @NotEmpty
-//    @Size(min = 4, max = 4)
-//    private String lastFourDigitsCard;
-
     @NotEmpty
     private String quoteReference;
 
     public String getDepartureFlightId() {
-        return departureFlightId;
+        return departureFlight.getId();
     }
-
-    public NewBookingDTO setDepartureFlightId(String departureFlightId) {
-        this.departureFlightId = departureFlightId;
-        return this;
-    }
-
     public String getDepartureFlightClass() {
-        return departureFlightClass;
+        return departureFlight.getFlightClass();
     }
-
-    public NewBookingDTO setDepartureFlightClass(String departureFlightClass) {
-        this.departureFlightClass = departureFlightClass;
-        return this;
-    }
-
     public Double getDepartureFlightPrice() {
-        return departureFlightPrice;
-    }
-
-    public NewBookingDTO setDepartureFlightPrice(Double departureFlightPrice) {
-        this.departureFlightPrice = departureFlightPrice;
-        return this;
+        return departureFlight.getPrice();
     }
 
     public String getReturnFlightId() {
-        return returnFlightId;
+        return returnFlight == null ? "" : returnFlight.getId();
     }
-
-    public NewBookingDTO setReturnFlightId(String returnFlightId) {
-        this.returnFlightId = returnFlightId;
-        return this;
-    }
-
     public String getReturnFlightClass() {
-        return returnFlightClass;
+        return returnFlight == null ? "" : returnFlight.getFlightClass();
+    }
+    public Double getReturnFlightPrice() {
+        return returnFlight == null ? 0.0 : returnFlight.getPrice();
     }
 
-    public NewBookingDTO setReturnFlightClass(String returnFlightClass) {
-        this.returnFlightClass = returnFlightClass;
+    public FlightReserveDTO getDepartureFlight() {
+        return departureFlight;
+    }
+
+    public NewBookingDTO setDepartureFlight(FlightReserveDTO departureFlight) {
+        this.departureFlight = departureFlight;
         return this;
     }
 
-    public Double getReturnFlightPrice() {
-        return returnFlightPrice;
+    public FlightReserveDTO getReturnFlight() {
+        return returnFlight;
     }
 
-    public NewBookingDTO setReturnFlightPrice(Double returnFlightPrice) {
-        this.returnFlightPrice = returnFlightPrice;
+    public NewBookingDTO setReturnFlight(FlightReserveDTO returnFlight) {
+        this.returnFlight = returnFlight;
         return this;
     }
 
@@ -124,41 +90,6 @@ public class NewBookingDTO {
         return this;
     }
 
-//    public String getBillingEmail() {
-//        return billingEmail;
-//    }
-//
-//    public NewBookingDTO setBillingEmail(String billingEmail) {
-//        this.billingEmail = billingEmail;
-//        return this;
-//    }
-//
-//    public String getBillingMobile() {
-//        return billingMobile;
-//    }
-//
-//    public NewBookingDTO setBillingMobile(String billingMobile) {
-//        this.billingMobile = billingMobile;
-//        return this;
-//    }
-//
-//    public String getCardHolder() {
-//        return cardHolder;
-//    }
-//
-//    public NewBookingDTO setCardHolder(String cardHolder) {
-//        this.cardHolder = cardHolder;
-//        return this;
-//    }
-//
-//    public String getLastFourDigitsCard() {
-//        return lastFourDigitsCard;
-//    }
-//
-//    public NewBookingDTO setLastFourDigitsCard(String lastFourDigitsCard) {
-//        this.lastFourDigitsCard = lastFourDigitsCard;
-//        return this;
-//    }
 
     public String getQuoteReference() {
         return quoteReference;

@@ -1,10 +1,8 @@
 package com.novaraspace.web;
 
 import com.novaraspace.model.dto.flight.*;
-import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.FlightService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +20,8 @@ public class FlightController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<FlightSearchResultDTO> getFlightSearchResult(@RequestBody FlightSearchQueryDTO flightSearchQueryDTO) {
-        FlightSearchResultDTO resultDTO = flightService.getFlightSearchResult(flightSearchQueryDTO);
+    public ResponseEntity<FlightSearchResultDTO> getFlightSearchResult(@RequestBody FlightSearchParamsDTO flightSearchParamsDTO) {
+        FlightSearchResultDTO resultDTO = flightService.getFlightSearchResult(flightSearchParamsDTO);
         return ResponseEntity.ok(resultDTO);
     }
 

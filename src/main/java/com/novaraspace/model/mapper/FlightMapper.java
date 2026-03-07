@@ -1,9 +1,9 @@
 package com.novaraspace.model.mapper;
 
+import com.novaraspace.model.dto.flight.AvailableFlightDTO;
 import com.novaraspace.model.dto.flight.BookedFlightDTO;
 import com.novaraspace.model.dto.flight.FlightLeg;
 import com.novaraspace.model.dto.flight.FlightScheduleDTO;
-import com.novaraspace.model.dto.flight.FlightUiDTO;
 import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.entity.FlightTemplate;
 import com.novaraspace.model.entity.Location;
@@ -55,7 +55,7 @@ public abstract class FlightMapper {
                 .setArriveCode(template.getArrivalLocation().getCode());
     }
 
-    public FlightUiDTO instanceToFlightUiDTO(FlightInstance instance) {
+    public AvailableFlightDTO instanceToFlightUiDTO(FlightInstance instance) {
         FlightTemplate template = instance.getFlightTemplate();
         Vehicle vehicle = template.getVehicle();
 
@@ -76,30 +76,30 @@ public abstract class FlightMapper {
 //                .setDate(instance.getArrivalDate())
 //                .setMinimumOrbits(template.getOrbitsArrival());
 
-        FlightUiDTO.CabinClassUi firstClass = new FlightUiDTO.CabinClassUi()
+        AvailableFlightDTO.AvailableCabinClassDTO firstClass = new AvailableFlightDTO.AvailableCabinClassDTO()
                 .setTotal(vehicle.getFirstClass().getTotalSeats())
                 .setAvailable(instance.getFirstClass().getAvailableSeats())
                 .setPrice(instance.getFirstClass().getBasePrice())
                 .setWindow(vehicle.getFirstClass().isWindowAvailable());
 
-        FlightUiDTO.CabinClassUi middleClass = new FlightUiDTO.CabinClassUi()
+        AvailableFlightDTO.AvailableCabinClassDTO middleClass = new AvailableFlightDTO.AvailableCabinClassDTO()
                 .setTotal(vehicle.getMiddleClass().getTotalSeats())
                 .setAvailable(instance.getMiddleClass().getAvailableSeats())
                 .setPrice(instance.getMiddleClass().getBasePrice())
                 .setWindow(vehicle.getMiddleClass().isWindowAvailable());
 
-        FlightUiDTO.CabinClassUi lowerClass = new FlightUiDTO.CabinClassUi()
+        AvailableFlightDTO.AvailableCabinClassDTO lowerClass = new AvailableFlightDTO.AvailableCabinClassDTO()
                 .setTotal(vehicle.getLowerClass().getTotalSeats())
                 .setAvailable(instance.getLowerClass().getAvailableSeats())
                 .setPrice(instance.getLowerClass().getBasePrice())
                 .setWindow(vehicle.getLowerClass().isWindowAvailable());
 
-        FlightUiDTO.FlightCabinsUi cabins = new FlightUiDTO.FlightCabinsUi()
+        AvailableFlightDTO.AvailableCabinsDTO cabins = new AvailableFlightDTO.AvailableCabinsDTO()
                 .setFirst(firstClass)
                 .setMiddle(middleClass)
                 .setLower(lowerClass);
 
-        return new FlightUiDTO()
+        return new AvailableFlightDTO()
                 .setId(instance.getPublicId())
                 .setStatus(instance.getStatus())
                 .setFlightNumber(template.getFlightNumber())

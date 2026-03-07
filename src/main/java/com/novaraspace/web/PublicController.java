@@ -1,7 +1,5 @@
 package com.novaraspace.web;
 
-import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
-import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.dto.flight.RouteAvailabilityRequestDTO;
 import com.novaraspace.model.dto.location.LocationGroupDTO;
 import com.novaraspace.service.FlightService;

@@ -1,28 +1,26 @@
 package com.novaraspace.model.dto.flight;
 
-import com.novaraspace.model.entity.FlightInstance;
-
 import java.util.List;
 
 public class FlightSearchResultDTO {
-    private List<FlightUiDTO> departureFlights;
-    private List<FlightUiDTO> returnFlights;
+    private List<AvailableFlightDTO> departureFlights;
+    private List<AvailableFlightDTO> returnFlights;
     private FlightLimitsDTO limits;
 
-    public List<FlightUiDTO> getDepartureFlights() {
+    public List<AvailableFlightDTO> getDepartureFlights() {
         return departureFlights;
     }
 
-    public FlightSearchResultDTO setDepartureFlights(List<FlightUiDTO> departureFlights) {
+    public FlightSearchResultDTO setDepartureFlights(List<AvailableFlightDTO> departureFlights) {
         this.departureFlights = departureFlights;
         return this;
     }
 
-    public List<FlightUiDTO> getReturnFlights() {
+    public List<AvailableFlightDTO> getReturnFlights() {
         return returnFlights;
     }
 
-    public FlightSearchResultDTO setReturnFlights(List<FlightUiDTO> returnFlights) {
+    public FlightSearchResultDTO setReturnFlights(List<AvailableFlightDTO> returnFlights) {
         this.returnFlights = returnFlights;
         return this;
     }

@@ -1,6 +1,6 @@
 package com.novaraspace.model.dto.booking;
 
-import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
+import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,17 +8,17 @@ import jakarta.validation.constraints.NotNull;
 public class ChangeFlightsStartRequest {
     @NotNull
     @Valid
-    private FlightSearchQueryDTO flightSearchQuery;
+    private FlightSearchParamsDTO flightSearchParams;
     @NotEmpty
     private String existingDepFlightId;
     private String existingRetFlightId;
 
-    public FlightSearchQueryDTO getFlightSearchQuery() {
-        return flightSearchQuery;
+    public FlightSearchParamsDTO getFlightSearchParams() {
+        return flightSearchParams;
     }
 
-    public ChangeFlightsStartRequest setFlightSearchQuery(FlightSearchQueryDTO flightSearchQuery) {
-        this.flightSearchQuery = flightSearchQuery;
+    public ChangeFlightsStartRequest setFlightSearchParams(FlightSearchParamsDTO flightSearchParams) {
+        this.flightSearchParams = flightSearchParams;
         return this;
     }
 

@@ -63,9 +63,9 @@ public class FlightService {
     }
 
 
-    public FlightSearchResultDTO getFlightSearchResult(FlightSearchQueryDTO queryDTO) {
-//        Location departureLocation = locationService.getLocationByCode(queryDTO.getDepartureCode());
-//        Location arrivalLocation = locationService.getLocationByCode(queryDTO.getArrivalCode());
+    public FlightSearchResultDTO getFlightSearchResult(FlightSearchParamsDTO paramsDTO) {
+//        Location departureLocation = locationService.getLocationByCode(paramsDTO.getDepartureCode());
+//        Location arrivalLocation = locationService.getLocationByCode(paramsDTO.getArrivalCode());
 
 //        List<Long> departureTemplateIds = flightTemplateRepository
 //                .findAllByDepartureAndArrivalLocationIds(departureLocation.getId(), arrivalLocation.getId())
@@ -74,20 +74,20 @@ public class FlightService {
         //        List<Long> returnTemplateIds = flightTemplateRepository
 //                .findAllByDepartureAndArrivalLocationIds(arrivalLocation.getId(), departureLocation.getId())
 //                .stream().map(fi -> fi.getId()).toList();
-        String departureCode = queryDTO.getDepartureCode();
-        String arrivalCode = queryDTO.getArrivalCode();
+        String departureCode = paramsDTO.getDepartureCode();
+        String arrivalCode = paramsDTO.getArrivalCode();
         List<Long> departureTemplateIds = getTemplateIdsByRouteCodes(departureCode, arrivalCode);
         List<Long> returnTemplateIds = getTemplateIdsByRouteCodes(arrivalCode, departureCode);
         if (departureTemplateIds.isEmpty() || returnTemplateIds.isEmpty()) {throw FlightException.noAvailability();}
 
-        FlightLimitsDTO limits = limitsGenerator.generateLimits(queryDTO);
+        FlightLimitsDTO limits = limitsGenerator.generateLimits(paramsDTO);
 
         FlightsWithinRangeRequest departureRequest = new FlightsWithinRangeRequest(
                 departureTemplateIds,
                 limits.getDepartureLowerDate(),
                 limits.getDepartureUpperDate(),
-                queryDTO.getTotalPaxCount());
-        List<FlightUiDTO> departureFlights = getValidInstancesWithinRange(departureRequest)
+                paramsDTO.getTotalPaxCount());
+        List<AvailableFlightDTO> departureFlights = getValidInstancesWithinRange(departureRequest)
                 .stream().map(flightMapper::instanceToFlightUiDTO)
                 .toList();
 
@@ -95,8 +95,8 @@ public class FlightService {
                 returnTemplateIds,
                 limits.getReturnLowerDate(),
                 limits.getReturnUpperDate(),
-                queryDTO.getTotalPaxCount());
-        List<FlightUiDTO> returnFlights = getValidInstancesWithinRange(returnRequest)
+                paramsDTO.getTotalPaxCount());
+        List<AvailableFlightDTO> returnFlights = getValidInstancesWithinRange(returnRequest)
                 .stream().map(flightMapper::instanceToFlightUiDTO)
                 .toList();
 

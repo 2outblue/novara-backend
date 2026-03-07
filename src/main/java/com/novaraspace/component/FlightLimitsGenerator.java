@@ -3,8 +3,7 @@ package com.novaraspace.component;
 import com.novaraspace.model.domain.PaddingRangeParams;
 import com.novaraspace.model.domain.PaddingRangeResult;
 import com.novaraspace.model.dto.flight.FlightLimitsDTO;
-import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
-import com.novaraspace.model.entity.Location;
+import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.exception.FailedOperationException;
 import com.novaraspace.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +23,7 @@ public class FlightLimitsGenerator {
         this.locationRepository = locationRepository;
     }
 
-    public FlightLimitsDTO generateLimits(FlightSearchQueryDTO queryDTO) {
+    public FlightLimitsDTO generateLimits(FlightSearchParamsDTO queryDTO) {
         if (queryDTO == null || queryDTO.getDepartureDate() == null) {
             throw new FailedOperationException();
         }

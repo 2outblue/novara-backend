@@ -3,9 +3,9 @@ package com.novaraspace.service;
 import com.novaraspace.component.BookingReferenceGenerator;
 import com.novaraspace.component.DataMasker;
 import com.novaraspace.model.dto.booking.*;
-import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
+import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
-import com.novaraspace.model.dto.flight.FlightUiDTO;
+import com.novaraspace.model.dto.flight.AvailableFlightDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.FlightInstance;
 import com.novaraspace.model.entity.Passenger;
@@ -58,9 +58,9 @@ public class BookingService {
         this.changeFlightValidator = changeFlightValidator;
     }
 
-    public BookingStartResultDTO getResultForNewBookingStart(FlightSearchQueryDTO flightSearchQueryDTO) {
-        FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(flightSearchQueryDTO);
-        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(flightSearchQueryDTO, flightSearchResultDTO);
+    public BookingStartResultDTO getResultForNewBookingStart(FlightSearchParamsDTO flightSearchParamsDTO) {
+        FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(flightSearchParamsDTO);
+        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(flightSearchParamsDTO, flightSearchResultDTO);
 
         return new BookingStartResultDTO()
                 .setFlightSearchResult(flightSearchResultDTO)
@@ -130,15 +130,15 @@ public class BookingService {
     @Transactional
     public ChangeFlightsStartResponse getChangeFlightsStartResponse(ChangeFlightsStartRequest request) {
         FlightSearchResultDTO initialResult = flightService
-                .getFlightSearchResult(request.getFlightSearchQuery());
+                .getFlightSearchResult(request.getFlightSearchParams());
 
         String existingDepFlightId = request.getExistingDepFlightId();
-        List<FlightUiDTO> depFlightsWithoutExisting = initialResult.getDepartureFlights()
+        List<AvailableFlightDTO> depFlightsWithoutExisting = initialResult.getDepartureFlights()
                 .stream().filter(f -> !f.getId().equals(existingDepFlightId))
                 .toList();
 
         String existingRetFlightId = request.getExistingRetFlightId();
-        List<FlightUiDTO> retFlightsWithoutExisting = initialResult.getReturnFlights()
+        List<AvailableFlightDTO> retFlightsWithoutExisting = initialResult.getReturnFlights()
                 .stream().filter(f -> !f.getId().equals(existingRetFlightId))
                 .toList();
 
@@ -146,7 +146,7 @@ public class BookingService {
                 .setDepartureFlights(depFlightsWithoutExisting)
                 .setReturnFlights(retFlightsWithoutExisting)
                 .setLimits(initialResult.getLimits());
-        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(request.getFlightSearchQuery(), finalResult);
+        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(request.getFlightSearchParams(), finalResult);
 
         return new ChangeFlightsStartResponse()
                 .setFlightSearchResult(finalResult)

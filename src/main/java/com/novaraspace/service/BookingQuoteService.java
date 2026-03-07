@@ -2,7 +2,7 @@ package com.novaraspace.service;
 
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.model.dto.booking.BookingQuoteDTO;
-import com.novaraspace.model.dto.flight.FlightSearchQueryDTO;
+import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.exception.BookingException;
@@ -34,14 +34,14 @@ public class BookingQuoteService {
         return quoteRepository.findByReference(reference);
     }
 
-    public BookingQuoteDTO createNewQuote(FlightSearchQueryDTO searchQuery, FlightSearchResultDTO searchResult) {
+    public BookingQuoteDTO createNewQuote(FlightSearchParamsDTO searchParams, FlightSearchResultDTO searchResult) {
         BookingQuoteDTO dto = new BookingQuoteDTO()
                 .setReference(Base64.encode(UUID.randomUUID().toString()).toString())
                 .setExpiresAt(LocalDateTime.now().plusHours(1))
-                .setOneWay(!searchQuery.hasReturnFlight())
-                .setPaxCount(searchQuery.getTotalPaxCount())
-                .setDepartureCode(searchQuery.getDepartureCode())
-                .setArrivalCode(searchQuery.getArrivalCode())
+                .setOneWay(!searchParams.hasReturnFlight())
+                .setPaxCount(searchParams.getTotalPaxCount())
+                .setDepartureCode(searchParams.getDepartureCode())
+                .setArrivalCode(searchParams.getArrivalCode())
                 .setDepartureLowerDate(searchResult.getLimits().getDepartureLowerDate())
                 .setDepartureUpperDate(searchResult.getLimits().getDepartureUpperDate())
                 .setReturnLowerDate(searchResult.getLimits().getReturnLowerDate())

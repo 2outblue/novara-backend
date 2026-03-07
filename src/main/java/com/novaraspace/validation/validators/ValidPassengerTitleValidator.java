@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class ValidPassengerTitleValidator implements ConstraintValidator<ValidPassengerTitle, String> {
 
-    private final Set<String> validTitles = new HashSet<>(Arrays.asList("Mr", "Mrs", "Miss", "Ms", "Other"));
+    private final Set<String> validTitles = new HashSet<>(Arrays.asList("Mr", "Mrs", "Miss", "Ms", "Other", "Jr"));
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

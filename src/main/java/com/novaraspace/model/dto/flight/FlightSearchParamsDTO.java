@@ -2,7 +2,7 @@ package com.novaraspace.model.dto.flight;
 
 import java.time.LocalDate;
 
-public class FlightSearchQueryDTO {
+public class FlightSearchParamsDTO {
 
 //    TODO: do validation on this
     private String departureCode;
@@ -16,7 +16,7 @@ public class FlightSearchQueryDTO {
         return departureCode;
     }
 
-    public FlightSearchQueryDTO setDepartureCode(String departureCode) {
+    public FlightSearchParamsDTO setDepartureCode(String departureCode) {
         this.departureCode = departureCode;
         return this;
     }
@@ -25,7 +25,7 @@ public class FlightSearchQueryDTO {
         return arrivalCode;
     }
 
-    public FlightSearchQueryDTO setArrivalCode(String arrivalCode) {
+    public FlightSearchParamsDTO setArrivalCode(String arrivalCode) {
         this.arrivalCode = arrivalCode;
         return this;
     }
@@ -34,7 +34,7 @@ public class FlightSearchQueryDTO {
         return departureDate;
     }
 
-    public FlightSearchQueryDTO setDepartureDate(LocalDate departureDate) {
+    public FlightSearchParamsDTO setDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
         return this;
     }
@@ -43,7 +43,7 @@ public class FlightSearchQueryDTO {
         return returnDate;
     }
 
-    public FlightSearchQueryDTO setReturnDate(LocalDate returnDate) {
+    public FlightSearchParamsDTO setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
         return this;
     }
@@ -52,7 +52,7 @@ public class FlightSearchQueryDTO {
         return totalPaxCount;
     }
 
-    public FlightSearchQueryDTO setTotalPaxCount(int totalPaxCount) {
+    public FlightSearchParamsDTO setTotalPaxCount(int totalPaxCount) {
         this.totalPaxCount = totalPaxCount;
         return this;
     }
@@ -61,7 +61,7 @@ public class FlightSearchQueryDTO {
         return returnFlight;
     }
 
-    public FlightSearchQueryDTO setReturnFlight(boolean returnFlight) {
+    public FlightSearchParamsDTO setReturnFlight(boolean returnFlight) {
         this.returnFlight = returnFlight;
         return this;
     }

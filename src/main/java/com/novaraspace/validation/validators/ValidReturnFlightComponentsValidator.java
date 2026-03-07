@@ -6,7 +6,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class ValidReturnFlightComponentsValidator implements ConstraintValidator<ValidReturnFlightComponents, NewBookingDTO> {
-
+    // DEPRECATED as FlightReserveDTO is used which with the @Valid
+    // annotation (and NOT using @NotNull) does the same thing as this
     @Override
     public boolean isValid(NewBookingDTO dto, ConstraintValidatorContext context) {
         String returnFlightId = dto.getReturnFlightId();
