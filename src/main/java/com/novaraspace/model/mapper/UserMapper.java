@@ -1,12 +1,13 @@
 package com.novaraspace.model.mapper;
 
 import com.nimbusds.jose.util.Base64;
-import com.novaraspace.model.dto.user.InitialAccountDataDTO;
+import com.novaraspace.model.dto.user.AccountDTO;
+import com.novaraspace.model.dto.user.UserDocumentDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.entity.UserDocument;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -33,7 +34,7 @@ public abstract class UserMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public abstract InitialAccountDataDTO entityToInitialData(User user);
+    public abstract AccountDTO entityToAccountDTO(User user);
 
     @Mapping(target = "password", ignore = true)
     protected abstract User userRegisterDtoToEntity(UserRegisterDTO dto);
@@ -56,5 +57,7 @@ public abstract class UserMapper {
     }
 
     public abstract UserRegisterDTO userToRegisterDTO(User user);
+
+    public abstract UserDocumentDTO documentToDto(UserDocument document);
 
 }

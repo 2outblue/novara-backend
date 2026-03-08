@@ -21,7 +21,7 @@ public class BookingController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<BookingStartResultDTO> startBookingProcess(@RequestBody FlightSearchParamsDTO paramsDTO) {
+    public ResponseEntity<BookingStartResultDTO> startBookingProcess(@Valid @RequestBody FlightSearchParamsDTO paramsDTO) {
         BookingStartResultDTO result = bookingService.getResultForNewBookingStart(paramsDTO);
         return ResponseEntity.ok(result);
     }

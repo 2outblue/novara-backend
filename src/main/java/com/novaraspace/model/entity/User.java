@@ -1,13 +1,19 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.dto.user.UserDocumentUpdateRequest;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.sql.Types.VARCHAR;
 
@@ -45,7 +51,28 @@ public class User extends BaseEntity {
     private boolean newsletter;
     private boolean marketing = false;
 
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "user_id")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_documents", joinColumns = @JoinColumn(name = "user_id"))
+    @Size(max = 10)
+    private List<UserDocument> documents = new ArrayList<>();
+
     public User() {
+    }
+
+    public void updateDocument(UserDocumentUpdateRequest req) {
+        List<UserDocument> updatedDocs = documents.stream()
+                .filter(doc -> !doc.getDocId().equals(req.getDocId())).collect(Collectors.toList());
+
+        if (req.getAction().equals("upload")) {
+            UserDocument document = new UserDocument()
+                    .setDocId(req.getDocId())
+                    .setFilename(req.getFilename())
+                    .setUploadedAt(LocalDate.now());
+            updatedDocs.add(document);
+        }
+        this.setDocuments(updatedDocs);
     }
 
     public String getPublicId() {
@@ -225,6 +252,15 @@ public class User extends BaseEntity {
 
     public User setMarketing(boolean marketing) {
         this.marketing = marketing;
+        return this;
+    }
+
+    public List<UserDocument> getDocuments() {
+        return documents;
+    }
+
+    public User setDocuments(List<UserDocument> documents) {
+        this.documents = documents;
         return this;
     }
 }

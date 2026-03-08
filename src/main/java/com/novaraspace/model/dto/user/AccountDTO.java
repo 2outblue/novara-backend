@@ -2,8 +2,9 @@ package com.novaraspace.model.dto.user;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
-public class InitialAccountDataDTO {
+public class AccountDTO {
 
     private String publicId;
     private Instant createdAt;
@@ -18,15 +19,16 @@ public class InitialAccountDataDTO {
     private String country;
     private boolean newsletter;
     private boolean marketing;
+    private List<UserDocumentDTO> documents;
 
-    public InitialAccountDataDTO() {
+    public AccountDTO() {
     }
 
     public String getPublicId() {
         return publicId;
     }
 
-    public InitialAccountDataDTO setPublicId(String publicId) {
+    public AccountDTO setPublicId(String publicId) {
         this.publicId = publicId;
         return this;
     }
@@ -35,7 +37,7 @@ public class InitialAccountDataDTO {
         return createdAt;
     }
 
-    public InitialAccountDataDTO setCreatedAt(Instant createdAt) {
+    public AccountDTO setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -44,7 +46,7 @@ public class InitialAccountDataDTO {
         return firstName;
     }
 
-    public InitialAccountDataDTO setFirstName(String firstName) {
+    public AccountDTO setFirstName(String firstName) {
         this.firstName = firstName;
         return this;
     }
@@ -53,7 +55,7 @@ public class InitialAccountDataDTO {
         return lastName;
     }
 
-    public InitialAccountDataDTO setLastName(String lastName) {
+    public AccountDTO setLastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
@@ -62,7 +64,7 @@ public class InitialAccountDataDTO {
         return dob;
     }
 
-    public InitialAccountDataDTO setDob(Date dob) {
+    public AccountDTO setDob(Date dob) {
         this.dob = dob;
         return this;
     }
@@ -71,7 +73,7 @@ public class InitialAccountDataDTO {
         return email;
     }
 
-    public InitialAccountDataDTO setEmail(String email) {
+    public AccountDTO setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -80,7 +82,7 @@ public class InitialAccountDataDTO {
         return countryCode;
     }
 
-    public InitialAccountDataDTO setCountryCode(String countryCode) {
+    public AccountDTO setCountryCode(String countryCode) {
         this.countryCode = countryCode;
         return this;
     }
@@ -89,7 +91,7 @@ public class InitialAccountDataDTO {
         return phoneNumber;
     }
 
-    public InitialAccountDataDTO setPhoneNumber(String phoneNumber) {
+    public AccountDTO setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
     }
@@ -98,7 +100,7 @@ public class InitialAccountDataDTO {
         return addressLine1;
     }
 
-    public InitialAccountDataDTO setAddressLine1(String addressLine1) {
+    public AccountDTO setAddressLine1(String addressLine1) {
         this.addressLine1 = addressLine1;
         return this;
     }
@@ -107,7 +109,7 @@ public class InitialAccountDataDTO {
         return addressLine2;
     }
 
-    public InitialAccountDataDTO setAddressLine2(String addressLine2) {
+    public AccountDTO setAddressLine2(String addressLine2) {
         this.addressLine2 = addressLine2;
         return this;
     }
@@ -116,7 +118,7 @@ public class InitialAccountDataDTO {
         return country;
     }
 
-    public InitialAccountDataDTO setCountry(String country) {
+    public AccountDTO setCountry(String country) {
         this.country = country;
         return this;
     }
@@ -125,7 +127,7 @@ public class InitialAccountDataDTO {
         return newsletter;
     }
 
-    public InitialAccountDataDTO setNewsletter(boolean newsletter) {
+    public AccountDTO setNewsletter(boolean newsletter) {
         this.newsletter = newsletter;
         return this;
     }
@@ -134,8 +136,17 @@ public class InitialAccountDataDTO {
         return marketing;
     }
 
-    public InitialAccountDataDTO setMarketing(boolean marketing) {
+    public AccountDTO setMarketing(boolean marketing) {
         this.marketing = marketing;
+        return this;
+    }
+
+    public List<UserDocumentDTO> getDocuments() {
+        return documents;
+    }
+
+    public AccountDTO setDocuments(List<UserDocumentDTO> documents) {
+        this.documents = documents;
         return this;
     }
 }

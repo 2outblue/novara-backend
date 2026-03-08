@@ -25,7 +25,10 @@ public class Booking extends BaseEntity {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Passenger> passengers = new ArrayList<>();
 
+    //TODO: Probably make this @ElementCollection and table and the
+    // ExtraService as @Embeddable like the UserDocument in User
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "booking_id")
     private List<ExtraService> extraServices = new ArrayList<>();
 
     private String contactCountryCode;

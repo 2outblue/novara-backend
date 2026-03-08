@@ -3,6 +3,7 @@ package com.novaraspace.init;
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.entity.UserDocument;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
 import com.novaraspace.model.mapper.UserMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +64,12 @@ public class UserDBInit implements CommandLineRunner {
                         .setAddressLine2("Main str., 234, 1000")
                         .setNewsletter(false)
                         .setMarketing(false)
+                        .setDocuments(Arrays.asList(
+                                new UserDocument()
+                                        .setDocId("SMC-002")
+                                        .setFilename("my-file.pdf")
+                                        .setUploadedAt(LocalDate.of(2026, 3, 7))
+                        ))
 
                         .setCreatedAt(Instant.now())
                         .setAuthId(Base64.encode(UUID.randomUUID().toString()).toString())

@@ -1,9 +1,7 @@
 package com.novaraspace.service;
 
 import com.novaraspace.model.dto.auth.EmailDTO;
-import com.novaraspace.model.dto.user.InitialAccountDataDTO;
-import com.novaraspace.model.dto.user.UpdateFieldDTO;
-import com.novaraspace.model.dto.user.UserRegisterDTO;
+import com.novaraspace.model.dto.user.*;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
@@ -15,10 +13,6 @@ import com.novaraspace.util.CountryCodeLoader;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -66,9 +59,9 @@ public class UserService {
         user.setLastLoginAt(Instant.now());
     }
 
-    public InitialAccountDataDTO getInitialAccountData(String authId) {
+    public AccountDTO getAccountDTO(String authId) {
         User user = userRepository.findByAuthId(authId).orElseThrow(UserException::notFound);
-        return userMapper.entityToInitialData(user);
+        return userMapper.entityToAccountDTO(user);
     }
 
     public EmailDTO getEmailByAuthId(String authId) {
@@ -77,6 +70,19 @@ public class UserService {
     }
 
     @Transactional
+    public UserDocumentDTO[] updateUserDocument(UserDocumentUpdateRequest request, String authId) {
+        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::updateFailed);
+        user.updateDocument(request);
+
+        return user.getDocuments().stream().map(userMapper::documentToDto)
+                .toArray(UserDocumentDTO[]::new);
+    }
+
+
+    @Transactional
+    //TODO Definitely move most of the logic for this to a component or in the domain!
+    // And rename the dto and methods to something to do with settings?
+    // and probably replace all fieldUpdateFailed exceptions with just updateFailed
     public List<UpdateFieldDTO> updateFields(List<UpdateFieldDTO> updates, String authId) {
         if (updates == null || updates.isEmpty()) {throw UserException.fieldUpdateFailed();}
 
@@ -132,6 +138,7 @@ public class UserService {
     public Optional<String> getAuthIdByEmail(String email) { return userRepository.getAuthIdByEmail(email);}
     public Optional<User> getEntityByEmail(String email) { return userRepository.findByEmail(email); }
 
+    //TODO Can you replace the BiConsumer with a func that returns a boolean? this way you can just throw once
     private Map<String, BiConsumer<User, Object>> setFieldUpdaters() {
         return Map.of(
                 "countryCode", (u, v) -> {

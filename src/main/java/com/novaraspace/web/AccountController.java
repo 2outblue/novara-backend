@@ -1,9 +1,12 @@
 package com.novaraspace.web;
 
 import com.novaraspace.model.dto.auth.EmailDTO;
-import com.novaraspace.model.dto.user.InitialAccountDataDTO;
+import com.novaraspace.model.dto.user.AccountDTO;
 import com.novaraspace.model.dto.user.UpdateFieldDTO;
+import com.novaraspace.model.dto.user.UserDocumentDTO;
+import com.novaraspace.model.dto.user.UserDocumentUpdateRequest;
 import com.novaraspace.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,8 @@ public class AccountController {
     }
 
     @GetMapping("/initial")
-    public ResponseEntity<InitialAccountDataDTO> loadInitialData(Authentication authentication) {
-        InitialAccountDataDTO data = userService.getInitialAccountData(authentication.getName());
+    public ResponseEntity<AccountDTO> getAccountDTO(Authentication authentication) {
+        AccountDTO data = userService.getAccountDTO(authentication.getName());
         return ResponseEntity.ok(data);
     }
 
@@ -36,5 +39,11 @@ public class AccountController {
     public ResponseEntity<List<UpdateFieldDTO>> updateAccountData(@RequestBody List<UpdateFieldDTO> updates, Authentication authentication) {
         List<UpdateFieldDTO> completedUpdates = userService.updateFields(updates, authentication.getName());
         return ResponseEntity.ok(completedUpdates);
+    }
+
+    @PatchMapping("/update-doc")
+    public ResponseEntity<UserDocumentDTO[]> updateUserDoc(@Valid @RequestBody UserDocumentUpdateRequest req, Authentication authentication) {
+        UserDocumentDTO[] docs = userService.updateUserDocument(req, authentication.getName());
+        return ResponseEntity.ok(docs);
     }
 }

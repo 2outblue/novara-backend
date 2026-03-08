@@ -1,14 +1,24 @@
 package com.novaraspace.model.dto.flight;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 public class FlightSearchParamsDTO {
-
-//    TODO: do validation on this
+    @NotNull
+    @Size(min = 3, max = 4)
     private String departureCode;
+    @NotNull
+    @Size(min = 3, max = 4)
     private String arrivalCode;
+    @NotNull
+    @Future
     private LocalDate departureDate;
     private LocalDate returnDate;
+    @Min(1)
     private int totalPaxCount;
     private boolean returnFlight;
 
