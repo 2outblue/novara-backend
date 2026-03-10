@@ -1,5 +1,6 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.dto.user.AddCardDTO;
 import com.novaraspace.model.dto.user.UserDocumentUpdateRequest;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
@@ -58,6 +59,11 @@ public class User extends BaseEntity {
     @Size(max = 10)
     private List<UserDocument> documents = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_cards", joinColumns = @JoinColumn(name = "user_id"))
+    @Size(max = 10)
+    private List<UserPaymentCard> cards = new ArrayList<>();
+
     public User() {
     }
 
@@ -66,13 +72,27 @@ public class User extends BaseEntity {
                 .filter(doc -> !doc.getDocId().equals(req.getDocId())).collect(Collectors.toList());
 
         if (req.getAction().equals("upload")) {
+            if (documents.size() >= 10) { return; };
             UserDocument document = new UserDocument()
                     .setDocId(req.getDocId())
                     .setFilename(req.getFilename())
-                    .setUploadedAt(LocalDate.now());
+                    .setUploadedOn(LocalDate.now());
             updatedDocs.add(document);
         }
         this.setDocuments(updatedDocs);
+    }
+
+
+    public void addCard(UserPaymentCard card) {
+        if (cards.size() < 11) {
+            cards.add(card);
+        }
+    }
+
+    public void removeCard(String cardRef) {
+        List<UserPaymentCard> updatedCards = cards.stream()
+                .filter(c -> !c.getReference().equals(cardRef)).collect(Collectors.toList());
+        this.setCards(updatedCards);
     }
 
     public String getPublicId() {
@@ -261,6 +281,15 @@ public class User extends BaseEntity {
 
     public User setDocuments(List<UserDocument> documents) {
         this.documents = documents;
+        return this;
+    }
+
+    public @Size(max = 10) List<UserPaymentCard> getCards() {
+        return cards;
+    }
+
+    public User setCards(@Size(max = 10) List<UserPaymentCard> cards) {
+        this.cards = cards;
         return this;
     }
 }

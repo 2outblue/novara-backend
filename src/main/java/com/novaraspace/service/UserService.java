@@ -3,6 +3,7 @@ package com.novaraspace.service;
 import com.novaraspace.model.dto.auth.EmailDTO;
 import com.novaraspace.model.dto.user.*;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.entity.UserPaymentCard;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.exception.UserException;
@@ -10,6 +11,7 @@ import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.UserRepository;
 import com.novaraspace.util.CountryCodeLoader;
+import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -28,14 +30,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final CountryCodeLoader countryDataLoader;
+    private final PaymentService paymentService;
     private final Map<String, BiConsumer<User, Object>> fieldUpdaters;
     private final Validator validator;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, CountryCodeLoader countryDataLoader, Validator validator) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, CountryCodeLoader countryDataLoader, PaymentService paymentService, Validator validator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.countryDataLoader = countryDataLoader;
+        this.paymentService = paymentService;
         this.validator = validator;
         this.fieldUpdaters = setFieldUpdaters();
     }
@@ -76,6 +80,24 @@ public class UserService {
 
         return user.getDocuments().stream().map(userMapper::documentToDto)
                 .toArray(UserDocumentDTO[]::new);
+    }
+
+    @Transactional
+    public UserCardDTO[] addUserCard(@Valid AddCardDTO dto, String authId) {
+        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::updateFailed);
+        UserPaymentCard card = paymentService.getUserPaymentCard(dto);
+        user.addCard(card);
+        return user.getCards().stream().map(userMapper::userCardToDTO)
+                .toArray(UserCardDTO[]::new);
+    }
+
+    @Transactional
+    public UserCardDTO[] removeUserCard(String cardRef, String authId) {
+        if (cardRef.length() > 20 || cardRef.length() < 10) { throw UserException.updateFailed(); }
+        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::updateFailed);
+        user.removeCard(cardRef);
+        return user.getCards().stream().map(userMapper::userCardToDTO)
+                .toArray(UserCardDTO[]::new);
     }
 
 

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class UserDocument {
     private String docId;
     private String filename;
-    private LocalDate uploadedAt;
+    private LocalDate uploadedOn;
 
     public String getDocId() {
         return docId;
@@ -28,12 +28,12 @@ public class UserDocument {
         return this;
     }
 
-    public LocalDate getUploadedAt() {
-        return uploadedAt;
+    public LocalDate getUploadedOn() {
+        return uploadedOn;
     }
 
-    public UserDocument setUploadedAt(LocalDate uploadedAt) {
-        this.uploadedAt = uploadedAt;
+    public UserDocument setUploadedOn(LocalDate uploadedAt) {
+        this.uploadedOn = uploadedAt;
         return this;
     }
 }

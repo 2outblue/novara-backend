@@ -1,10 +1,7 @@
 package com.novaraspace.web;
 
 import com.novaraspace.model.dto.auth.EmailDTO;
-import com.novaraspace.model.dto.user.AccountDTO;
-import com.novaraspace.model.dto.user.UpdateFieldDTO;
-import com.novaraspace.model.dto.user.UserDocumentDTO;
-import com.novaraspace.model.dto.user.UserDocumentUpdateRequest;
+import com.novaraspace.model.dto.user.*;
 import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -45,5 +42,17 @@ public class AccountController {
     public ResponseEntity<UserDocumentDTO[]> updateUserDoc(@Valid @RequestBody UserDocumentUpdateRequest req, Authentication authentication) {
         UserDocumentDTO[] docs = userService.updateUserDocument(req, authentication.getName());
         return ResponseEntity.ok(docs);
+    }
+
+    @PostMapping("/card-add")
+    public ResponseEntity<UserCardDTO[]> addUserCard(@Valid @RequestBody AddCardDTO dto, Authentication authentication) {
+        UserCardDTO[] cards = userService.addUserCard(dto, authentication.getName());
+        return ResponseEntity.ok(cards);
+    }
+
+    @PostMapping("/card-remove")
+    public ResponseEntity<UserCardDTO[]> removeUserCard(@RequestParam String userCardRef, Authentication authentication) {
+        UserCardDTO[] cards = userService.removeUserCard(userCardRef, authentication.getName());
+        return ResponseEntity.ok(cards);
     }
 }

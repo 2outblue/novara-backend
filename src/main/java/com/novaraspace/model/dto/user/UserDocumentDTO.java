@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class UserDocumentDTO {
     private String docId;
     private String filename;
-    private LocalDate uploadedAt;
+    private LocalDate uploadedOn;
 
     public String getDocId() {
         return docId;
@@ -25,12 +25,12 @@ public class UserDocumentDTO {
         return this;
     }
 
-    public LocalDate getUploadedAt() {
-        return uploadedAt;
+    public LocalDate getUploadedOn() {
+        return uploadedOn;
     }
 
-    public UserDocumentDTO setUploadedAt(LocalDate uploadedAt) {
-        this.uploadedAt = uploadedAt;
+    public UserDocumentDTO setUploadedOn(LocalDate uploadedOn) {
+        this.uploadedOn = uploadedOn;
         return this;
     }
 }

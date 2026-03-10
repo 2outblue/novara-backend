@@ -20,6 +20,7 @@ public class AccountDTO {
     private boolean newsletter;
     private boolean marketing;
     private List<UserDocumentDTO> documents;
+    private List<UserCardDTO> cards;
 
     public AccountDTO() {
     }
@@ -147,6 +148,15 @@ public class AccountDTO {
 
     public AccountDTO setDocuments(List<UserDocumentDTO> documents) {
         this.documents = documents;
+        return this;
+    }
+
+    public List<UserCardDTO> getCards() {
+        return cards;
+    }
+
+    public AccountDTO setCards(List<UserCardDTO> cards) {
+        this.cards = cards;
         return this;
     }
 }

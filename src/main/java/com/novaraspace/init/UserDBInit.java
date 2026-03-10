@@ -4,6 +4,7 @@ import com.nimbusds.jose.util.Base64;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.UserDocument;
+import com.novaraspace.model.entity.UserPaymentCard;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
 import com.novaraspace.model.mapper.UserMapper;
@@ -68,9 +69,18 @@ public class UserDBInit implements CommandLineRunner {
                                 new UserDocument()
                                         .setDocId("SMC-002")
                                         .setFilename("my-file.pdf")
-                                        .setUploadedAt(LocalDate.of(2026, 3, 7))
+                                        .setUploadedOn(LocalDate.of(2026, 3, 7))
                         ))
-
+                        .setCards(Arrays.asList(
+                                new UserPaymentCard()
+                                        .setReference("xpz6pdJiPYgmCONVnGE")
+                                        .setFirstFour("2340")
+                                        .setLastFour("3840")
+                                        .setCardHolder("Kelly Goblin")
+                                        .setCardType("Mastercard")
+                                        .setExpiryDate("12/55")
+                                        .setAddedOn(LocalDate.of(2026, 3, 10))
+                        ))
                         .setCreatedAt(Instant.now())
                         .setAuthId(Base64.encode(UUID.randomUUID().toString()).toString())
                         .setStatus(AccountStatus.ACTIVE)
