@@ -8,6 +8,7 @@ public class AccountDTO {
 
     private String publicId;
     private Instant createdAt;
+    private String title;
     private String firstName;
     private String lastName;
     private Date dob;
@@ -40,6 +41,15 @@ public class AccountDTO {
 
     public AccountDTO setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public AccountDTO setTitle(String title) {
+        this.title = title;
         return this;
     }
 

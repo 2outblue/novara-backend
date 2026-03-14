@@ -164,6 +164,7 @@ public class AuthService {
     }
 
     private String generateJwtByAuthId(String authId) {
+        //TODO: Use current user?
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
 

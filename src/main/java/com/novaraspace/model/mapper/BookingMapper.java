@@ -53,8 +53,6 @@ public abstract class BookingMapper {
     protected abstract PassengerBaggageDTO passengerBaggageEntityToDTO(PassengerBaggage entity);
 
 
-
-
     public BookingDTO entityToDTO(Booking entity) {
         BookingDTO dto = entityToPartialDTO(entity);
 
@@ -73,5 +71,21 @@ public abstract class BookingMapper {
         return dto;
     }
     protected abstract BookingDTO entityToPartialDTO(Booking entity);
+
+    public AccountBookingDTO entityToAccountBookingDTO(Booking entity) {
+        AccountBookingDTO partialDTO = entityToPartialAccountBookingDTO(entity);
+        partialDTO.setPaxCount(entity.getPassengers().size());
+        String firstPaxLastName = entity.getPassengers().getFirst().getLastName();
+        partialDTO.setPaxLastName(firstPaxLastName);
+
+        partialDTO.getDepartureFlight().setSelectedClass(entity.getDepartureClass().getDisplayName());
+        partialDTO.getDepartureFlight().setPrice(entity.getDepartureFlightPrice());
+        if (partialDTO.getReturnFlight() != null) {
+            partialDTO.getReturnFlight().setSelectedClass(entity.getReturnClass().getDisplayName());
+            partialDTO.getReturnFlight().setPrice(entity.getReturnFlightPrice());
+        }
+        return partialDTO;
+    }
+    protected abstract AccountBookingDTO entityToPartialAccountBookingDTO(Booking entity);
 
 }

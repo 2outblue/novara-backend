@@ -2,9 +2,13 @@ package com.novaraspace.web;
 
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +32,11 @@ public class BookingController {
 
     @PostMapping("/complete")
     public ResponseEntity<BookingConfirmedDTO> createBooking(@Valid @RequestBody BookingCreateRequest createRequest) {
+//        String authId = "";
+//        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+//            authId = auth.getName();
+//        }
+
         BookingConfirmedDTO confirmedBooking = bookingService.createNewBooking(createRequest);
         return ResponseEntity.ok(confirmedBooking);
     }
@@ -55,5 +64,6 @@ public class BookingController {
         BookingDTO bookingDTO = bookingService.changeFlights(request);
         return ResponseEntity.ok(bookingDTO);
     }
+
 
 }

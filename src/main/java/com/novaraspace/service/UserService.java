@@ -1,17 +1,28 @@
 package com.novaraspace.service;
 
-import com.novaraspace.model.dto.auth.EmailDTO;
+import com.novaraspace.model.domain.UserBookingsQuery;
+import com.novaraspace.model.dto.booking.AccountBookingDTO;
+import com.novaraspace.model.dto.booking.UserBookingsRequestDTO;
+import com.novaraspace.model.dto.payment.PaymentDTO;
 import com.novaraspace.model.dto.user.*;
+import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.UserPaymentCard;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
+import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.exception.UserException;
 import com.novaraspace.model.exception.VerificationException;
+import com.novaraspace.model.mapper.BookingMapper;
+import com.novaraspace.model.mapper.PaymentMapper;
 import com.novaraspace.model.mapper.UserMapper;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.UserRepository;
 import com.novaraspace.util.CountryCodeLoader;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -19,7 +30,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -33,14 +46,20 @@ public class UserService {
     private final PaymentService paymentService;
     private final Map<String, BiConsumer<User, Object>> fieldUpdaters;
     private final Validator validator;
+    private final CurrentUserService currentUserService;
+    private final BookingMapper bookingMapper;
+    private final PaymentMapper paymentMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, CountryCodeLoader countryDataLoader, PaymentService paymentService, Validator validator) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, CountryCodeLoader countryDataLoader, PaymentService paymentService, Validator validator, CurrentUserService currentUserService, BookingMapper bookingMapper, PaymentMapper paymentMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.countryDataLoader = countryDataLoader;
         this.paymentService = paymentService;
         this.validator = validator;
+        this.currentUserService = currentUserService;
+        this.bookingMapper = bookingMapper;
+        this.paymentMapper = paymentMapper;
         this.fieldUpdaters = setFieldUpdaters();
     }
 
@@ -63,15 +82,60 @@ public class UserService {
         user.setLastLoginAt(Instant.now());
     }
 
-    public AccountDTO getAccountDTO(String authId) {
-        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::notFound);
+//    public AccountDTO getAccountDTO(String authId) {
+//        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::notFound);
+//        return userMapper.entityToAccountDTO(user);
+//    }
+
+    public AccountDTO getCurrentAccountDTO() {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
         return userMapper.entityToAccountDTO(user);
     }
 
-    public EmailDTO getEmailByAuthId(String authId) {
-        String email = userRepository.getEmailByAuthId(authId).orElseThrow(UserException::notFound);
-        return new EmailDTO().setEmail(email);
+    //TODO: I don't know if this should be here or in the booking service
+    @Transactional(readOnly = true)
+    public PageResponse<AccountBookingDTO> getCurrentUserBookingsPage(UserBookingsRequestDTO req) {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(BookingException::notFound);
+
+        LocalDateTime minDate = req.getTimeFrame().equals("upcoming")
+                ? LocalDateTime.now().plusHours(5)
+                : LocalDateTime.now().minusMonths(6);
+        LocalDateTime maxDate = req.getTimeFrame().equals("upcoming")
+                ? LocalDateTime.now().plusMonths(6)
+                : LocalDateTime.now().minusHours(5);
+
+        UserBookingsQuery query = new UserBookingsQuery(
+                user.getId(),
+                minDate,
+                maxDate);
+        Pageable pageable = PageRequest.of(
+                req.getPage(),
+                req.getSize());
+        Page<Booking> page = req.getTimeFrame().equals("upcoming")
+                ? userRepository.getUserUpcomingBookings(query, pageable)
+                : userRepository.getUserBookingsHistory(query, pageable);
+        List<AccountBookingDTO> bookings = page.getContent().stream()
+                .map(bookingMapper::entityToAccountBookingDTO)
+                .toList();
+        return new PageResponse<AccountBookingDTO>()
+                .setContent(bookings)
+                .setPage(page.getNumber())
+                .setSize(page.getSize())
+                .setTotalElements(page.getTotalElements())
+                .setTotalPages(page.getTotalPages());
     }
+
+    @Transactional(readOnly = true)
+    public PaymentDTO[] getCurrentUserLast10Payments() {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+        return user.getPayments().stream()
+                .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
+    }
+
+//    public EmailDTO getEmailByAuthId(String authId) {
+//        String email = userRepository.getEmailByAuthId(authId).orElseThrow(UserException::notFound);
+//        return new EmailDTO().setEmail(email);
+//    }
 
     @Transactional
     public UserDocumentDTO[] updateUserDocument(UserDocumentUpdateRequest request, String authId) {

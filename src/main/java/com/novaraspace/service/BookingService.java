@@ -2,25 +2,28 @@ package com.novaraspace.service;
 
 import com.novaraspace.component.BookingReferenceGenerator;
 import com.novaraspace.component.DataMasker;
+import com.novaraspace.model.domain.UserBookingsQuery;
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.dto.flight.AvailableFlightDTO;
-import com.novaraspace.model.entity.Booking;
-import com.novaraspace.model.entity.FlightInstance;
-import com.novaraspace.model.entity.Passenger;
-import com.novaraspace.model.entity.Payment;
+import com.novaraspace.model.entity.*;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.validation.business.BookingValidator;
 //import jakarta.transaction.Transactional;
 import com.novaraspace.validation.business.ChangeFlightValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -35,6 +38,7 @@ public class BookingService {
     private final PaymentService paymentService;
     private final DataMasker dataMasker;
     private final ChangeFlightValidator changeFlightValidator;
+    private final CurrentUserService currentUserService;
 
     //TODO: Maybe rename this to something like BookingCreationService and keep the getResultForNewBookingStart
     // and createNewBooking methods, and move the others to a BookingManageService
@@ -46,7 +50,7 @@ public class BookingService {
             BookingValidator bookingValidator,
             BookingReferenceGenerator bookingReferenceGenerator,
             PaymentService paymentService,
-            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator) {
+            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator, UserService userService, CurrentUserService currentUserService) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;
@@ -56,6 +60,7 @@ public class BookingService {
         this.paymentService = paymentService;
         this.dataMasker = dataMasker;
         this.changeFlightValidator = changeFlightValidator;
+        this.currentUserService = currentUserService;
     }
 
     public BookingStartResultDTO getResultForNewBookingStart(FlightSearchParamsDTO flightSearchParamsDTO) {
@@ -97,6 +102,12 @@ public class BookingService {
 
         //TODO: Maybe normalize the prices before saving the booking ? If you do - normalize the payment as well.
         Booking confirmedBooking = bookingRepository.save(booking);
+        Optional<User> user = currentUserService.getAuthenticatedUser();
+        if (user.isPresent()) {
+            User u = user.get();
+            u.addBooking(confirmedBooking);
+            u.addPayment(payment);
+        }
         return bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
     }
 
@@ -173,9 +184,13 @@ public class BookingService {
         //TODO: Normalize prices?
         Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
         Booking changedBooking = bookingRepository.save(booking);
+        Optional<User> user = currentUserService.getAuthenticatedUser();
+        if (user.isPresent()) {
+            User u = user.get();
+            u.addPayment(payment);
+        }
         return bookingMapper.entityToDTO(changedBooking);
     }
-
 
     private Booking findValidBooking(BookingSearchParams params) {
         Booking booking = bookingRepository

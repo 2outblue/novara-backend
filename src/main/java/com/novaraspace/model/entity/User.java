@@ -10,10 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.sql.Types.VARCHAR;
@@ -21,6 +18,7 @@ import static java.sql.Types.VARCHAR;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
+
 
     private String publicId;
     private Instant createdAt;
@@ -30,6 +28,8 @@ public class User extends BaseEntity {
     private AccountStatus status;
     private Instant lastLoginAt;
     private Instant deletedAt;
+
+    //TODO: This should be a manyToMany
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
@@ -38,6 +38,7 @@ public class User extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verification;
 
+    private String title;
     private String firstName;
     private String lastName;
     private Date dob;
@@ -63,6 +64,18 @@ public class User extends BaseEntity {
     @CollectionTable(name = "user_cards", joinColumns = @JoinColumn(name = "user_id"))
     @Size(max = 10)
     private List<UserPaymentCard> cards = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "users_bookings",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "booking_id"))
+    private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany
+    @JoinTable(name = "user_payments",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "payment_id"))
+    private List<Payment> payments;
 
     public User() {
     }
@@ -93,6 +106,22 @@ public class User extends BaseEntity {
         List<UserPaymentCard> updatedCards = cards.stream()
                 .filter(c -> !c.getReference().equals(cardRef)).collect(Collectors.toList());
         this.setCards(updatedCards);
+    }
+
+    public void addBooking(Booking booking) {
+        bookings.add(booking);
+    }
+
+    public void addPayment(Payment payment) {
+        List<Payment> sorted = payments.stream().sorted(
+                Comparator.comparing(Payment::getCreatedAt)
+        ).collect(Collectors.toList());
+        if (sorted.size() >= 10) {
+            sorted.removeFirst();
+        }
+        sorted.add(payment);
+        this.setPayments(sorted);
+//        payments.add(payment);
     }
 
     public String getPublicId() {
@@ -164,6 +193,15 @@ public class User extends BaseEntity {
 
     public User setVerification(VerificationToken verification) {
         this.verification = verification;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public User setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -290,6 +328,24 @@ public class User extends BaseEntity {
 
     public User setCards(@Size(max = 10) List<UserPaymentCard> cards) {
         this.cards = cards;
+        return this;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public User setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+        return this;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public User setPayments(List<Payment> payments) {
+        this.payments = payments;
         return this;
     }
 }

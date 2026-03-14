@@ -1,7 +1,11 @@
 package com.novaraspace.web;
 
 import com.novaraspace.model.dto.auth.EmailDTO;
+import com.novaraspace.model.dto.booking.AccountBookingDTO;
+import com.novaraspace.model.dto.booking.UserBookingsRequestDTO;
+import com.novaraspace.model.dto.payment.PaymentDTO;
 import com.novaraspace.model.dto.user.*;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +25,18 @@ public class AccountController {
     }
 
     @GetMapping("/initial")
-    public ResponseEntity<AccountDTO> getAccountDTO(Authentication authentication) {
-        AccountDTO data = userService.getAccountDTO(authentication.getName());
+    public ResponseEntity<AccountDTO> getAccountDTO() {
+//        AccountDTO data = userService.getAccountDTO(authentication.getName());
+        AccountDTO data = userService.getCurrentAccountDTO();
+
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/email")
-    public ResponseEntity<EmailDTO> getEmailByAuthId(Authentication authentication) {
-        EmailDTO dto = userService.getEmailByAuthId(authentication.getName());
-        return ResponseEntity.ok(dto);
-    }
+//    @GetMapping("/email")
+//    public ResponseEntity<EmailDTO> getEmailByAuthId(Authentication authentication) {
+//        EmailDTO dto = userService.getEmailByAuthId(authentication.getName());
+//        return ResponseEntity.ok(dto);
+//    }
 
     @PatchMapping("/update")
     public ResponseEntity<List<UpdateFieldDTO>> updateAccountData(@RequestBody List<UpdateFieldDTO> updates, Authentication authentication) {
@@ -54,5 +60,17 @@ public class AccountController {
     public ResponseEntity<UserCardDTO[]> removeUserCard(@RequestParam String userCardRef, Authentication authentication) {
         UserCardDTO[] cards = userService.removeUserCard(userCardRef, authentication.getName());
         return ResponseEntity.ok(cards);
+    }
+
+    @PostMapping("/user-bookings")
+    public ResponseEntity<PageResponse<AccountBookingDTO>> getUserBookings(@Valid @RequestBody UserBookingsRequestDTO dto) {
+        PageResponse<AccountBookingDTO> page = userService.getCurrentUserBookingsPage(dto);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/user-payments")
+    public ResponseEntity<PaymentDTO[]> getUserPayments() {
+        PaymentDTO[] payments = userService.getCurrentUserLast10Payments();
+        return ResponseEntity.ok(payments);
     }
 }

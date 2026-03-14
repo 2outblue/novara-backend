@@ -1,13 +1,14 @@
 package com.novaraspace.model.dto.user;
 
-import com.novaraspace.validation.annotations.UniqueUserEmail;
-import com.novaraspace.validation.annotations.ValidCountry;
-import com.novaraspace.validation.annotations.ValidCountryCode;
+import com.novaraspace.validation.annotations.*;
 import jakarta.validation.constraints.*;
 
 import java.util.Date;
 
 public class UserRegisterDTO {
+    @NotBlank
+    @ValidUserTitle
+    private String title;
     @NotEmpty
     @Size(min = 2, max = 60)
     private String firstName;
@@ -16,7 +17,7 @@ public class UserRegisterDTO {
     private String lastName;
     @NotNull
     @Past
-    private Date dob;
+    private Date dob; //TODO: At least 18 years of age!
     @NotEmpty
     @Email(message = "Invalid email format.")
     @UniqueUserEmail
@@ -47,6 +48,15 @@ public class UserRegisterDTO {
 
     public UserRegisterDTO() {}
 
+
+    public String getTitle() {
+        return title;
+    }
+
+    public UserRegisterDTO setTitle(String title) {
+        this.title = title;
+        return this;
+    }
 
     public String getFirstName() {
         return firstName;

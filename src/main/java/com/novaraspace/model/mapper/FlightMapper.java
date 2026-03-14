@@ -55,7 +55,7 @@ public abstract class FlightMapper {
                 .setArriveCode(template.getArrivalLocation().getCode());
     }
 
-    public AvailableFlightDTO instanceToFlightUiDTO(FlightInstance instance) {
+    public AvailableFlightDTO instanceToAvailableFlightDTO(FlightInstance instance) {
         FlightTemplate template = instance.getFlightTemplate();
         Vehicle vehicle = template.getVehicle();
 

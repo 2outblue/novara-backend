@@ -65,6 +65,7 @@ public class SecurityConfig {
                                 .jwtAuthenticationConverter(jwtAuthConverter())
                         )
                         .bearerTokenResolver(request -> {
+                            //TODO: Try to remove this and test if still works
                             if (request.getRequestURI().equals("/auth/refresh")
                                     || request.getRequestURI().equals("/auth/register")
                                     || request.getRequestURI().equals("/auth/register")

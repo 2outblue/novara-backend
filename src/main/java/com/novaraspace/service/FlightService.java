@@ -88,7 +88,7 @@ public class FlightService {
                 limits.getDepartureUpperDate(),
                 paramsDTO.getTotalPaxCount());
         List<AvailableFlightDTO> departureFlights = getValidInstancesWithinRange(departureRequest)
-                .stream().map(flightMapper::instanceToFlightUiDTO)
+                .stream().map(flightMapper::instanceToAvailableFlightDTO)
                 .toList();
 
         FlightsWithinRangeRequest returnRequest = new FlightsWithinRangeRequest(
@@ -97,7 +97,7 @@ public class FlightService {
                 limits.getReturnUpperDate(),
                 paramsDTO.getTotalPaxCount());
         List<AvailableFlightDTO> returnFlights = getValidInstancesWithinRange(returnRequest)
-                .stream().map(flightMapper::instanceToFlightUiDTO)
+                .stream().map(flightMapper::instanceToAvailableFlightDTO)
                 .toList();
 
         if (departureFlights.isEmpty() || returnFlights.isEmpty()) {throw FlightException.noAvailability();}

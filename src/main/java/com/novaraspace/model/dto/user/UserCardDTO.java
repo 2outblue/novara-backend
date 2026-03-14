@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class UserCardDTO {
     private String reference;
+    private String firstFour;
     private String lastFour;
     private String cardHolder;
     private String cardType;
@@ -15,6 +16,15 @@ public class UserCardDTO {
 
     public UserCardDTO setReference(String reference) {
         this.reference = reference;
+        return this;
+    }
+
+    public String getFirstFour() {
+        return firstFour;
+    }
+
+    public UserCardDTO setFirstFour(String firstFour) {
+        this.firstFour = firstFour;
         return this;
     }
 
