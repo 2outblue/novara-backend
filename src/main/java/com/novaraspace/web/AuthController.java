@@ -30,7 +30,6 @@ public class AuthController {
     private final AuthenticationManager authManager;
     private final AuthService authService;
     private final EmailService emailService;
-    private final UserService userService;
 
     @Value("${app.jwt.expiry-minutes}")
     private long jwtExpiryMinutes;
@@ -41,7 +40,6 @@ public class AuthController {
         this.authManager = authManager;
         this.authService = authService;
         this.emailService = emailService;
-        this.userService = userService;
     }
 
     @PostMapping("/register")

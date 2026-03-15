@@ -49,7 +49,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                     .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
                     .toList();
-            return new UsernamePasswordAuthenticationToken(email, password, authorities);
+            return new UsernamePasswordAuthenticationToken(email, null, authorities);
         }
 
         throw new BadCredentialsException("Bad credentials.");

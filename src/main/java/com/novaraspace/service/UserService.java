@@ -42,7 +42,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final CountryCodeLoader countryDataLoader;
     private final PaymentService paymentService;
     private final Map<String, BiConsumer<User, Object>> fieldUpdaters;
     private final Validator validator;
@@ -50,11 +49,10 @@ public class UserService {
     private final BookingMapper bookingMapper;
     private final PaymentMapper paymentMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, CountryCodeLoader countryDataLoader, PaymentService paymentService, Validator validator, CurrentUserService currentUserService, BookingMapper bookingMapper, PaymentMapper paymentMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, PaymentService paymentService, Validator validator, CurrentUserService currentUserService, BookingMapper bookingMapper, PaymentMapper paymentMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
-        this.countryDataLoader = countryDataLoader;
         this.paymentService = paymentService;
         this.validator = validator;
         this.currentUserService = currentUserService;
@@ -138,8 +136,8 @@ public class UserService {
 //    }
 
     @Transactional
-    public UserDocumentDTO[] updateUserDocument(UserDocumentUpdateRequest request, String authId) {
-        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::updateFailed);
+    public UserDocumentDTO[] updateUserDocument(UserDocumentUpdateRequest request) {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
         user.updateDocument(request);
 
         return user.getDocuments().stream().map(userMapper::documentToDto)
@@ -147,8 +145,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserCardDTO[] addUserCard(@Valid AddCardDTO dto, String authId) {
-        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::updateFailed);
+    public UserCardDTO[] addUserCard(@Valid AddCardDTO dto) {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
+
         UserPaymentCard card = paymentService.getUserPaymentCard(dto);
         user.addCard(card);
         return user.getCards().stream().map(userMapper::userCardToDTO)
@@ -156,9 +155,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserCardDTO[] removeUserCard(String cardRef, String authId) {
+    public UserCardDTO[] removeUserCard(String cardRef) {
         if (cardRef.length() > 20 || cardRef.length() < 10) { throw UserException.updateFailed(); }
-        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::updateFailed);
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
+
         user.removeCard(cardRef);
         return user.getCards().stream().map(userMapper::userCardToDTO)
                 .toArray(UserCardDTO[]::new);
@@ -169,10 +169,10 @@ public class UserService {
     //TODO Definitely move most of the logic for this to a component or in the domain!
     // And rename the dto and methods to something to do with settings?
     // and probably replace all fieldUpdateFailed exceptions with just updateFailed
-    public List<UpdateFieldDTO> updateFields(List<UpdateFieldDTO> updates, String authId) {
+    public List<UpdateFieldDTO> updateFields(List<UpdateFieldDTO> updates) {
         if (updates == null || updates.isEmpty()) {throw UserException.fieldUpdateFailed();}
 
-        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::fieldUpdateFailed);
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::fieldUpdateFailed);
         for (UpdateFieldDTO dto : updates) {
             if (!dto.getOldValue().getClass().equals(dto.getNewValue().getClass())) {
                 throw UserException.fieldUpdateFailed();
@@ -215,13 +215,18 @@ public class UserService {
 //        );
 //    }
 
-    public User persistUser(User user) {
-        return userRepository.save(user);
+//    public User persistUser(User user) {
+//        return userRepository.save(user);
+//    }
+
+    public User createUser(UserRegisterDTO dto) {
+        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
+        return userRepository.save(newUser);
     }
 
 
     public Optional<User> findEntityByAuthId(String authId) {return userRepository.findByAuthId(authId);}
-    public Optional<String> getAuthIdByEmail(String email) { return userRepository.getAuthIdByEmail(email);}
+//    public Optional<String> getAuthIdByEmail(String email) { return userRepository.getAuthIdByEmail(email);}
     public Optional<User> getEntityByEmail(String email) { return userRepository.findByEmail(email); }
 
     //TODO Can you replace the BiConsumer with a func that returns a boolean? this way you can just throw once

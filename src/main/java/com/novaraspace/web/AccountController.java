@@ -26,39 +26,31 @@ public class AccountController {
 
     @GetMapping("/initial")
     public ResponseEntity<AccountDTO> getAccountDTO() {
-//        AccountDTO data = userService.getAccountDTO(authentication.getName());
         AccountDTO data = userService.getCurrentAccountDTO();
-
         return ResponseEntity.ok(data);
     }
 
-//    @GetMapping("/email")
-//    public ResponseEntity<EmailDTO> getEmailByAuthId(Authentication authentication) {
-//        EmailDTO dto = userService.getEmailByAuthId(authentication.getName());
-//        return ResponseEntity.ok(dto);
-//    }
-
     @PatchMapping("/update")
-    public ResponseEntity<List<UpdateFieldDTO>> updateAccountData(@RequestBody List<UpdateFieldDTO> updates, Authentication authentication) {
-        List<UpdateFieldDTO> completedUpdates = userService.updateFields(updates, authentication.getName());
+    public ResponseEntity<List<UpdateFieldDTO>> updateAccountData(@RequestBody List<UpdateFieldDTO> updates) {
+        List<UpdateFieldDTO> completedUpdates = userService.updateFields(updates);
         return ResponseEntity.ok(completedUpdates);
     }
 
     @PatchMapping("/update-doc")
-    public ResponseEntity<UserDocumentDTO[]> updateUserDoc(@Valid @RequestBody UserDocumentUpdateRequest req, Authentication authentication) {
-        UserDocumentDTO[] docs = userService.updateUserDocument(req, authentication.getName());
+    public ResponseEntity<UserDocumentDTO[]> updateUserDoc(@Valid @RequestBody UserDocumentUpdateRequest req) {
+        UserDocumentDTO[] docs = userService.updateUserDocument(req);
         return ResponseEntity.ok(docs);
     }
 
     @PostMapping("/card-add")
-    public ResponseEntity<UserCardDTO[]> addUserCard(@Valid @RequestBody AddCardDTO dto, Authentication authentication) {
-        UserCardDTO[] cards = userService.addUserCard(dto, authentication.getName());
+    public ResponseEntity<UserCardDTO[]> addUserCard(@Valid @RequestBody AddCardDTO dto) {
+        UserCardDTO[] cards = userService.addUserCard(dto);
         return ResponseEntity.ok(cards);
     }
 
     @PostMapping("/card-remove")
-    public ResponseEntity<UserCardDTO[]> removeUserCard(@RequestParam String userCardRef, Authentication authentication) {
-        UserCardDTO[] cards = userService.removeUserCard(userCardRef, authentication.getName());
+    public ResponseEntity<UserCardDTO[]> removeUserCard(@RequestParam String userCardRef) {
+        UserCardDTO[] cards = userService.removeUserCard(userCardRef);
         return ResponseEntity.ok(cards);
     }
 

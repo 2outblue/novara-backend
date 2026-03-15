@@ -53,6 +53,7 @@ public class UserDBInit implements CommandLineRunner {
     private List<User> getInitUsers() {
         return Arrays.asList(
                 new User()
+                        .setTitle("Mr")
                         .setFirstName("John")
                         .setLastName("Kelly")
                         .setDob(Date.valueOf("1985-10-20"))

@@ -3,6 +3,7 @@ package com.novaraspace.service;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.repository.UserRepository;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class CurrentUserService {
 
     private final UserRepository userRepository;
     private Optional<User> cachedUser = Optional.empty();
+    private boolean alreadyFetched = false;
 
     public CurrentUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -28,13 +30,17 @@ public class CurrentUserService {
             return Optional.empty();
         }
 
-        if (cachedUser.isPresent()) {
+        if (alreadyFetched) {
             return cachedUser;
         }
 
-        //TODO: May need to check if auth instance is UsernamePassword... since getName will get the email if true
-        String authId = auth.getName();
-        cachedUser = userRepository.findByAuthId(authId);
+        if (auth instanceof UsernamePasswordAuthenticationToken) {
+            //This is only true during the login request.
+            cachedUser = userRepository.findByEmail(auth.getName());
+        } else {
+            cachedUser = userRepository.findByAuthId(auth.getName());
+        }
+        alreadyFetched = true;
         return cachedUser;
     }
 }

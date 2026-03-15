@@ -50,7 +50,7 @@ public class BookingService {
             BookingValidator bookingValidator,
             BookingReferenceGenerator bookingReferenceGenerator,
             PaymentService paymentService,
-            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator, UserService userService, CurrentUserService currentUserService) {
+            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator, CurrentUserService currentUserService) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;

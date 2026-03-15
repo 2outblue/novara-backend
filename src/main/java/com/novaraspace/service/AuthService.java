@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -49,7 +50,6 @@ public class AuthService {
     private final VerificationService verificationService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
 
     public AuthService(
             JwtEncoder jwtEncoder, UserService userService, VerificationService verificationService,
@@ -61,16 +61,18 @@ public class AuthService {
         this.verificationService = verificationService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
     }
 
+
+    @Transactional
     public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
-        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
+//        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
+        User newUser = userService.createUser(dto);
         VerificationToken verificationToken = verificationService.generateVerificationToken(dto.getEmail());
         if (emailVerificationEnabled) {
             newUser.setVerification(verificationToken);
         }
-        userService.persistUser(newUser);
+//        userService.persistUser(newUser);
         return new VerificationTokenDTO()
                 .setEmail(newUser.getEmail())
                 .setCode(verificationToken.getCode())
@@ -80,7 +82,7 @@ public class AuthService {
     public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
         VerificationToken verification = verificationService.getEntityByLinkTokenOrCode(linkOrCode);
         if (verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
-            throw VerificationException.disabled();
+            throw VerificationException.disabled(); //TODO: Don't throw .disabled() anywhere - just failed.
         }
         User user = userService.getEntityByEmail(verification.getUserEmail()).orElseThrow(VerificationException::failed);
         if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.disabled();}
@@ -114,8 +116,8 @@ public class AuthService {
     }
 
     public TokenAuthenticationDTO generateNewTokenAuthentication(Authentication authentication) {
-        String authId = userService.getAuthIdByEmail(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials."));
+        String authId = userService.getEntityByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials.")).getAuthId();
 
         String refreshToken = generateNewRefreshToken(authId);
         String jwt = generateJwtByAuthId(authId);
@@ -164,7 +166,6 @@ public class AuthService {
     }
 
     private String generateJwtByAuthId(String authId) {
-        //TODO: Use current user?
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
 
