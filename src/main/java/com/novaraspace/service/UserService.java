@@ -130,6 +130,16 @@ public class UserService {
                 .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
     }
 
+    @Transactional(readOnly = true)
+    public UserPaymentsResponseDTO getCurrentUserPaymentsData() {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+        PaymentDTO[] payments = user.getPayments().stream()
+                .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
+        return new UserPaymentsResponseDTO()
+                .setPayments(payments)
+                .setTotalInvoiced(user.getTotalInvoiced());
+    }
+
 //    public EmailDTO getEmailByAuthId(String authId) {
 //        String email = userRepository.getEmailByAuthId(authId).orElseThrow(UserException::notFound);
 //        return new EmailDTO().setEmail(email);

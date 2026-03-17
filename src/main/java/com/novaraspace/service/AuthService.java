@@ -2,9 +2,12 @@ package com.novaraspace.service;
 
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.config.JWKAlgorithmImpl;
+import com.novaraspace.model.domain.PassResetEmailParams;
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
 import com.novaraspace.model.dto.auth.VerificationTokenDTO;
+import com.novaraspace.model.dto.user.PasswordResetRequestDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
+import com.novaraspace.model.entity.PasswordResetToken;
 import com.novaraspace.model.entity.RefreshToken;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.VerificationToken;
@@ -18,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -31,11 +33,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class AuthService {
+    private final EmailService emailService;
     @Value("${app.jwt.issuer}")
     private String issuer;
     @Value("${app.jwt.expiry-minutes}")
@@ -50,17 +55,20 @@ public class AuthService {
     private final VerificationService verificationService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordResetTokenService passwordResetService;
 
     public AuthService(
             JwtEncoder jwtEncoder, UserService userService, VerificationService verificationService,
             RefreshTokenRepository refreshTokenRepository,
-            PasswordEncoder passwordEncoder, UserMapper userMapper
-    ) {
+            PasswordEncoder passwordEncoder, UserMapper userMapper, PasswordResetTokenService passwordResetService,
+            EmailService emailService) {
         this.jwtEncoder = jwtEncoder;
         this.userService = userService;
         this.verificationService = verificationService;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.passwordResetService = passwordResetService;
+        this.emailService = emailService;
     }
 
 
@@ -88,6 +96,9 @@ public class AuthService {
         if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.disabled();}
         userService.activateUserAccount(verification.getUserEmail());
     }
+
+
+
     public VerificationTokenDTO generateNewVerification(String email) {
         // Could return a 200 here and in verifyAccountByLinkTokenOrCode()
         // in order to not expose any implementation details and accounts
@@ -103,6 +114,35 @@ public class AuthService {
                 .setEmail(user.getEmail())
                 .setCode(newVerification.getCode())
                 .setLinkToken(newVerification.getLinkToken());
+    }
+
+    public void generateNewPasswordResetToken(String email) {
+        Optional<User> user = this.userService.getEntityByEmail(email);
+        if (user.isEmpty() || !user.get().getStatus().equals(AccountStatus.ACTIVE)) {
+            return;
+        }
+        PasswordResetToken token = this.passwordResetService.generateNewToken(user.get().getAuthId());
+        PassResetEmailParams emailParams = new PassResetEmailParams(
+                email,
+                token.getTokenValue(),
+                user.get().getFirstName(),
+                "30"
+        );
+        emailService.sendPasswordResetLink(emailParams);
+    }
+
+    @Transactional
+    public void resetUserPassword(PasswordResetRequestDTO dto) {
+        Optional<PasswordResetToken> token = passwordResetService.findAndDeleteTokenByValue(dto.getResetToken());
+        if (token.isEmpty() || token.get().getExpiresOn().isBefore(LocalDateTime.now())) {
+            throw new UserException(ErrCode.RESET_TOKEN_INVALID, HttpStatus.BAD_REQUEST, "Invalid token.");
+        }
+        User user = userService.findEntityByAuthId(token.get().getUserAuthId()).orElse(null);
+        if (user == null || !user.getStatus().equals(AccountStatus.ACTIVE)) {
+            throw UserException.updateFailed();
+        }
+        refreshTokenRepository.revokeByUserAuthId(user.getAuthId());
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
     }
 
     public ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {

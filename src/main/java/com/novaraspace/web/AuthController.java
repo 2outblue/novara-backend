@@ -4,6 +4,7 @@ import com.novaraspace.model.dto.auth.EmailDTO;
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
 import com.novaraspace.model.dto.auth.VerificationTokenDTO;
 import com.novaraspace.model.dto.auth.CodeOrLinkTokenDTO;
+import com.novaraspace.model.dto.user.PasswordResetRequestDTO;
 import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.exception.VerificationException;
@@ -105,6 +106,18 @@ public class AuthController {
         if (!emailSent) {
             throw VerificationException.failed();
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password-start")
+    public ResponseEntity<Void> resetPasswordStart(@Valid @RequestBody EmailDTO dto) {
+        authService.generateNewPasswordResetToken(dto.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password-complete")
+    public ResponseEntity<Void> resetPasswordComplete(@Valid @RequestBody PasswordResetRequestDTO dto) {
+        authService.resetUserPassword(dto);
         return ResponseEntity.ok().build();
     }
 }

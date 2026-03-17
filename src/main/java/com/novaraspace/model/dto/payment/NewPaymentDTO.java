@@ -11,6 +11,9 @@ public class NewPaymentDTO {
     @Size(min = 4, max = 4)
     @Pattern(regexp = "^[0-9]+$")
     private String lastFour;
+
+    @Pattern(regexp = "^\\+?[0-9]*$")
+    @Size(max = 25)
     private String phoneNumber;
     @Email
     private String email;

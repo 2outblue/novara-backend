@@ -20,6 +20,7 @@ public class AccountDTO {
     private String country;
     private boolean newsletter;
     private boolean marketing;
+    private double totalInvoiced;
     private List<UserDocumentDTO> documents;
     private List<UserCardDTO> cards;
 
@@ -149,6 +150,15 @@ public class AccountDTO {
 
     public AccountDTO setMarketing(boolean marketing) {
         this.marketing = marketing;
+        return this;
+    }
+
+    public double getTotalInvoiced() {
+        return totalInvoiced;
+    }
+
+    public AccountDTO setTotalInvoiced(double totalInvoiced) {
+        this.totalInvoiced = totalInvoiced;
         return this;
     }
 

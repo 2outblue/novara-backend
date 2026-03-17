@@ -1,6 +1,5 @@
 package com.novaraspace.web;
 
-import com.novaraspace.model.dto.auth.EmailDTO;
 import com.novaraspace.model.dto.booking.AccountBookingDTO;
 import com.novaraspace.model.dto.booking.UserBookingsRequestDTO;
 import com.novaraspace.model.dto.payment.PaymentDTO;
@@ -61,8 +60,8 @@ public class AccountController {
     }
 
     @GetMapping("/user-payments")
-    public ResponseEntity<PaymentDTO[]> getUserPayments() {
-        PaymentDTO[] payments = userService.getCurrentUserLast10Payments();
+    public ResponseEntity<UserPaymentsResponseDTO> getUserPayments() {
+        UserPaymentsResponseDTO payments = userService.getCurrentUserPaymentsData();
         return ResponseEntity.ok(payments);
     }
 }

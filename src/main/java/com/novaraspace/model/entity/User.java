@@ -52,6 +52,7 @@ public class User extends BaseEntity {
     private String addressLine2;
     private boolean newsletter;
     private boolean marketing = false;
+    private double totalInvoiced = 0;
 
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "user_id")
@@ -119,6 +120,7 @@ public class User extends BaseEntity {
         if (sorted.size() >= 10) {
             sorted.removeFirst();
         }
+        totalInvoiced += payment.getAmount();
         sorted.add(payment);
         this.setPayments(sorted);
 //        payments.add(payment);
@@ -310,6 +312,15 @@ public class User extends BaseEntity {
 
     public User setMarketing(boolean marketing) {
         this.marketing = marketing;
+        return this;
+    }
+
+    public double getTotalInvoiced() {
+        return totalInvoiced;
+    }
+
+    public User setTotalInvoiced(double totalInvoiced) {
+        this.totalInvoiced = totalInvoiced;
         return this;
     }
 
