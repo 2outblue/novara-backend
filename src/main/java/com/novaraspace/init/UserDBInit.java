@@ -85,7 +85,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setCreatedAt(Instant.now())
                         .setAuthId(Base64.encode(UUID.randomUUID().toString()).toString())
                         .setStatus(AccountStatus.ACTIVE)
-                        .setRoles(Set.of(UserRole.ADMIN))
+                        .setRoles(Set.of(UserRole.ADMIN, UserRole.USER))
                 ,
                 new User()
                         .setFirstName("Douglas")

@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -57,4 +58,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         and cast(b.departureFlight.departureDate as localdatetime) > :#{#params.minDate}))
 """)
     Page<Booking> getUserBookingsHistory(@Param("params") UserBookingsQuery params, Pageable pageable);
+
+
+    List<User> findAllByAuthIdIn(List<String> authIds);
 }

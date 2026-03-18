@@ -5,12 +5,14 @@ import jakarta.persistence.Entity;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.sql.Types.VARCHAR;
 
 @Entity
 public class RefreshToken extends BaseEntity{
+    private LocalDateTime createdOn;
     @Column(nullable = false, unique = true)
     private String publicKey;
     @Column(nullable = false, unique = true)
@@ -32,11 +34,21 @@ public class RefreshToken extends BaseEntity{
     }
 
     public RefreshToken(String publicKey, String token, String userAuthId, Instant expiryDate, UUID familyId) {
+        this.createdOn = LocalDateTime.now();
         this.publicKey = publicKey;
         this.token = token;
         this.userAuthId = userAuthId;
         this.expiryDate = expiryDate;
         this.familyId = familyId;
+    }
+
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public RefreshToken setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+        return this;
     }
 
     public String getPublicKey() {
