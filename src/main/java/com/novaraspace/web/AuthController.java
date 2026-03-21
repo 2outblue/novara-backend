@@ -1,9 +1,6 @@
 package com.novaraspace.web;
 
-import com.novaraspace.model.dto.auth.EmailDTO;
-import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
-import com.novaraspace.model.dto.auth.VerificationTokenDTO;
-import com.novaraspace.model.dto.auth.CodeOrLinkTokenDTO;
+import com.novaraspace.model.dto.auth.*;
 import com.novaraspace.model.dto.user.PasswordResetRequestDTO;
 import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
@@ -20,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.web.bind.annotation.*;
@@ -57,13 +55,13 @@ public class AuthController {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        TokenAuthenticationDTO tokenDTO = authService.generateNewTokenAuthentication(authentication);
-        ResponseCookie cookie = authService.createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
+        AuthResponseDTO authDto = authService.login(authentication);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .header(HttpHeaders.SET_COOKIE, authDto.getCookie().toString())
                 .body(OAuth2AccessTokenResponse
-                        .withToken(tokenDTO.getJwt())
+                        .withToken(authDto.getJwt())
                         .expiresIn(jwtExpiryMinutes * 60)
                         .tokenType(OAuth2AccessToken.TokenType.BEARER)
                         .build()
@@ -72,12 +70,11 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<OAuth2AccessTokenResponse> refresh(@CookieValue String refreshToken) {
-        TokenAuthenticationDTO tokenDTO = authService.validateRefreshToken(refreshToken);
-        ResponseCookie cookie = authService.createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
+        AuthResponseDTO authDto = authService.refresh(refreshToken);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .header(HttpHeaders.SET_COOKIE, authDto.getCookie().toString())
                 .body(OAuth2AccessTokenResponse
-                        .withToken(tokenDTO.getJwt())
+                        .withToken(authDto.getJwt())
                         .expiresIn(jwtExpiryMinutes * 60)
                         .tokenType(OAuth2AccessToken.TokenType.BEARER)
                         .build()
@@ -86,10 +83,11 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@CookieValue String refreshToken) {
-        ResponseCookie invalidCookie = authService.createRefreshTokenCookie("", true);
-        authService.invalidateActiveTokens(refreshToken);
+//        ResponseCookie invalidCookie = authService.createRefreshTokenCookie("", true);
+//        authService.invalidateActiveTokens(refreshToken);
+        ResponseCookie logoutCookie = authService.logout(refreshToken);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, invalidCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, logoutCookie.toString())
                 .build();
     }
 

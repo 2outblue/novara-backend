@@ -2,19 +2,18 @@ package com.novaraspace.repository;
 
 
 import com.novaraspace.model.domain.UserBookingsQuery;
+import com.novaraspace.model.domain.UserStatusParams;
+import com.novaraspace.model.dto.admin.UsersStatusRequestDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.User;
-import com.novaraspace.model.entity.VerificationToken;
-import com.novaraspace.model.enums.AccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,21 +23,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByAuthId(String authId);
 
-    @Query("select u.authId as authId from User u where u.email = :email")
-    Optional<String> getAuthIdByEmail(@Param("email") String email);
-
-    @Query("select u.email as email from User u where u.authId = :authId")
-    Optional<String> getEmailByAuthId(@Param("authId") String authId);
-
-    @Modifying
-    @Query("update User u set u.status = :newStatus where u.id = :userId")
-    @Transactional
-    void updateUserStatusById(@Param("userId") Long userId, @Param("newStatus") AccountStatus newStatus);
-
-    @Modifying
-    @Query("update User u set u.verification = :verification where u.id = :userId")
-    @Transactional
-    void updateVerification(@Param("userId") Long userId, @Param("verification")VerificationToken verification);
+//    @Query("select u.authId as authId from User u where u.email = :email")
+//    Optional<String> getAuthIdByEmail(@Param("email") String email);
+//
+//    @Query("select u.email as email from User u where u.authId = :authId")
+//    Optional<String> getEmailByAuthId(@Param("authId") String authId);
+//
+//    @Modifying
+//    @Query("update User u set u.outcome = :newStatus where u.id = :userId")
+//    @Transactional
+//    void updateUserStatusById(@Param("userId") Long userId, @Param("newStatus") AccountStatus newStatus);
+//
+//    @Modifying
+//    @Query("update User u set u.verification = :verification where u.id = :userId")
+//    @Transactional
+//    void updateVerification(@Param("userId") Long userId, @Param("verification")VerificationToken verification);
 
 
     @Query("""
@@ -61,4 +60,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     List<User> findAllByAuthIdIn(List<String> authIds);
+
+    Integer countByLastLoginAtAfter(Instant lastLoginAt);
+    Integer countByCreatedAtAfter(Instant createdAt);
+    @Query("select u.email from User u where u.lastLoginAt >= :date")
+    List<String> findAllEmailsByLastLoginAtAfter(@Param("date") Instant date, Pageable pageable);
+
+    @Query("select u.email from User u where u.createdAt >= :date")
+    List<String> findAllEmailsByCreatedAtAfter(@Param("date") Instant date, Pageable pageable);
+
+    @Query("select count(u) from User u where u.createdAt >= :#{#params.date} and u.status = :#{#params.status}")
+    Integer countForStatus(@Param("params") UserStatusParams params);
+    @Query("select u.email from User u where u.createdAt >= :#{#params.date} and u.status = :#{#params.status}")
+    List<String> findUserEmailsForStatus(@Param("params") UserStatusParams params, Pageable pageable);
 }

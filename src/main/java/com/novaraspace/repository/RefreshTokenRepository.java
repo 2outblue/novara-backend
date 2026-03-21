@@ -36,11 +36,11 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     void revokeByUserAuthId(@Param("authId") String authId);
 
 
-    @Query("select t.userAuthId from RefreshToken t where cast(t.createdOn as localdatetime) >= :date")
-    List<String> getAllUserAuthIdsByCreatedOnAfter(LocalDateTime date, Pageable pageable);
+    @Query("select t.userAuthId from RefreshToken t where cast(t.createdOn as localdatetime) >= :date and t.revoked = false")
+    List<String> getAllAuthIdsForActiveUsers(LocalDateTime date, Pageable pageable);
 
 //    Integer countByCreatedOnAfter(LocalDateTime date);
 
-    @Query("select count(distinct t.userAuthId) from RefreshToken t where cast(t.createdOn as localdatetime) >= :date")
-    Integer countByCreatedOnAfter(LocalDateTime date);
+    @Query("select count(distinct t.userAuthId) from RefreshToken t where cast(t.createdOn as localdatetime) >= :date and t.revoked = false")
+    Integer getCountForActiveUsers(LocalDateTime date);
 }

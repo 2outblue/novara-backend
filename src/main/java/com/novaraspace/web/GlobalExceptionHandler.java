@@ -2,7 +2,10 @@ package com.novaraspace.web;
 
 
 import com.novaraspace.model.enums.ErrCode;
+import com.novaraspace.model.enums.audit.Outcome;
+import com.novaraspace.model.events.UserLoginEvent;
 import com.novaraspace.model.exception.*;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +24,24 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    private final ApplicationEventPublisher eventPublisher;
+
+    public GlobalExceptionHandler(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
+
     @ExceptionHandler(RefreshTokenException.class)
     public ResponseEntity<ApiError> handleInvalidToken(RefreshTokenException ex) {
         return ResponseEntity.status(ex.getStatus())
                 .body(new ApiError(ex.getStatus().value(), ex.getErrorCode().toString(), ex.getMessage()));
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//        return ResponseEntity.outcome(HttpStatus.UNAUTHORIZED)
 //                .body(new ApiError(HttpStatus.UNAUTHORIZED.value(), "INVALID_TOKEN", ex.getMessage()));
     }
 
 //    @ExceptionHandler(ExpiredRefreshTokenException.class)
 //    public ResponseEntity<ApiError> handleExpiredToken(ExpiredRefreshTokenException ex) {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//        return ResponseEntity.outcome(HttpStatus.UNAUTHORIZED)
 //                .body(new ApiError(HttpStatus.UNAUTHORIZED.value(), "EXPIRED_TOKEN", ex.getMessage()));
 //    }
 
@@ -49,7 +59,7 @@ public class GlobalExceptionHandler {
 
 //    @ExceptionHandler(UserNotFoundException.class)
 //    public ResponseEntity<ApiError> handleUserNotFound(UserNotFoundException ex) {
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//        return ResponseEntity.outcome(HttpStatus.NOT_FOUND)
 //                .body(new ApiError(HttpStatus.NOT_FOUND.value(), "USER_NOT_FOUND", ex.getMessage()));
 //    }
 
@@ -59,6 +69,7 @@ public class GlobalExceptionHandler {
         String errorCode = "BAD_CREDENTIALS";
         if (ex instanceof BadCredentialsException || ex instanceof UsernameNotFoundException || ex instanceof InternalAuthenticationServiceException) {
             message = "Invalid username or password.";
+            eventPublisher.publishEvent(new UserLoginEvent(Outcome.FAILURE, ex.getAuthenticationRequest().getName()));
         }
         if (ex instanceof DisabledException) {
             message = "Account is not activated";
@@ -119,7 +130,7 @@ public class GlobalExceptionHandler {
 //        if (ex instanceof DisabledVerificationTokenException) {
 //            errorCode = "VERIFICATION_DISABLED";
 //        }
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//        return ResponseEntity.outcome(HttpStatus.BAD_REQUEST)
 //                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), errorCode, ex.getMessage()));
 //    }
 

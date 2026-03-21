@@ -3,6 +3,7 @@ package com.novaraspace.service;
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.config.JWKAlgorithmImpl;
 import com.novaraspace.model.domain.PassResetEmailParams;
+import com.novaraspace.model.dto.auth.AuthResponseDTO;
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
 import com.novaraspace.model.dto.auth.VerificationTokenDTO;
 import com.novaraspace.model.dto.user.PasswordResetRequestDTO;
@@ -14,10 +15,17 @@ import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.ErrCode;
 import com.novaraspace.model.enums.UserRole;
+import com.novaraspace.model.enums.audit.Outcome;
+import com.novaraspace.model.enums.audit.PassEventType;
+import com.novaraspace.model.events.PasswordEvent;
+import com.novaraspace.model.events.UserLoginEvent;
+import com.novaraspace.model.events.UserLogoutEvent;
+import com.novaraspace.model.events.UserRegisterEvent;
 import com.novaraspace.model.exception.*;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -56,12 +64,13 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AuthService(
             JwtEncoder jwtEncoder, UserService userService, VerificationService verificationService,
             RefreshTokenRepository refreshTokenRepository,
             PasswordEncoder passwordEncoder, UserMapper userMapper, PasswordResetTokenService passwordResetService,
-            EmailService emailService) {
+            EmailService emailService, ApplicationEventPublisher eventPublisher) {
         this.jwtEncoder = jwtEncoder;
         this.userService = userService;
         this.verificationService = verificationService;
@@ -69,6 +78,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.passwordResetService = passwordResetService;
         this.emailService = emailService;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -81,10 +91,37 @@ public class AuthService {
             newUser.setVerification(verificationToken);
         }
 //        userService.persistUser(newUser);
+        eventPublisher.publishEvent(new UserRegisterEvent(newUser.getId(), newUser.getEmail()));
         return new VerificationTokenDTO()
                 .setEmail(newUser.getEmail())
                 .setCode(verificationToken.getCode())
                 .setLinkToken(verificationToken.getLinkToken());
+    }
+
+    @Transactional
+    public AuthResponseDTO login(Authentication auth) {
+        TokenAuthenticationDTO tokenDTO = generateNewTokenAuthentication(auth);
+        ResponseCookie cookie = createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
+        eventPublisher.publishEvent(new UserLoginEvent(Outcome.SUCCESS, auth.getName()));
+        return new AuthResponseDTO().setJwt(tokenDTO.getJwt()).setCookie(cookie);
+    }
+
+    public AuthResponseDTO refresh(String refreshToken) {
+        TokenAuthenticationDTO tokenDTO = validateRefreshToken(refreshToken);
+        ResponseCookie cookie = createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
+        return new AuthResponseDTO().setJwt(tokenDTO.getJwt()).setCookie(cookie);
+    }
+
+    public ResponseCookie logout(String refreshToken) {
+        String publicKey = getRefreshTokenParams(refreshToken)[0];
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
+                .orElseThrow(RefreshTokenException::invalid);
+
+        Optional<User> user = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId());
+        user.ifPresent(u -> eventPublisher.publishEvent(new UserLogoutEvent(u.getId(), u.getEmail())));
+
+        invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+        return createRefreshTokenCookie("", true);
     }
 
     public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
@@ -102,7 +139,7 @@ public class AuthService {
     public VerificationTokenDTO generateNewVerification(String email) {
         // Could return a 200 here and in verifyAccountByLinkTokenOrCode()
         // in order to not expose any implementation details and accounts
-        // with status PENDING_ACTIVATION and also standardize response times
+        // with outcome PENDING_ACTIVATION and also standardize response times
         // but thats an overkill for this project at this stage...
         if (!emailVerificationEnabled) {throw new FailedOperationException();}
 
@@ -116,9 +153,10 @@ public class AuthService {
                 .setLinkToken(newVerification.getLinkToken());
     }
 
+    @Transactional
     public void generateNewPasswordResetToken(String email) {
         Optional<User> user = this.userService.getEntityByEmail(email);
-        if (user.isEmpty() || !user.get().getStatus().equals(AccountStatus.ACTIVE)) {
+        if (user.isEmpty() || !user.get().isActive()) {
             return;
         }
         PasswordResetToken token = this.passwordResetService.generateNewToken(user.get().getAuthId());
@@ -129,6 +167,7 @@ public class AuthService {
                 "30"
         );
         emailService.sendPasswordResetLink(emailParams);
+        eventPublisher.publishEvent(new PasswordEvent(PassEventType.RESET_REQUEST, email));
     }
 
     @Transactional
@@ -138,14 +177,15 @@ public class AuthService {
             throw new UserException(ErrCode.RESET_TOKEN_INVALID, HttpStatus.BAD_REQUEST, "Invalid token.");
         }
         User user = userService.findEntityByAuthId(token.get().getUserAuthId()).orElse(null);
-        if (user == null || !user.getStatus().equals(AccountStatus.ACTIVE)) {
+        if (user == null || !user.isActive()) {
             throw UserException.updateFailed();
         }
         refreshTokenRepository.revokeByUserAuthId(user.getAuthId());
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        eventPublisher.publishEvent(new PasswordEvent(PassEventType.CHANGE, user.getEmail()));
     }
 
-    public ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {
+    private ResponseCookie createRefreshTokenCookie(String refreshToken, boolean logout) {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
@@ -164,15 +204,17 @@ public class AuthService {
         return new TokenAuthenticationDTO(refreshToken, jwt);
     }
 
-    public void invalidateActiveTokens(String rawRefreshToken) {
-        //There shouldn't be any active tokens aside from the input one, but for safety invalidate by familyId.
-        String publicKey = getRefreshTokenParams(rawRefreshToken)[0];
-        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
-                .orElseThrow(RefreshTokenException::invalid);
-        invalidateTokenFamily(refreshTokenEntity.getFamilyId());
-    }
+//    public void invalidateActiveTokens(String rawRefreshToken) {
+//        //There shouldn't be any active tokens aside from the input one, but for safety invalidate by familyId.
+//        String publicKey = getRefreshTokenParams(rawRefreshToken)[0];
+//        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
+//                .orElse(null);
+//        if (refreshTokenEntity != null) {
+//            invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+//        }
+//    }
 
-    public TokenAuthenticationDTO validateRefreshToken(String rawRefreshToken) {
+    private TokenAuthenticationDTO validateRefreshToken(String rawRefreshToken) {
         String[] tokenParams = getRefreshTokenParams(rawRefreshToken);
         String publicKey = tokenParams[0];
         String rawToken = tokenParams[1];
@@ -196,7 +238,7 @@ public class AuthService {
         User userEntity = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId())
                 .orElseThrow(RefreshTokenException::invalid);
 
-        if (!userEntity.getStatus().equals(AccountStatus.ACTIVE)) {
+        if (!userEntity.isActive()) {
             throw RefreshTokenException.invalid();
         }
 

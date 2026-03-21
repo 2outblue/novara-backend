@@ -2,10 +2,17 @@ package com.novaraspace.web;
 
 import com.novaraspace.factory.FlightJSONFactory;
 import com.novaraspace.model.dto.admin.ActiveUsersResponseDTO;
+import com.novaraspace.model.dto.admin.AdminPanelDataRequestDTO;
+import com.novaraspace.model.dto.admin.AdminPanelDataResponse;
+import com.novaraspace.model.dto.audit.AuditLogDTO;
+import com.novaraspace.model.dto.audit.AuditLogRequestDTO;
 import com.novaraspace.model.dto.flight.FlightTemplateGenerationRequest;
 import com.novaraspace.model.other.FlightJSON;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.AdminService;
+import com.novaraspace.service.AuditLogService;
 import com.novaraspace.service.FlightGenerationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +27,12 @@ public class AdminController {
 
     private final FlightGenerationService flightGenerationService;
     private final AdminService adminService;
+    private final AuditLogService auditLogService;
 
-    public AdminController(FlightGenerationService flightGenerationService, AdminService adminService) {
+    public AdminController(FlightGenerationService flightGenerationService, AdminService adminService, AuditLogService auditLogService) {
         this.flightGenerationService = flightGenerationService;
         this.adminService = adminService;
+        this.auditLogService = auditLogService;
     }
 
     @GetMapping
@@ -38,10 +47,22 @@ public class AdminController {
     }
 
 
-    @GetMapping("/active-users")
-    public ResponseEntity<ActiveUsersResponseDTO> getCurrentActiveUsers() {
-        ActiveUsersResponseDTO res = adminService.getCurrentActiveUsers();
-        return ResponseEntity.ok(res);
+//    @GetMapping("/active-users")
+//    public ResponseEntity<ActiveUsersResponseDTO> getCurrentActiveUsers() {
+//        ActiveUsersResponseDTO res = adminService.getCurrentActiveUsers();
+//        return ResponseEntity.ok(res);
+//    }
+
+    @PostMapping("/panel")
+    public ResponseEntity<AdminPanelDataResponse> getAdminPanelData(@Valid @RequestBody AdminPanelDataRequestDTO dto) {
+        AdminPanelDataResponse response = adminService.getAdminPanelData(dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/audit")
+    public ResponseEntity<PageResponse<AuditLogDTO>> getAuditLogsPage(@Valid @RequestBody AuditLogRequestDTO req) {
+        PageResponse<AuditLogDTO> response = auditLogService.getLogs(req);
+        return ResponseEntity.ok(response);
     }
 
 

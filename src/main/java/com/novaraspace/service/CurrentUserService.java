@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequestScope
-public class CurrentUserService {
+public class CurrentUserService { //TODO: Instead of a service make this a component, maybe CurrentUserHolder and put it in components?
 
     private final UserRepository userRepository;
     private Optional<User> cachedUser = Optional.empty();

@@ -8,6 +8,8 @@ import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.dto.flight.AvailableFlightDTO;
 import com.novaraspace.model.entity.*;
+import com.novaraspace.model.enums.audit.BookingEventType;
+import com.novaraspace.model.events.BookingEvent;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.model.other.PageResponse;
@@ -15,6 +17,7 @@ import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.validation.business.BookingValidator;
 //import jakarta.transaction.Transactional;
 import com.novaraspace.validation.business.ChangeFlightValidator;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +42,7 @@ public class BookingService {
     private final DataMasker dataMasker;
     private final ChangeFlightValidator changeFlightValidator;
     private final CurrentUserService currentUserService;
+    private final ApplicationEventPublisher eventPublisher;
 
     //TODO: Maybe rename this to something like BookingCreationService and keep the getResultForNewBookingStart
     // and createNewBooking methods, and move the others to a BookingManageService
@@ -50,7 +54,7 @@ public class BookingService {
             BookingValidator bookingValidator,
             BookingReferenceGenerator bookingReferenceGenerator,
             PaymentService paymentService,
-            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator, CurrentUserService currentUserService) {
+            DataMasker dataMasker, ChangeFlightValidator changeFlightValidator, CurrentUserService currentUserService, ApplicationEventPublisher eventPublisher) {
         this.bookingMapper = bookingMapper;
         this.flightService = flightService;
         this.bookingQuoteService = bookingQuoteService;
@@ -61,6 +65,7 @@ public class BookingService {
         this.dataMasker = dataMasker;
         this.changeFlightValidator = changeFlightValidator;
         this.currentUserService = currentUserService;
+        this.eventPublisher = eventPublisher;
     }
 
     public BookingStartResultDTO getResultForNewBookingStart(FlightSearchParamsDTO flightSearchParamsDTO) {
@@ -103,12 +108,15 @@ public class BookingService {
         //TODO: Maybe normalize the prices before saving the booking ? If you do - normalize the payment as well.
         Booking confirmedBooking = bookingRepository.save(booking);
         Optional<User> user = currentUserService.getAuthenticatedUser();
-        if (user.isPresent()) {
+        if (user.isPresent() && user.get().isActive()) {
             User u = user.get();
             u.addBooking(confirmedBooking);
             u.addPayment(payment);
         }
-        return bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
+        BookingConfirmedDTO dto = bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
+        eventPublisher.publishEvent(new BookingEvent(BookingEventType.CREATE,
+                confirmedBooking.getId(), confirmedBooking.getReference()));
+        return dto;
     }
 
     @Transactional(readOnly = true)
@@ -135,7 +143,11 @@ public class BookingService {
         }
         booking.cancel();
         Booking cancelledBooking = bookingRepository.save(booking);
-        return bookingMapper.entityToDTO(cancelledBooking);
+
+        BookingDTO dto = bookingMapper.entityToDTO(cancelledBooking);
+        eventPublisher.publishEvent(new BookingEvent(BookingEventType.CANCEL,
+                cancelledBooking.getId(), cancelledBooking.getReference()));
+        return dto;
     }
 
     @Transactional
@@ -185,11 +197,14 @@ public class BookingService {
         Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
         Booking changedBooking = bookingRepository.save(booking);
         Optional<User> user = currentUserService.getAuthenticatedUser();
-        if (user.isPresent()) {
+        if (user.isPresent() && user.get().isActive()) {
             User u = user.get();
             u.addPayment(payment);
         }
-        return bookingMapper.entityToDTO(changedBooking);
+        BookingDTO dto = bookingMapper.entityToDTO(changedBooking);
+        eventPublisher.publishEvent(new BookingEvent(BookingEventType.FLIGHT_CHANGE,
+                changedBooking.getId(), changedBooking.getReference()));
+        return dto;
     }
 
     private Booking findValidBooking(BookingSearchParams params) {

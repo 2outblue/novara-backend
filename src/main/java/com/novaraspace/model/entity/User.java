@@ -126,6 +126,10 @@ public class User extends BaseEntity {
 //        payments.add(payment);
     }
 
+    public boolean isActive() {
+        return status.equals(AccountStatus.ACTIVE);
+    }
+
     public String getPublicId() {
         return publicId;
     }

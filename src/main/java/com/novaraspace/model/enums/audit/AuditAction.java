@@ -1,0 +1,5 @@
+package com.novaraspace.model.enums.audit;
+
+public enum AuditAction {
+    LOGIN, LOGOUT, REGISTER, PASSWORD_RESET_REQUEST, PASSWORD_CHANGE, UPDATE_USER, BOOKING_CREATE, BOOKING_CANCEL, BOOKING_FLIGHT_CHANGE
+}
