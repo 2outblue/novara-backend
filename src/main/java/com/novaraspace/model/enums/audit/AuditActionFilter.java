@@ -11,7 +11,7 @@ public enum AuditActionFilter {
             case ALL -> List.of(AuditAction.values());
             case ALL_USER_EVENTS -> Arrays.asList(AuditAction.LOGIN,
                     AuditAction.LOGOUT, AuditAction.REGISTER, AuditAction.PASSWORD_RESET_REQUEST,
-                    AuditAction.PASSWORD_CHANGE, AuditAction.UPDATE_USER);
+                    AuditAction.PASSWORD_CHANGE, AuditAction.UPDATE_USER, AuditAction.CHANGE_USER_STATUS);
             case LOGIN -> Arrays.asList(AuditAction.LOGIN);
             case LOGOUT -> Arrays.asList(AuditAction.LOGOUT);
             case REGISTER -> Arrays.asList(AuditAction.REGISTER);

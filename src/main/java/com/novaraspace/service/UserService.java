@@ -10,6 +10,8 @@ import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.UserPaymentCard;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
+import com.novaraspace.model.enums.audit.PassEventType;
+import com.novaraspace.model.events.PasswordEvent;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.exception.UserException;
 import com.novaraspace.model.exception.VerificationException;
@@ -20,6 +22,7 @@ import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.UserRepository;
 import com.novaraspace.util.CountryCodeLoader;
 import jakarta.validation.Valid;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +51,9 @@ public class UserService {
     private final CurrentUserService currentUserService;
     private final BookingMapper bookingMapper;
     private final PaymentMapper paymentMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, PaymentService paymentService, Validator validator, CurrentUserService currentUserService, BookingMapper bookingMapper, PaymentMapper paymentMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, PaymentService paymentService, Validator validator, CurrentUserService currentUserService, BookingMapper bookingMapper, PaymentMapper paymentMapper, ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
@@ -58,6 +62,7 @@ public class UserService {
         this.currentUserService = currentUserService;
         this.bookingMapper = bookingMapper;
         this.paymentMapper = paymentMapper;
+        this.eventPublisher = eventPublisher;
         this.fieldUpdaters = setFieldUpdaters();
     }
 
@@ -123,12 +128,12 @@ public class UserService {
                 .setTotalPages(page.getTotalPages());
     }
 
-    @Transactional(readOnly = true)
-    public PaymentDTO[] getCurrentUserLast10Payments() {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
-        return user.getPayments().stream()
-                .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
-    }
+//    @Transactional(readOnly = true)
+//    public PaymentDTO[] getCurrentUserLast10Payments() {
+//        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+//        return user.getPayments().stream()
+//                .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
+//    }
 
     @Transactional(readOnly = true)
     public UserPaymentsResponseDTO getCurrentUserPaymentsData() {
@@ -172,6 +177,17 @@ public class UserService {
         user.removeCard(cardRef);
         return user.getCards().stream().map(userMapper::userCardToDTO)
                 .toArray(UserCardDTO[]::new);
+    }
+
+    @Transactional
+    public void changeUserPassword(@Valid PasswordChangeRequestDTO req) {
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+        if (passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+            eventPublisher.publishEvent(new PasswordEvent(PassEventType.CHANGE, user.getEmail()));
+            return;
+        }
+        throw UserException.updateFailed();
     }
 
 

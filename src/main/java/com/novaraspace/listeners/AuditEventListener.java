@@ -72,15 +72,10 @@ public class AuditEventListener {
 
     @EventListener
     public void handlePasswordEvent(PasswordEvent e) {
-        User user = null;
-        AuditRole role = null;
-        String actorEmail = e.type().equals(PassEventType.CHANGE) ? e.email() : null;
-        if (e.type().equals(PassEventType.RESET_REQUEST)) {
-            //For admin resets
-            user = currentUserService.getAuthenticatedUser().orElse(null);
-            role = user != null ? determineAuditRole(user.getRoles()) : null;
-            actorEmail = user != null ? user.getEmail() : null;
-        }
+        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
+        String actorEmail = user != null ? user.getEmail() : null;
+
         AuditLog log = new AuditLog()
                 .setAction(e.type().toAuditAction())
                 .setActorId(user != null ? user.getId() : null)
@@ -110,7 +105,27 @@ public class AuditEventListener {
         logRepository.save(log);
     }
 
+    @EventListener
+    public void handleUserStatusChangeEvent(ChangeUserStatusEvent e) {
+        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
 
+        StringBuilder sb = new StringBuilder();
+        String details = sb.append(e.targetUserEmail())
+                .append(" new status: ")
+                .append(e.newStatus()).toString();
+
+        AuditLog log = new AuditLog()
+                .setActorId(user != null ? user.getId() : null)
+                .setActorEmail(user != null ? user.getEmail() : null)
+                .setActorRole(role)
+                .setAction(AuditAction.CHANGE_USER_STATUS)
+                .setTargetType(AuditTargetType.USER)
+                .setTargetDetails(details)
+                .setTargetId(e.targetUserId())
+                .setOutcome(Outcome.SUCCESS);
+        logRepository.save(log);
+    }
 
 
     private AuditRole determineAuditRole(Set<UserRole> userRoles) {

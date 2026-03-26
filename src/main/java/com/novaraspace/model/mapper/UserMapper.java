@@ -1,6 +1,8 @@
 package com.novaraspace.model.mapper;
 
 import com.nimbusds.jose.util.Base64;
+import com.novaraspace.model.dto.admin.UserControlResult;
+import com.novaraspace.model.dto.admin.UserDetailsDTO;
 import com.novaraspace.model.dto.user.AccountDTO;
 import com.novaraspace.model.dto.user.UserCardDTO;
 import com.novaraspace.model.dto.user.UserDocumentDTO;
@@ -16,6 +18,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Set;
@@ -62,5 +65,15 @@ public abstract class UserMapper {
 
     public abstract UserDocumentDTO documentToDto(UserDocument document);
     public abstract UserCardDTO userCardToDTO(UserPaymentCard card);
+    public abstract UserControlResult entityToUcResult(User entity);
+
+    public UserDetailsDTO entityToUcDetails(User entity) {
+        UserDetailsDTO partialDTO = entityToPartialUcDetails(entity);
+        return partialDTO
+                .setSavedCardsCount(entity.getCards().size())
+                .setBookingsCount(entity.getBookings().size())
+                .setPaymentsCount(entity.getPayments().size());
+    }
+    protected abstract UserDetailsDTO entityToPartialUcDetails(User entity);
 
 }

@@ -3,15 +3,19 @@ package com.novaraspace.repository;
 
 import com.novaraspace.model.domain.UserBookingsQuery;
 import com.novaraspace.model.domain.UserStatusParams;
+import com.novaraspace.model.dto.admin.ChangeUserStatusRequestDTO;
+import com.novaraspace.model.dto.admin.UserControlSearchDTO;
 import com.novaraspace.model.dto.admin.UsersStatusRequestDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -73,4 +77,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Integer countForStatus(@Param("params") UserStatusParams params);
     @Query("select u.email from User u where u.createdAt >= :#{#params.date} and u.status = :#{#params.status}")
     List<String> findUserEmailsForStatus(@Param("params") UserStatusParams params, Pageable pageable);
+
+
+    @Query("""
+    select u from User u where (:#{#params.dateFrom} is null or u.createdAt >= :#{#params.dateFrom})
+    and (:#{#params.dateTo} is null or u.createdAt <= :#{#params.dateTo})
+    and (:#{#params.idFrom} is null or u.id >= :#{#params.idFrom})
+    and (:#{#params.idTo} is null or u.id <= :#{#params.idTo})
+    and (:#{#params.email} is null or u.email = :#{#params.email})
+    """)
+    Page<User> getPageForUcSearch(@Param("params") UserControlSearchDTO params, Pageable pageable);
+
+    @Modifying
+    @Query("update User u set u.status = :#{#params.status} where u.id = :#{#params.id}")
+    @Transactional
+    int updateUserStatus(@Param("params") ChangeUserStatusRequestDTO params);
 }

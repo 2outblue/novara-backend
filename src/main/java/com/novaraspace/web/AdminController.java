@@ -1,9 +1,7 @@
 package com.novaraspace.web;
 
 import com.novaraspace.factory.FlightJSONFactory;
-import com.novaraspace.model.dto.admin.ActiveUsersResponseDTO;
-import com.novaraspace.model.dto.admin.AdminPanelDataRequestDTO;
-import com.novaraspace.model.dto.admin.AdminPanelDataResponse;
+import com.novaraspace.model.dto.admin.*;
 import com.novaraspace.model.dto.audit.AuditLogDTO;
 import com.novaraspace.model.dto.audit.AuditLogRequestDTO;
 import com.novaraspace.model.dto.flight.FlightTemplateGenerationRequest;
@@ -65,5 +63,28 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/uc-search")
+    public ResponseEntity<PageResponse<UserControlResult>> getUserControlSearchPage(@Valid @RequestBody UserControlSearchDTO req) {
+        PageResponse<UserControlResult> res = adminService.getUserSearchPage(req);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/uc-details")
+    public ResponseEntity<UserDetailsDTO> getUserDetails(@Valid @RequestBody UserDetailsRequestDTO req) {
+        UserDetailsDTO res = adminService.getUserDetails(req);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/uc-status-change")
+    public ResponseEntity<UserDetailsDTO> changeUserStatus(@Valid @RequestBody ChangeUserStatusRequestDTO req) {
+        UserDetailsDTO res = adminService.changeUserStatus(req);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/uc-reset-pass")
+    public ResponseEntity<Void> resetUserPassword(@Valid @RequestBody UcPasswordResetRequest req) {
+        adminService.resetUserPassword(req);
+        return ResponseEntity.ok().build();
+    }
 
 }

@@ -76,7 +76,7 @@ public class User extends BaseEntity {
     @JoinTable(name = "user_payments",
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "payment_id"))
-    private List<Payment> payments;
+    private List<Payment> payments = new ArrayList<>();
 
     public User() {
     }

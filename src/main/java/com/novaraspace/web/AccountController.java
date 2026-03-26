@@ -35,6 +35,12 @@ public class AccountController {
         return ResponseEntity.ok(completedUpdates);
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changeUserPassword(@Valid @RequestBody PasswordChangeRequestDTO req) {
+        userService.changeUserPassword(req);
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/update-doc")
     public ResponseEntity<UserDocumentDTO[]> updateUserDoc(@Valid @RequestBody UserDocumentUpdateRequest req) {
         UserDocumentDTO[] docs = userService.updateUserDocument(req);

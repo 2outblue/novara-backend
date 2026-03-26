@@ -1,22 +1,30 @@
 package com.novaraspace.service;
 
 import com.novaraspace.model.domain.UserStatusParams;
-import com.novaraspace.model.dto.admin.AdminPanelDataRequestDTO;
-import com.novaraspace.model.dto.admin.AdminPanelDataResponse;
-import com.novaraspace.model.dto.admin.EmailsAndTotalCount;
-import com.novaraspace.model.dto.admin.UsersStatusRequestDTO;
+import com.novaraspace.model.dto.admin.*;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.enums.audit.PassEventType;
+import com.novaraspace.model.events.ChangeUserStatusEvent;
+import com.novaraspace.model.events.PasswordEvent;
+import com.novaraspace.model.exception.UserException;
+import com.novaraspace.model.mapper.UserMapper;
+import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.RefreshTokenRepository;
 import com.novaraspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -24,13 +32,22 @@ public class AdminService {
     @Value("${app.jwt.expiry-minutes}")
     private int jwtExpiryMinutes;
 
+    @Value("${app.enable-email-password-reset}")
+    private boolean passResetsEnabled;
+
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final AuthService authService;
+    private final ApplicationEventPublisher eventPublisher;
 
 
-    public AdminService(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository) {
+    public AdminService(UserRepository userRepository, UserMapper userMapper, RefreshTokenRepository refreshTokenRepository, AuthService authService, ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.authService = authService;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -78,16 +95,56 @@ public class AdminService {
     }
 
 
-//    private EmailsAndTotalCount getUserLoginsSince(LocalDateTime date) {
-//        if (date.isBefore(LocalDateTime.now().minusMonths(1).minusHours(12))) {
-//            date = LocalDateTime.now().minusMonths(1);
-//        }
-//        Instant instant = date.atZone(ZoneId.systemDefault()).toInstant();
-//        int totalCount = userRepository.countByLastLoginAtAfter(instant);
-//        List<String> emails = userRepository.findAllEmailsByLastLoginAtAfter(instant, Pageable.ofSize(100));
-//        return new EmailsAndTotalCount().setEmails(emails).setTotalCount(totalCount);
-//    }
 
+    public PageResponse<UserControlResult> getUserSearchPage(UserControlSearchDTO req) {
+        Pageable pageable = PageRequest.of(
+                req.getPage(),
+                req.getSize(),
+                Sort.by("createdAt").ascending());
+
+        Page<User> page = userRepository.getPageForUcSearch(req, pageable);
+        List<UserControlResult> list = page.getContent().stream().map(userMapper::entityToUcResult).toList();
+        return new PageResponse<UserControlResult>()
+                .setContent(list)
+                .setPage(page.getNumber())
+                .setSize(page.getSize())
+                .setTotalElements(page.getTotalElements())
+                .setTotalPages(page.getTotalPages());
+    }
+
+    @Transactional(readOnly = true)
+    public UserDetailsDTO getUserDetails(UserDetailsRequestDTO req) {
+        Optional<User> user = Optional.empty();
+        if (req.getId() != null) {
+            user = userRepository.findById(req.getId());
+        } else if (req.getEmail() != null) {
+            user = userRepository.findByEmail(req.getEmail());
+        }
+        User u = user.orElseThrow(UserException::notFound);
+        return userMapper.entityToUcDetails(u);
+    }
+
+    @Transactional
+    public UserDetailsDTO changeUserStatus(ChangeUserStatusRequestDTO req) {
+        int count = userRepository.updateUserStatus(req);
+        if (count <= 0) { throw UserException.notFound(); }
+        User user = userRepository.findById(req.getId()).orElse(null);
+        if (user != null) {
+            eventPublisher.publishEvent(new ChangeUserStatusEvent(
+                    user.getId(), user.getEmail(), user.getStatus()));
+            return userMapper.entityToUcDetails(user);
+        }
+        throw UserException.notFound();
+    }
+
+    @Transactional
+    public void resetUserPassword(UcPasswordResetRequest req) {
+        if (!passResetsEnabled) { return; };
+        User user = userRepository.findById(req.getId()).orElseThrow(UserException::notFound);
+        String email = user.getEmail();
+        authService.generateNewPasswordResetToken(email);
+        eventPublisher.publishEvent(new PasswordEvent(PassEventType.RESET_REQUEST, email));
+    }
 
 
 
