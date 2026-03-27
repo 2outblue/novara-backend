@@ -6,6 +6,7 @@ public class AdminPanelDataResponse {
     private Integer totalUsers;
     private EmailsAndTotalCount activeUsers;
     private EmailsAndTotalCount userLogins;
+    private Long totalLogins;
     private EmailsAndTotalCount newUsers;
     private EmailsAndTotalCount statusUsers;
 
@@ -33,6 +34,20 @@ public class AdminPanelDataResponse {
 
     public AdminPanelDataResponse setUserLogins(EmailsAndTotalCount userLogins) {
         this.userLogins = userLogins;
+        return this;
+    }
+
+    public AdminPanelDataResponse setTotalUsers(Integer totalUsers) {
+        this.totalUsers = totalUsers;
+        return this;
+    }
+
+    public Long getTotalLogins() {
+        return totalLogins;
+    }
+
+    public AdminPanelDataResponse setTotalLogins(Long totalLogins) {
+        this.totalLogins = totalLogins;
         return this;
     }
 

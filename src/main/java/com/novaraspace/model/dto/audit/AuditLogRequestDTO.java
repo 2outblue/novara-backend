@@ -5,6 +5,7 @@ import com.novaraspace.model.enums.audit.Outcome;
 import com.novaraspace.model.enums.audit.OutcomeFilter;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.Instant;
@@ -22,6 +23,9 @@ public class AuditLogRequestDTO {
     private OutcomeFilter outcome;
     @NotNull
     private AuditActionFilter action;
+
+    @Positive
+    private Long userId;
 
     public int getPage() {
         return page;
@@ -65,6 +69,15 @@ public class AuditLogRequestDTO {
 
     public AuditLogRequestDTO setAction(AuditActionFilter action) {
         this.action = action;
+        return this;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public AuditLogRequestDTO setUserId(Long userId) {
+        this.userId = userId;
         return this;
     }
 }

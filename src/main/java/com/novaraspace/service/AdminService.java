@@ -3,12 +3,14 @@ package com.novaraspace.service;
 import com.novaraspace.model.domain.UserStatusParams;
 import com.novaraspace.model.dto.admin.*;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.audit.PassEventType;
 import com.novaraspace.model.events.ChangeUserStatusEvent;
 import com.novaraspace.model.events.PasswordEvent;
 import com.novaraspace.model.exception.UserException;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.model.other.PageResponse;
+import com.novaraspace.repository.AuditLogRepository;
 import com.novaraspace.repository.RefreshTokenRepository;
 import com.novaraspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,14 +42,16 @@ public class AdminService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthService authService;
     private final ApplicationEventPublisher eventPublisher;
+    private final AuditLogRepository auditLogRepository;
 
 
-    public AdminService(UserRepository userRepository, UserMapper userMapper, RefreshTokenRepository refreshTokenRepository, AuthService authService, ApplicationEventPublisher eventPublisher) {
+    public AdminService(UserRepository userRepository, UserMapper userMapper, RefreshTokenRepository refreshTokenRepository, AuthService authService, ApplicationEventPublisher eventPublisher, AuditLogRepository auditLogRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.refreshTokenRepository = refreshTokenRepository;
         this.authService = authService;
         this.eventPublisher = eventPublisher;
+        this.auditLogRepository = auditLogRepository;
     }
 
 
@@ -67,6 +71,8 @@ public class AdminService {
             Instant instant = req.getUserLogins().atOffset(ZoneOffset.UTC).toInstant();
             int totalCount = userRepository.countByLastLoginAtAfter(instant);
             List<String> emails = userRepository.findAllEmailsByLastLoginAtAfter(instant, Pageable.ofSize(100));
+            Long totalLogins = auditLogRepository.countTotalLoginsAfter(instant);
+            resp.setTotalLogins(totalLogins);
             resp.setUserLogins(new EmailsAndTotalCount().setEmails(emails).setTotalCount(totalCount));
         }
         if (req.getNewUsers() != null) {
@@ -121,7 +127,8 @@ public class AdminService {
             user = userRepository.findByEmail(req.getEmail());
         }
         User u = user.orElseThrow(UserException::notFound);
-        return userMapper.entityToUcDetails(u);
+        Long totalUserLogins = auditLogRepository.countLoginsForUser(u.getId());
+        return userMapper.entityToUcDetails(u).setTotalLogins(totalUserLogins);
     }
 
     @Transactional
@@ -129,12 +136,16 @@ public class AdminService {
         int count = userRepository.updateUserStatus(req);
         if (count <= 0) { throw UserException.notFound(); }
         User user = userRepository.findById(req.getId()).orElse(null);
-        if (user != null) {
-            eventPublisher.publishEvent(new ChangeUserStatusEvent(
-                    user.getId(), user.getEmail(), user.getStatus()));
-            return userMapper.entityToUcDetails(user);
+        if (user == null) {
+            throw UserException.notFound();
         }
-        throw UserException.notFound();
+        if (req.getStatus().equals(AccountStatus.DEACTIVATED) || req.getStatus().equals(AccountStatus.SUSPENDED)) {
+            authService.invalidateAllUserSessions(user.getAuthId());
+        }
+
+        eventPublisher.publishEvent(new ChangeUserStatusEvent(
+                user.getId(), user.getEmail(), user.getStatus()));
+        return userMapper.entityToUcDetails(user);
     }
 
     @Transactional

@@ -1,11 +1,10 @@
-package com.novaraspace.model.dto.admin;
+package com.novaraspace.model.dto.admin.publicAdmin;
 
 import com.novaraspace.model.enums.AccountStatus;
 
 import java.time.Instant;
 
-public class UserDetailsDTO {
-
+public class PaUserDetailsDTO {
     private Long id;
     private Instant createdAt;
     private AccountStatus status;
@@ -28,8 +27,8 @@ public class UserDetailsDTO {
         return id;
     }
 
-    public UserDetailsDTO setId(Long id) {
-        this.id = id;
+    public PaUserDetailsDTO setId(Long id) {
+        this.id = 0L;
         return this;
     }
 
@@ -37,7 +36,7 @@ public class UserDetailsDTO {
         return createdAt;
     }
 
-    public UserDetailsDTO setCreatedAt(Instant createdAt) {
+    public PaUserDetailsDTO setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
         return this;
     }
@@ -46,7 +45,7 @@ public class UserDetailsDTO {
         return status;
     }
 
-    public UserDetailsDTO setStatus(AccountStatus status) {
+    public PaUserDetailsDTO setStatus(AccountStatus status) {
         this.status = status;
         return this;
     }
@@ -55,8 +54,8 @@ public class UserDetailsDTO {
         return lastLoginAt;
     }
 
-    public UserDetailsDTO setLastLoginAt(Instant lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
+    public PaUserDetailsDTO setLastLoginAt(Instant lastLoginAt) {
+        this.lastLoginAt = Instant.EPOCH;
         return this;
     }
 
@@ -64,7 +63,7 @@ public class UserDetailsDTO {
         return totalLogins;
     }
 
-    public UserDetailsDTO setTotalLogins(Long totalLogins) {
+    public PaUserDetailsDTO setTotalLogins(Long totalLogins) {
         this.totalLogins = totalLogins;
         return this;
     }
@@ -73,8 +72,8 @@ public class UserDetailsDTO {
         return email;
     }
 
-    public UserDetailsDTO setEmail(String email) {
-        this.email = email;
+    public PaUserDetailsDTO setEmail(String email) {
+        this.email = "****";
         return this;
     }
 
@@ -82,7 +81,7 @@ public class UserDetailsDTO {
         return title;
     }
 
-    public UserDetailsDTO setTitle(String title) {
+    public PaUserDetailsDTO setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -91,8 +90,8 @@ public class UserDetailsDTO {
         return firstName;
     }
 
-    public UserDetailsDTO setFirstName(String firstName) {
-        this.firstName = firstName;
+    public PaUserDetailsDTO setFirstName(String firstName) {
+        this.firstName = "John";
         return this;
     }
 
@@ -100,8 +99,8 @@ public class UserDetailsDTO {
         return lastName;
     }
 
-    public UserDetailsDTO setLastName(String lastName) {
-        this.lastName = lastName;
+    public PaUserDetailsDTO setLastName(String lastName) {
+        this.lastName = "Doe";
         return this;
     }
 
@@ -109,7 +108,7 @@ public class UserDetailsDTO {
         return country;
     }
 
-    public UserDetailsDTO setCountry(String country) {
+    public PaUserDetailsDTO setCountry(String country) {
         this.country = country;
         return this;
     }
@@ -118,7 +117,7 @@ public class UserDetailsDTO {
         return countryCode;
     }
 
-    public UserDetailsDTO setCountryCode(String countryCode) {
+    public PaUserDetailsDTO setCountryCode(String countryCode) {
         this.countryCode = countryCode;
         return this;
     }
@@ -127,8 +126,8 @@ public class UserDetailsDTO {
         return phoneNumber;
     }
 
-    public UserDetailsDTO setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public PaUserDetailsDTO setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = "******";
         return this;
     }
 
@@ -136,7 +135,7 @@ public class UserDetailsDTO {
         return totalInvoiced;
     }
 
-    public UserDetailsDTO setTotalInvoiced(double totalInvoiced) {
+    public PaUserDetailsDTO setTotalInvoiced(double totalInvoiced) {
         this.totalInvoiced = totalInvoiced;
         return this;
     }
@@ -145,7 +144,7 @@ public class UserDetailsDTO {
         return savedCardsCount;
     }
 
-    public UserDetailsDTO setSavedCardsCount(int savedCardsCount) {
+    public PaUserDetailsDTO setSavedCardsCount(int savedCardsCount) {
         this.savedCardsCount = savedCardsCount;
         return this;
     }
@@ -154,7 +153,7 @@ public class UserDetailsDTO {
         return bookingsCount;
     }
 
-    public UserDetailsDTO setBookingsCount(int bookingsCount) {
+    public PaUserDetailsDTO setBookingsCount(int bookingsCount) {
         this.bookingsCount = bookingsCount;
         return this;
     }
@@ -163,7 +162,7 @@ public class UserDetailsDTO {
         return paymentsCount;
     }
 
-    public UserDetailsDTO setPaymentsCount(int paymentsCount) {
+    public PaUserDetailsDTO setPaymentsCount(int paymentsCount) {
         this.paymentsCount = paymentsCount;
         return this;
     }

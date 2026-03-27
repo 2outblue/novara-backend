@@ -20,7 +20,6 @@ import com.novaraspace.model.mapper.PaymentMapper;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.UserRepository;
-import com.novaraspace.util.CountryCodeLoader;
 import jakarta.validation.Valid;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -46,24 +45,25 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final PaymentService paymentService;
-    private final Map<String, BiConsumer<User, Object>> fieldUpdaters;
-    private final Validator validator;
     private final CurrentUserService currentUserService;
     private final BookingMapper bookingMapper;
     private final PaymentMapper paymentMapper;
     private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, PaymentService paymentService, Validator validator, CurrentUserService currentUserService, BookingMapper bookingMapper, PaymentMapper paymentMapper, ApplicationEventPublisher eventPublisher) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       UserMapper userMapper,
+                       PaymentService paymentService,
+                       CurrentUserService currentUserService,
+                       BookingMapper bookingMapper, PaymentMapper paymentMapper, ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.paymentService = paymentService;
-        this.validator = validator;
         this.currentUserService = currentUserService;
         this.bookingMapper = bookingMapper;
         this.paymentMapper = paymentMapper;
         this.eventPublisher = eventPublisher;
-        this.fieldUpdaters = setFieldUpdaters();
     }
 
     @Transactional
@@ -190,103 +190,22 @@ public class UserService {
         throw UserException.updateFailed();
     }
 
-
     @Transactional
-    //TODO Definitely move most of the logic for this to a component or in the domain!
-    // And rename the dto and methods to something to do with settings?
-    // and probably replace all fieldUpdateFailed exceptions with just updateFailed
-    public List<UpdateFieldDTO> updateFields(List<UpdateFieldDTO> updates) {
-        if (updates == null || updates.isEmpty()) {throw UserException.fieldUpdateFailed();}
+    public UpdatableUserSettingsDTO updateAccountSettings(UpdatableUserSettingsDTO updates) {
+        if (updates == null || !updates.hasAnyNonNullFields()) {throw UserException.updateFailed();}
+        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
 
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::fieldUpdateFailed);
-        for (UpdateFieldDTO dto : updates) {
-            if (!dto.getOldValue().getClass().equals(dto.getNewValue().getClass())) {
-                throw UserException.fieldUpdateFailed();
-            }
-            BiConsumer<User, Object> updater = fieldUpdaters.get(dto.getFieldName());
-            updater.accept(user, dto.getNewValue());
-        }
-
-        UserRegisterDTO registerDTO = userMapper.userToRegisterDTO(user);
-        Set<ConstraintViolation<UserRegisterDTO>> violations = validator.validate(registerDTO); // Validate updates based on registerDTO constraints
-        updates.forEach(el -> {
-            violations.removeIf(v -> !el.getFieldName().equals(v.getPropertyPath().toString()));
-        });
-        if (!violations.isEmpty()) {
-            throw UserException.fieldUpdateFailed();
-        }
+        userMapper.updateUserSettings(updates, user);
         return updates;
     }
-
-
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        return userRepository.findByEmail(email)
-//                .map(this::entityToUserDetails)
-//                .orElseThrow(() -> new BadCredentialsException("Bad credentials."));
-//    }
-//
-//    private UserDetails entityToUserDetails(User entity) {
-//        boolean isActive = entity.getStatus() == AccountStatus.ACTIVE;
-//        return new org.springframework.security.core.userdetails.User(
-//                entity.getEmail(),
-//                entity.getPassword(),
-//                isActive,
-//                true,
-//                true,
-//                true,
-//                entity.getRoles().stream()
-//                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-//                        .collect(Collectors.toList())
-//        );
-//    }
-
-//    public User persistUser(User user) {
-//        return userRepository.save(user);
-//    }
 
     public User createUser(UserRegisterDTO dto) {
         User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
         return userRepository.save(newUser);
     }
 
-
     public Optional<User> findEntityByAuthId(String authId) {return userRepository.findByAuthId(authId);}
 //    public Optional<String> getAuthIdByEmail(String email) { return userRepository.getAuthIdByEmail(email);}
     public Optional<User> getEntityByEmail(String email) { return userRepository.findByEmail(email); }
 
-    //TODO Can you replace the BiConsumer with a func that returns a boolean? this way you can just throw once
-    private Map<String, BiConsumer<User, Object>> setFieldUpdaters() {
-        return Map.of(
-                "countryCode", (u, v) -> {
-                    if (v instanceof String) {u.setCountryCode((String) v);}
-                    else {throw UserException.fieldUpdateFailed();}
-                },
-                "phoneNumber", (u, v) -> {
-                    if (v instanceof String) {u.setPhoneNumber((String) v);}
-                    else if (v instanceof Integer) {u.setPhoneNumber(Integer.toString((Integer)v));}
-                    else {throw UserException.fieldUpdateFailed();}
-                },
-                "addressLine1", (u, v) -> {
-                    if (v instanceof String) {u.setAddressLine1((String) v);}
-                    else {throw UserException.fieldUpdateFailed();}
-                },
-                "addressLine2", (u, v) -> {
-                    if (v instanceof String) {u.setAddressLine2((String) v);}
-                    else {throw UserException.fieldUpdateFailed();}
-                },
-                "country", (u, v) -> {
-                    if (v instanceof String) {u.setCountry((String) v);}
-                    else {throw UserException.fieldUpdateFailed();}
-                },
-                "newsletter", (u, v) -> {
-                    if (v instanceof Boolean) {u.setNewsletter((Boolean) v);}
-                    else {throw UserException.fieldUpdateFailed();}
-                },
-                "marketing", (u, v) -> {
-                    if (v instanceof Boolean) {u.setMarketing((Boolean) v);}
-                    else {throw UserException.fieldUpdateFailed();}
-                }
-        );
-    }
 }

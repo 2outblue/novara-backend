@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.time.Instant;
 
 @Repository
 public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
@@ -20,6 +20,13 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
     select a from AuditLog a where a.timestamp >= :#{#params.startDate}
     and a.timestamp <= :#{#params.endDate} and a.outcome in :#{#params.outcome.toOutcomes()}
     and a.action in :#{#params.action.toAuditActions()}
+    and (:#{#params.userId} is null or a.actorId = :#{#params.userId})
     """)
     Page<AuditLog> getPage(@Param("params") AuditLogRequestDTO params, Pageable pageable);
+
+    @Query("select count(a) from AuditLog a where a.timestamp >= :minDate and a.action = 'LOGIN' and a.outcome = 'SUCCESS'")
+    Long countTotalLoginsAfter(@Param("minDate") Instant minDate);
+
+    @Query("select count(a) from AuditLog a where a.actorId = :id and a.action = 'LOGIN' and a.outcome = 'SUCCESS'")
+    Long countLoginsForUser(@Param("id") Long actorId);
 }

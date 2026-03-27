@@ -3,18 +3,13 @@ package com.novaraspace.model.mapper;
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.model.dto.admin.UserControlResult;
 import com.novaraspace.model.dto.admin.UserDetailsDTO;
-import com.novaraspace.model.dto.user.AccountDTO;
-import com.novaraspace.model.dto.user.UserCardDTO;
-import com.novaraspace.model.dto.user.UserDocumentDTO;
-import com.novaraspace.model.dto.user.UserRegisterDTO;
+import com.novaraspace.model.dto.user.*;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.UserDocument;
 import com.novaraspace.model.entity.UserPaymentCard;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,6 +57,9 @@ public abstract class UserMapper {
     }
 
     public abstract UserRegisterDTO userToRegisterDTO(User user);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateUserSettings(UpdatableUserSettingsDTO settings, @MappingTarget User user);
 
     public abstract UserDocumentDTO documentToDto(UserDocument document);
     public abstract UserCardDTO userCardToDTO(UserPaymentCard card);

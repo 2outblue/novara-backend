@@ -24,6 +24,7 @@ import com.novaraspace.model.events.UserRegisterEvent;
 import com.novaraspace.model.exception.*;
 import com.novaraspace.model.mapper.UserMapper;
 import com.novaraspace.repository.RefreshTokenRepository;
+import com.novaraspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,7 @@ import java.util.UUID;
 @Service
 public class AuthService {
     private final EmailService emailService;
+    private final UserRepository userRepository;
     @Value("${app.jwt.issuer}")
     private String issuer;
     @Value("${app.jwt.expiry-minutes}")
@@ -70,7 +72,7 @@ public class AuthService {
             JwtEncoder jwtEncoder, UserService userService, VerificationService verificationService,
             RefreshTokenRepository refreshTokenRepository,
             PasswordEncoder passwordEncoder, UserMapper userMapper, PasswordResetTokenService passwordResetService,
-            EmailService emailService, ApplicationEventPublisher eventPublisher) {
+            EmailService emailService, ApplicationEventPublisher eventPublisher, UserRepository userRepository) {
         this.jwtEncoder = jwtEncoder;
         this.userService = userService;
         this.verificationService = verificationService;
@@ -79,6 +81,7 @@ public class AuthService {
         this.passwordResetService = passwordResetService;
         this.emailService = emailService;
         this.eventPublisher = eventPublisher;
+        this.userRepository = userRepository;
     }
 
 
@@ -180,7 +183,7 @@ public class AuthService {
         if (user == null || !user.isActive()) {
             throw UserException.updateFailed();
         }
-        refreshTokenRepository.revokeByUserAuthId(user.getAuthId());
+        invalidateAllUserSessions(user.getAuthId());
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         eventPublisher.publishEvent(new PasswordEvent(PassEventType.CHANGE, user.getEmail()));
     }
@@ -202,6 +205,12 @@ public class AuthService {
         String refreshToken = generateNewRefreshToken(authId);
         String jwt = generateJwtByAuthId(authId);
         return new TokenAuthenticationDTO(refreshToken, jwt);
+    }
+
+    public void invalidateAllUserSessions(String userAuthId) {
+        if (userAuthId == null) { return; }
+        refreshTokenRepository.revokeByUserAuthId(userAuthId);
+
     }
 
 //    public void invalidateActiveTokens(String rawRefreshToken) {

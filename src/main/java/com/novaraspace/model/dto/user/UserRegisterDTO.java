@@ -33,6 +33,7 @@ public class UserRegisterDTO {
     private String countryCode;
     @NotEmpty
     @Size(min = 5, max = 15)
+    @Pattern(regexp = "^\\d+$", message = "Must contain only digits")
     private String phoneNumber;
     @NotEmpty
     @Size(min = 4, max = 70)

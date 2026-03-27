@@ -2,13 +2,11 @@ package com.novaraspace.web;
 
 import com.novaraspace.model.dto.booking.AccountBookingDTO;
 import com.novaraspace.model.dto.booking.UserBookingsRequestDTO;
-import com.novaraspace.model.dto.payment.PaymentDTO;
 import com.novaraspace.model.dto.user.*;
 import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +27,9 @@ public class AccountController {
         return ResponseEntity.ok(data);
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<List<UpdateFieldDTO>> updateAccountData(@RequestBody List<UpdateFieldDTO> updates) {
-        List<UpdateFieldDTO> completedUpdates = userService.updateFields(updates);
+    @PatchMapping("/update-details")
+    public ResponseEntity<UpdatableUserSettingsDTO> updateAccountData(@Valid @RequestBody UpdatableUserSettingsDTO updates) {
+        UpdatableUserSettingsDTO completedUpdates = userService.updateAccountSettings(updates);
         return ResponseEntity.ok(completedUpdates);
     }
 

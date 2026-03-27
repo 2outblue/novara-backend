@@ -23,6 +23,7 @@ public class ValidCountryValidator implements ConstraintValidator<ValidCountry, 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) { return true; }
         return validCountries.stream().anyMatch(country -> country.equals(value));
     }
 }

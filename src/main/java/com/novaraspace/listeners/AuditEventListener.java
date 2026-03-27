@@ -111,8 +111,7 @@ public class AuditEventListener {
         AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
 
         StringBuilder sb = new StringBuilder();
-        String details = sb.append(e.targetUserEmail())
-                .append(" new status: ")
+        String details = sb.append(" new status: ")
                 .append(e.newStatus()).toString();
 
         AuditLog log = new AuditLog()
@@ -121,9 +120,10 @@ public class AuditEventListener {
                 .setActorRole(role)
                 .setAction(AuditAction.CHANGE_USER_STATUS)
                 .setTargetType(AuditTargetType.USER)
-                .setTargetDetails(details)
+                .setTargetDetails(e.targetUserEmail())
                 .setTargetId(e.targetUserId())
-                .setOutcome(Outcome.SUCCESS);
+                .setOutcome(Outcome.SUCCESS)
+                .setDetails(details);
         logRepository.save(log);
     }
 

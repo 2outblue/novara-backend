@@ -24,6 +24,7 @@ public class ValidCountryCodeValidator implements ConstraintValidator<ValidCount
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) { return true; }
         return validDialCodes.stream().anyMatch(code -> code.equals(value));
     }
 }
