@@ -51,7 +51,6 @@ public class DataMasker {
     public String hardMaskEmail(@Email String email) {
         if (email == null || email.length() < 2) {return "**";}
 
-//        String email = maskEmail(rawEmail);
         int atIndex = email.indexOf('@');
         if (atIndex <= 1) {
             return "**";

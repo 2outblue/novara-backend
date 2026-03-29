@@ -23,6 +23,7 @@ public class AccountDTO {
     private double totalInvoiced;
     private List<UserDocumentDTO> documents;
     private List<UserCardDTO> cards;
+    private boolean isDemo;
 
     public AccountDTO() {
     }
@@ -177,6 +178,15 @@ public class AccountDTO {
 
     public AccountDTO setCards(List<UserCardDTO> cards) {
         this.cards = cards;
+        return this;
+    }
+
+    public boolean isDemo() {
+        return isDemo;
+    }
+
+    public AccountDTO setDemo(boolean demo) {
+        isDemo = demo;
         return this;
     }
 }

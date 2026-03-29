@@ -153,7 +153,7 @@ public class AdminService {
         if (!passResetsEnabled) { return; };
         User user = userRepository.findById(req.getId()).orElseThrow(UserException::notFound);
         String email = user.getEmail();
-        authService.generateNewPasswordResetToken(email);
+        authService.sendPasswordResetLink(email);
         eventPublisher.publishEvent(new PasswordEvent(PassEventType.RESET_REQUEST, email));
     }
 

@@ -109,7 +109,7 @@ public class AuthController {
 
     @PostMapping("/reset-password-start")
     public ResponseEntity<Void> resetPasswordStart(@Valid @RequestBody EmailDTO dto) {
-        authService.generateNewPasswordResetToken(dto.getEmail());
+        authService.sendPasswordResetLink(dto.getEmail());
         return ResponseEntity.ok().build();
     }
 
