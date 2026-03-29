@@ -157,16 +157,16 @@ public class AuthService {
     }
 
     @Transactional
-    public void generateNewPasswordResetToken(String email) {
-        Optional<User> user = this.userService.getEntityByEmail(email);
-        if (user.isEmpty() || !user.get().isActive()) {
+    public void sendPasswordResetLink(String email) {
+        User user = this.userService.getEntityByEmail(email).orElse(null);
+        if (user == null || !user.isActive() || user.isDemo()) {
             return;
         }
-        PasswordResetToken token = this.passwordResetService.generateNewToken(user.get().getAuthId());
+        PasswordResetToken token = this.passwordResetService.generateNewToken(user.getAuthId());
         PassResetEmailParams emailParams = new PassResetEmailParams(
                 email,
                 token.getTokenValue(),
-                user.get().getFirstName(),
+                user.getFirstName(),
                 "30"
         );
         emailService.sendPasswordResetLink(emailParams);
@@ -180,7 +180,7 @@ public class AuthService {
             throw new UserException(ErrCode.RESET_TOKEN_INVALID, HttpStatus.BAD_REQUEST, "Invalid token.");
         }
         User user = userService.findEntityByAuthId(token.get().getUserAuthId()).orElse(null);
-        if (user == null || !user.isActive()) {
+        if (user == null || !user.isActive() || user.isDemo()) {
             throw UserException.updateFailed();
         }
         invalidateAllUserSessions(user.getAuthId());

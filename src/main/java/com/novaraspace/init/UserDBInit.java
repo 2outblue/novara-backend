@@ -140,6 +140,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setAuthId(Base64.encode(UUID.randomUUID().toString()).toString())
                         .setStatus(AccountStatus.ACTIVE)
                         .setRoles(Set.of(UserRole.PUBLIC_ADMIN))
+                        .setDemo()
         );
     }
 

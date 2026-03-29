@@ -107,11 +107,10 @@ public class BookingService {
 
         //TODO: Maybe normalize the prices before saving the booking ? If you do - normalize the payment as well.
         Booking confirmedBooking = bookingRepository.save(booking);
-        Optional<User> user = currentUserService.getAuthenticatedUser();
-        if (user.isPresent() && user.get().isActive()) {
-            User u = user.get();
-            u.addBooking(confirmedBooking);
-            u.addPayment(payment);
+        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        if (user != null && user.isActive() && !user.isDemo()) {
+            user.addBooking(confirmedBooking);
+            user.addPayment(payment);
         }
         BookingConfirmedDTO dto = bookingMapper.bookingEntityToConfirmedDTO(confirmedBooking);
         eventPublisher.publishEvent(new BookingEvent(BookingEventType.CREATE,
@@ -196,10 +195,9 @@ public class BookingService {
         //TODO: Normalize prices?
         Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
         Booking changedBooking = bookingRepository.save(booking);
-        Optional<User> user = currentUserService.getAuthenticatedUser();
-        if (user.isPresent() && user.get().isActive()) {
-            User u = user.get();
-            u.addPayment(payment);
+        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        if (user != null && user.isActive() && !user.isDemo()) {
+            user.addPayment(payment);
         }
         BookingDTO dto = bookingMapper.entityToDTO(changedBooking);
         eventPublisher.publishEvent(new BookingEvent(BookingEventType.FLIGHT_CHANGE,

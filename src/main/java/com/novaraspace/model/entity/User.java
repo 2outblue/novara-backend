@@ -28,6 +28,7 @@ public class User extends BaseEntity {
     private AccountStatus status;
     private Instant lastLoginAt;
     private Instant deletedAt;
+    private boolean isDemo = false;
 
     //TODO: This should be a manyToMany
     @ElementCollection(fetch = FetchType.EAGER)
@@ -181,6 +182,15 @@ public class User extends BaseEntity {
 
     public User setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
+        return this;
+    }
+
+    public boolean isDemo() {
+        return isDemo;
+    }
+
+    public User setDemo() {
+        isDemo = true;
         return this;
     }
 
