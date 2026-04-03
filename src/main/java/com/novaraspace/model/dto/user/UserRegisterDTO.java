@@ -3,6 +3,8 @@ package com.novaraspace.model.dto.user;
 import com.novaraspace.validation.annotations.*;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 public class UserRegisterDTO {
@@ -17,13 +19,13 @@ public class UserRegisterDTO {
     private String lastName;
     @NotNull
     @Past
-    private Date dob; //TODO: At least 18 years of age!
+    private LocalDate dob;
     @NotEmpty
     @Email(message = "Invalid email format.")
     @UniqueUserEmail
     private String email;
     @NotEmpty
-    @Size(min = 5, max = 240)
+    @Size(min = 5, max = 64)
     private String password; //TODO: Probably make a custom password annotation and validator.
     @NotEmpty
     @ValidCountry
@@ -49,6 +51,13 @@ public class UserRegisterDTO {
 
     public UserRegisterDTO() {}
 
+
+    @AssertTrue(message = "Invalid user age.")
+    public boolean validUserAge() {
+        if (dob == null) { return true; }
+        LocalDate maxAgeDate = LocalDate.now().minusYears(18).plusDays(5);
+        return dob.isBefore(maxAgeDate);
+    }
 
     public String getTitle() {
         return title;
@@ -77,11 +86,11 @@ public class UserRegisterDTO {
         return this;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public UserRegisterDTO setDob(Date dob) {
+    public UserRegisterDTO setDob(LocalDate dob) {
         this.dob = dob;
         return this;
     }

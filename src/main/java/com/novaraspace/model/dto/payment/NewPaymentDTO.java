@@ -18,6 +18,7 @@ public class NewPaymentDTO {
     @Email
     private String email;
     @NotBlank
+    @Size(min = 1, max = 50)
     private String cardHolder;
     @NotNull
     @PositiveOrZero
@@ -64,7 +65,7 @@ public class NewPaymentDTO {
     }
 
     public NewPaymentDTO setCardHolder(String cardHolder) {
-        this.cardHolder = cardHolder;
+        this.cardHolder = cardHolder.trim();
         return this;
     }
 

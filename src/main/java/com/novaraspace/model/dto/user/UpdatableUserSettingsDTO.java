@@ -2,12 +2,15 @@ package com.novaraspace.model.dto.user;
 
 import com.novaraspace.validation.annotations.ValidCountry;
 import com.novaraspace.validation.annotations.ValidCountryCode;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UpdatableUserSettingsDTO {
+    @Size(min = 1, max = 100)
     @ValidCountry
     private String country;
+    @Size(min = 1, max = 50)
     @ValidCountryCode
     private String countryCode;
     @Size(min = 5, max = 15)
@@ -21,6 +24,7 @@ public class UpdatableUserSettingsDTO {
     private Boolean marketing;
 
 
+    @AssertTrue(message = "Must contain at least one updated field.")
     public boolean hasAnyNonNullFields() {
         return country != null || countryCode != null
                 || phoneNumber != null || addressLine1 != null

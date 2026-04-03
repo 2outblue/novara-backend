@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
 public class UserDetailsRequestDTO {
-    @Min(0)
+    @Min(1)
     private Long id;
     @Email
     private String email;

@@ -1,9 +1,16 @@
 package com.novaraspace.model.dto.flight;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 public class RouteAvailabilityRequestDTO {
+    @NotBlank
+    @Size(min = 3, max = 4)
     private String departureCode;
+    @NotBlank
+    @Size(min = 3, max = 4)
     private String arrivalCode;
 
     public String getDepartureCode() {

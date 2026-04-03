@@ -1,0 +1,58 @@
+bucket4j:
+  enabled: true
+  default-http-status-code: TOO_MANY_REQUESTS
+  default-http-response-body: |
+    {
+      "error": "Rate limit exceeded",
+      "message": "Please try again later."
+    }
+
+  filters:
+
+    - id: global-total
+      cache-name: buckets
+      url: .*
+      strategy: first
+      rate-limits:
+        - cache-key: '"global-total"'
+          bandwidths:
+            - capacity: 1000
+              time: 4
+              unit: minutes
+              refill-speed: greedy
+
+
+    - id: ip-general
+      cache-name: buckets
+      url: .*
+      strategy: first
+      rate-limits:
+        - cache-key: getRemoteAddr()
+          skip-condition: "method == 'OPTIONS'"
+          bandwidths:
+            - capacity: 12
+              time: 15
+              unit: seconds
+              refill-speed: greedy
+            - capacity: 48
+              time: 1
+              unit: minutes
+              refill-speed: greedy
+
+
+    - id: auth
+      cache-name: buckets
+      url: ^/auth/(login|reset-password-start|register|verify/new).*
+      strategy: first
+      rate-limits:
+        - cache-key: getRemoteAddr()
+          skip-condition: "method == 'OPTIONS'"
+          bandwidths:
+            - capacity: 1
+              time: 10
+              unit: seconds
+              refill-speed: greedy
+            - capacity: 10
+              time: 2
+              unit: minutes
+              refill-speed: greedy

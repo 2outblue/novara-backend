@@ -16,13 +16,16 @@ public class NewBookingDTO {
     @Valid
     private FlightReserveDTO returnFlight;
     @Valid
+    @Size(min = 1, max = 11)
     private List<PassengerDTO> passengers;
     @Valid
     private NewBookingContactDetails contactDetails;
     @Valid
+    @Size(max = 6)
     private List<ExtraServiceDTO> extraServices;
 
-    @NotEmpty
+    @NotBlank
+    @Size(min = 20, max = 120)
     private String quoteReference;
 
     public String getDepartureFlightId() {

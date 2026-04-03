@@ -1,8 +1,6 @@
 package com.novaraspace.model.dto.flight;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
@@ -13,9 +11,11 @@ public class FlightScheduleRequestDTO {
     private int page;
     @Range(min = 1, max = 30)
     private int size;
-    @NotEmpty
+    @NotBlank
+    @Size(min = 3, max = 4)
     private String departureLocationCode;
-    @NotEmpty
+    @NotBlank
+    @Size(min = 3, max = 4)
     private String arrivalLocationCode;
     private LocalDate departureDate;
 

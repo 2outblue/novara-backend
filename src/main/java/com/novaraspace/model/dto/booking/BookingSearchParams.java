@@ -11,6 +11,7 @@ public class BookingSearchParams {
     @Pattern(regexp = "^[A-Z][A-Z0-9]{2}\\d[A-Z0-9][A-Z]$", message = "Invalid booking reference")
     private String reference;
     @NotBlank
+    @Size(min = 2, max = 50)
     private String lastName;
 
     public String getReference() {

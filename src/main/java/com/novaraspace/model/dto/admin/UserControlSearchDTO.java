@@ -1,5 +1,6 @@
 package com.novaraspace.model.dto.admin;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -9,9 +10,9 @@ import java.time.Instant;
 public class UserControlSearchDTO {
     @Min(0)
     private int page;
-    @Max(100)
+    @Max(50)
     private int size;
-    @Min(0)
+    @Min(1)
     private Long idFrom;
     @Min(1)
     private Long idTo;
@@ -19,6 +20,12 @@ public class UserControlSearchDTO {
     private Instant dateTo;
     @Email
     private String email;
+
+    @AssertTrue(message = "Invalid date selection.")
+    public boolean validFromAndToDates() {
+        if (dateFrom == null || dateTo == null) { return true; }
+        return dateFrom.isBefore(dateTo);
+    }
 
     public int getPage() {
         return page;

@@ -3,10 +3,7 @@ package com.novaraspace.model.dto.audit;
 import com.novaraspace.model.enums.audit.AuditActionFilter;
 import com.novaraspace.model.enums.audit.Outcome;
 import com.novaraspace.model.enums.audit.OutcomeFilter;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 
 import java.time.Instant;
 
@@ -15,7 +12,6 @@ public class AuditLogRequestDTO {
     @PositiveOrZero
     private int page;
     @NotNull
-    //TODO: Need validation for these dates - min and max
     private Instant startDate;
     @NotNull
     private Instant endDate;
@@ -34,6 +30,12 @@ public class AuditLogRequestDTO {
     public AuditLogRequestDTO setPage(int page) {
         this.page = page;
         return this;
+    }
+
+    @AssertTrue(message = "Invalid date selection.")
+    public boolean validStartAndEndDate() {
+        if (startDate == null || endDate == null) { return true; }
+        return startDate.isBefore(endDate);
     }
 
     public Instant getStartDate() {

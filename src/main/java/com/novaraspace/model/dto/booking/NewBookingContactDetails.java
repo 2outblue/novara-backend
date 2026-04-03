@@ -2,11 +2,13 @@ package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.validation.annotations.ValidCountryCode;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 public class NewBookingContactDetails {
-    @NotEmpty
+    @Size(min = 1, max = 50)
+    @NotBlank
     @ValidCountryCode
     private String contactCountryCode;
     @NotEmpty

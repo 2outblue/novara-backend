@@ -4,6 +4,7 @@ import com.novaraspace.model.dto.flight.RouteAvailabilityRequestDTO;
 import com.novaraspace.model.dto.location.LocationGroupDTO;
 import com.novaraspace.service.FlightService;
 import com.novaraspace.service.LocationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class PublicController {
     }
 
     @PostMapping("/flight-availability")
-    public ResponseEntity<List<LocalDate>> getFlightAvailability(@RequestBody RouteAvailabilityRequestDTO dto) {
+    public ResponseEntity<List<LocalDate>> getFlightAvailability(@Valid @RequestBody RouteAvailabilityRequestDTO dto) {
         List<LocalDate> availabilityDates = flightService.getRouteAvailability(dto.getDepartureCode(), dto.getArrivalCode());
         return ResponseEntity.ok(availabilityDates);
     }

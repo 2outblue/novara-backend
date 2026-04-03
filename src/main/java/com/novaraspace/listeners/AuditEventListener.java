@@ -1,5 +1,6 @@
 package com.novaraspace.listeners;
 
+import com.novaraspace.model.dto.user.UserSummary;
 import com.novaraspace.model.entity.AuditLog;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.enums.UserRole;
@@ -29,11 +30,12 @@ public class AuditEventListener {
 
         Long id = null;
         AuditRole role = null;
-        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        UserSummary userSummary = currentUserService.getUserSummary().orElse(null);
+
         boolean success = e.outcome().equals(Outcome.SUCCESS);
-        if (success && user != null) {
-            id = user.getId();
-            role = determineAuditRole(user.getRoles());
+        if (success && userSummary != null) {
+            id = userSummary.id();
+            role = determineAuditRole(userSummary.roles());
         }
 
         AuditLog log = new AuditLog()
@@ -72,13 +74,13 @@ public class AuditEventListener {
 
     @EventListener
     public void handlePasswordEvent(PasswordEvent e) {
-        User user = currentUserService.getAuthenticatedUser().orElse(null);
-        AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
-        String actorEmail = user != null ? user.getEmail() : null;
+        UserSummary userSummary = currentUserService.getUserSummary().orElse(null);
+        AuditRole role = userSummary != null ? determineAuditRole(userSummary.roles()) : null;
+        String actorEmail = userSummary != null ? userSummary.email() : null;
 
         AuditLog log = new AuditLog()
                 .setAction(e.type().toAuditAction())
-                .setActorId(user != null ? user.getId() : null)
+                .setActorId(userSummary != null ? userSummary.id() : null)
                 .setActorRole(role)
                 .setActorEmail(actorEmail)
                 .setTargetType(AuditTargetType.USER)
@@ -90,12 +92,14 @@ public class AuditEventListener {
 
     @EventListener
     public void handleBookingEvent(BookingEvent e) {
-        User user = currentUserService.getAuthenticatedUser().orElse(null);
+//        User user = currentUserService.getUserEntity().orElse(null);
+//        AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
 
-        AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
+        UserSummary userSummary = currentUserService.getUserSummary().orElse(null);
+        AuditRole role = userSummary != null ? determineAuditRole(userSummary.roles()) : null;
         AuditLog log = new AuditLog()
-                .setActorId(user != null ? user.getId() : null)
-                .setActorEmail(user != null ? user.getEmail() : null)
+                .setActorId(userSummary != null ? userSummary.id() : null)
+                .setActorEmail(userSummary != null ? userSummary.email() : null)
                 .setActorRole(role)
                 .setAction(e.type().toAuditAction())
                 .setTargetType(AuditTargetType.BOOKING)
@@ -107,16 +111,16 @@ public class AuditEventListener {
 
     @EventListener
     public void handleUserStatusChangeEvent(ChangeUserStatusEvent e) {
-        User user = currentUserService.getAuthenticatedUser().orElse(null);
-        AuditRole role = user != null ? determineAuditRole(user.getRoles()) : null;
+        UserSummary userSummary = currentUserService.getUserSummary().orElse(null);
+//        User user = currentUserService.getUserEntity().orElse(null);
+        AuditRole role = userSummary != null ? determineAuditRole(userSummary.roles()) : null;
 
-        StringBuilder sb = new StringBuilder();
-        String details = sb.append(" new status: ")
-                .append(e.newStatus()).toString();
+        String details = " new status: " +
+                e.newStatus();
 
         AuditLog log = new AuditLog()
-                .setActorId(user != null ? user.getId() : null)
-                .setActorEmail(user != null ? user.getEmail() : null)
+                .setActorId(userSummary != null ? userSummary.id() : null)
+                .setActorEmail(userSummary != null ? userSummary.email() : null)
                 .setActorRole(role)
                 .setAction(AuditAction.CHANGE_USER_STATUS)
                 .setTargetType(AuditTargetType.USER)
@@ -129,12 +133,12 @@ public class AuditEventListener {
 
 
     private AuditRole determineAuditRole(Set<UserRole> userRoles) {
-        if (userRoles.contains(UserRole.ADMIN)) {
+        if (userRoles.contains(UserRole.ADMIN) || userRoles.contains(UserRole.PUBLIC_ADMIN)) {
             return AuditRole.ADMIN;
         }
-        if (userRoles.contains(UserRole.USER) && !userRoles.contains(UserRole.ADMIN)) {
-            return AuditRole.USER;
-        }
+//        if (userRoles.contains(UserRole.USER) && !userRoles.contains(UserRole.ADMIN)) {
+//            return AuditRole.USER;
+//        }
         return AuditRole.USER;
     }
 }

@@ -40,6 +40,11 @@ public class FlightLimitsGenerator {
         double netSeparationFactor = Math.abs(departureSeparationFactor - arrivalSeparationFactor);
         int separationDays = (int) Math.round(netSeparationFactor);
 
+        long daysBetween = ChronoUnit.DAYS.between(queryDTO.getDepartureDate(), queryDTO.getReturnDate());
+        if (daysBetween < separationDays) {
+            throw new FailedOperationException();
+        }
+
         PaddingRangeParams departureFlParams = new PaddingRangeParams(
                 queryDTO.getDepartureDate(),
                 queryDTO.getReturnDate(),

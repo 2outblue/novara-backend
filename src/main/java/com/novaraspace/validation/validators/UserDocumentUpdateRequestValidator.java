@@ -15,6 +15,7 @@ public class UserDocumentUpdateRequestValidator implements ConstraintValidator<V
 
     @Override
     public boolean isValid(UserDocumentUpdateRequest value, ConstraintValidatorContext context) {
+        if (value == null) { return false; }
         String action = value.getAction();
         String filename = value.getFilename();
 

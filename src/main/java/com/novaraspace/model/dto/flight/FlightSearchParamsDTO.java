@@ -1,17 +1,14 @@
 package com.novaraspace.model.dto.flight;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public class FlightSearchParamsDTO {
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 4)
     private String departureCode;
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 4)
     private String arrivalCode;
     @NotNull
@@ -19,8 +16,15 @@ public class FlightSearchParamsDTO {
     private LocalDate departureDate;
     private LocalDate returnDate;
     @Min(1)
+    @Max(11)
     private int totalPaxCount;
     private boolean returnFlight;
+
+    @AssertTrue(message = "Invalid date selection.")
+    public boolean validReturnDate() {
+        if (returnDate == null || departureDate == null || !returnFlight) { return true; }
+        return returnDate.isAfter(departureDate);
+    }
 
     public String getDepartureCode() {
         return departureCode;
@@ -68,7 +72,7 @@ public class FlightSearchParamsDTO {
     }
 
     public boolean hasReturnFlight() {
-        return returnFlight;
+        return returnFlight && returnDate != null;
     }
 
     public FlightSearchParamsDTO setReturnFlight(boolean returnFlight) {

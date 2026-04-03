@@ -7,14 +7,20 @@ import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.security.NotDemoUser;
 import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/account")
+@PreAuthorize("isAuthenticated()")
+@Validated
 public class AccountController {
 
     private final UserService userService;
@@ -59,7 +65,8 @@ public class AccountController {
 
     @NotDemoUser
     @PostMapping("/card-remove")
-    public ResponseEntity<UserCardDTO[]> removeUserCard(@RequestParam String userCardRef) {
+    public ResponseEntity<UserCardDTO[]> removeUserCard(@NotBlank @Size(min = 10, max = 20)
+            @RequestParam String userCardRef) {
         UserCardDTO[] cards = userService.removeUserCard(userCardRef);
         return ResponseEntity.ok(cards);
     }

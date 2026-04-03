@@ -1,13 +1,13 @@
 package com.novaraspace.model.dto.flight;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 public class FlightReserveDTO {
-    @NotEmpty
+    @NotBlank
+    @Size(min = 2, max = 50)
     private String id;
-    @NotEmpty
+    @NotBlank
+    @Size(min = 1, max = 50)
     private String flightClass;
     @NotNull
     @Positive

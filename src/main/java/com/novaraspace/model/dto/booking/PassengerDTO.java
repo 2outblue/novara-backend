@@ -3,29 +3,28 @@ package com.novaraspace.model.dto.booking;
 import com.novaraspace.validation.annotations.ValidPassengerAgeGroup;
 import com.novaraspace.validation.annotations.ValidPassengerTitle;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public class PassengerDTO {
     @NotNull
     private Long id; //intraBookingId
-    @NotEmpty
+    @NotBlank
+    @Size(min = 1, max = 20)
     @ValidPassengerTitle
     private String title;
-    @NotEmpty
+    @NotBlank
     @Size(min = 2, max = 50)
     private String firstName;
-    @NotEmpty
+    @NotBlank
     @Size(min = 2, max = 50)
     private String lastName;
     @NotNull
     @Past
     private LocalDate dob;
-    @NotEmpty
+    @NotBlank
+    @Size(min = 1, max = 20)
     @ValidPassengerAgeGroup
     private String ageGroup;
     @NotNull

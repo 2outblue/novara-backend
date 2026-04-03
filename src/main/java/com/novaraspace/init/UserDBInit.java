@@ -56,7 +56,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setTitle("Mr")
                         .setFirstName("John")
                         .setLastName("Kelly")
-                        .setDob(Date.valueOf("1985-10-20"))
+                        .setDob(LocalDate.of(1985, 10, 20))
                         .setEmail("kelly@mail.com")
                         .setPassword(passwordEncoder.encode("parola"))
                         .setCountry("Bulgaria")
@@ -90,7 +90,7 @@ public class UserDBInit implements CommandLineRunner {
                 new User()
                         .setFirstName("Douglas")
                         .setLastName("Ivanov")
-                        .setDob(Date.valueOf("1981-02-07"))
+                        .setDob(LocalDate.of(1981, 2, 7))
                         .setEmail("doug@e.com")
                         .setPassword(passwordEncoder.encode("parola"))
                         .setCountry("Bulgaria")
@@ -110,7 +110,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setTitle("Mr")
                         .setFirstName("Public")
                         .setLastName("Admin1")
-                        .setDob(Date.valueOf("1985-10-20"))
+                        .setDob(LocalDate.of(1985, 10, 20))
                         .setEmail("paAdmin1@novara")
                         .setPassword(passwordEncoder.encode("parola"))
                         .setCountry("Bulgaria")
@@ -144,35 +144,4 @@ public class UserDBInit implements CommandLineRunner {
         );
     }
 
-    private List<UserRegisterDTO> getInitDTOs() {
-        return Arrays.asList(
-                new UserRegisterDTO()
-                        .setFirstName("John")
-                        .setLastName("Kelly")
-                        .setDob(Date.valueOf("1985-10-20"))
-                        .setEmail("kelly@mail.com")
-                        .setPassword(passwordEncoder.encode("parola"))
-                        .setCountry("Bulgaria")
-                        .setCountryCode("+359")
-                        .setPhoneNumber("891234567")
-                        .setAddressLine1("Sofia, Bulgaria")
-                        .setAddressLine2("Main str., 234, 1000")
-                        .setTos(true)
-                        .setNewsletter(false)
-                ,
-                new UserRegisterDTO()
-                        .setFirstName("Francis")
-                        .setLastName("Doe")
-                        .setDob(Date.valueOf("1977-09-16"))
-                        .setEmail("mail@c")
-                        .setPassword(passwordEncoder.encode("12345"))
-                        .setCountry("Bulgaria")
-                        .setCountryCode("+359")
-                        .setPhoneNumber("891234567")
-                        .setAddressLine1("Sofia, Bulgaria")
-                        .setAddressLine2("Main str., 234, 1000")
-                        .setTos(true)
-                        .setNewsletter(false)
-        );
-    }
 }

@@ -28,7 +28,7 @@ public class FlightController {
 
 
     @PostMapping("/schedule")
-    public ResponseEntity<PageResponse<FlightScheduleDTO>> getFlightsSchedule(@RequestBody FlightScheduleRequestDTO dto) {
+    public ResponseEntity<PageResponse<FlightScheduleDTO>> getFlightsSchedule(@Valid @RequestBody FlightScheduleRequestDTO dto) {
         PageResponse<FlightScheduleDTO> response = flightService.getFlightsScheduleResponse(dto);
         return ResponseEntity.ok(response);
     }

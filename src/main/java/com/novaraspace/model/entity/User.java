@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     private String title;
     private String firstName;
     private String lastName;
-    private Date dob;
+    private LocalDate dob;
     @Column(unique = true)
     private String email;
     private String password;
@@ -239,11 +239,11 @@ public class User extends BaseEntity {
         return this;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public User setDob(Date dob) {
+    public User setDob(LocalDate dob) {
         this.dob = dob;
         return this;
     }

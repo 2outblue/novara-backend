@@ -26,17 +26,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 @Service
 public class UserService {
@@ -91,14 +89,14 @@ public class UserService {
 //    }
 
     public AccountDTO getCurrentAccountDTO() {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::notFound);
         return userMapper.entityToAccountDTO(user);
     }
 
     //TODO: I don't know if this should be here or in the booking service
     @Transactional(readOnly = true)
     public PageResponse<AccountBookingDTO> getCurrentUserBookingsPage(UserBookingsRequestDTO req) {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(BookingException::notFound);
+        User user = currentUserService.getUserEntity().orElseThrow(BookingException::notFound);
 
         LocalDateTime minDate = req.getTimeFrame().equals("upcoming")
                 ? LocalDateTime.now().plusHours(5)
@@ -137,7 +135,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserPaymentsResponseDTO getCurrentUserPaymentsData() {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::notFound);
         PaymentDTO[] payments = user.getPayments().stream()
                 .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
         return new UserPaymentsResponseDTO()
@@ -152,7 +150,7 @@ public class UserService {
 
     @Transactional
     public UserDocumentDTO[] updateUserDocument(UserDocumentUpdateRequest request) {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::updateFailed);
         user.updateDocument(request);
 
         return user.getDocuments().stream().map(userMapper::documentToDto)
@@ -161,7 +159,7 @@ public class UserService {
 
     @Transactional
     public UserCardDTO[] addUserCard(@Valid AddCardDTO dto) {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::updateFailed);
 
         UserPaymentCard card = paymentService.getUserPaymentCard(dto);
         user.addCard(card);
@@ -171,8 +169,7 @@ public class UserService {
 
     @Transactional
     public UserCardDTO[] removeUserCard(String cardRef) {
-        if (cardRef.length() > 20 || cardRef.length() < 10) { throw UserException.updateFailed(); }
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::updateFailed);
 
         user.removeCard(cardRef);
         return user.getCards().stream().map(userMapper::userCardToDTO)
@@ -181,7 +178,7 @@ public class UserService {
 
     @Transactional
     public void changeUserPassword(@Valid PasswordChangeRequestDTO req) {
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::notFound);
         if (passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(req.getNewPassword()));
             eventPublisher.publishEvent(new PasswordEvent(PassEventType.CHANGE, user.getEmail()));
@@ -192,8 +189,7 @@ public class UserService {
 
     @Transactional
     public UpdatableUserSettingsDTO updateAccountSettings(UpdatableUserSettingsDTO updates) {
-        if (updates == null || !updates.hasAnyNonNullFields()) {throw UserException.updateFailed();}
-        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::updateFailed);
+        User user = currentUserService.getUserEntity().orElseThrow(UserException::updateFailed);
 
         userMapper.updateUserSettings(updates, user);
         return updates;

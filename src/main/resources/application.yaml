@@ -1,4 +1,11 @@
 spring:
+  config:
+    import: classpath:rate-limit.yaml
+  cache:
+    cache-names:
+      - buckets
+    caffeine:
+      spec: maximumSize=5000,expireAfterAccess=600s,
   mail:
     host: smtp.mailersend.net
     port: 587
@@ -30,14 +37,19 @@ spring:
         format_sql: 'TRUE'
     hibernate:
       ddl-auto: create-drop
+  servlet:
+    multipart:
+      max-request-size: 2MB
+      max-file-size: 1MB
 app:
   jwt:
     issuer: "novara-space"
     secret: "${NOVARA_JWT_SECRET}"
-    expiry-minutes: 120
+    expiry-minutes: 20
     refresh-expiry-hours: 32
   verification-token-expiry-hours: 24
-  enable-email-verification: true
+  enable-email-verification: false
+  enable-email-password-reset: false
   frontend-url: http://localhost:4200
   flight:
     padding-days-on-fetch: 14
@@ -49,7 +61,7 @@ logging:
   level:
     org.hibernate.SQL: ERROR
     org.hibernate.arm.jdbc.bind: ERROR
-    org.springframework: ERROR
+    org.springframework: DEBUG
     org.springframework.boot.actuate: ERROR
     #    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     org.springframework.security: ERROR

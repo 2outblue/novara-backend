@@ -54,7 +54,7 @@ public class BookingController {
     }
 
     @PostMapping("/change-flights-start")
-    public ResponseEntity<ChangeFlightsStartResponse> changeFlightsStart(@RequestBody ChangeFlightsStartRequest request) {
+    public ResponseEntity<ChangeFlightsStartResponse> changeFlightsStart(@Valid @RequestBody ChangeFlightsStartRequest request) {
         ChangeFlightsStartResponse response = bookingService.getChangeFlightsStartResponse(request);
         return ResponseEntity.ok(response);
     }

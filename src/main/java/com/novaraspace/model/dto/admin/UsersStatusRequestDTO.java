@@ -15,7 +15,7 @@ public class UsersStatusRequestDTO {
     private LocalDateTime registeredAfter;
 
 
-    @AssertTrue(message = "Invalid user outcome request - invalid date.")
+    @AssertTrue(message = "Invalid user status request - invalid date.")
     public boolean isRegisteredAfterDateValid() {
         return registeredAfter != null
                 && registeredAfter.isAfter(LocalDateTime.now().minusMonths(1).minusHours(1));

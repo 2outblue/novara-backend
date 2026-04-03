@@ -1,11 +1,16 @@
 package com.novaraspace.model.dto.user;
 
 import com.novaraspace.validation.annotations.ValidUserDocumentUpdateRequest;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @ValidUserDocumentUpdateRequest
 public class UserDocumentUpdateRequest {
+    @Size(min = 1, max = 10)
     private String docId;
+    @Size(min = 1, max = 200)
     private String filename;
+    @Size(min = 6, max = 6)
     private String action;
 
     public String getDocId() {

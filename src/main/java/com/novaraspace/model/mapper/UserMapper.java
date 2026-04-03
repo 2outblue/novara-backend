@@ -56,7 +56,6 @@ public abstract class UserMapper {
         return user;
     }
 
-    public abstract UserRegisterDTO userToRegisterDTO(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public abstract void updateUserSettings(UpdatableUserSettingsDTO settings, @MappingTarget User user);

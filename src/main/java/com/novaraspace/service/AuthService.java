@@ -110,7 +110,7 @@ public class AuthService {
     }
 
     public AuthResponseDTO refresh(String refreshToken) {
-        TokenAuthenticationDTO tokenDTO = validateRefreshToken(refreshToken);
+        TokenAuthenticationDTO tokenDTO = rotateRefreshToken(refreshToken);
         ResponseCookie cookie = createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
         return new AuthResponseDTO().setJwt(tokenDTO.getJwt()).setCookie(cookie);
     }
@@ -223,7 +223,7 @@ public class AuthService {
 //        }
 //    }
 
-    private TokenAuthenticationDTO validateRefreshToken(String rawRefreshToken) {
+    private TokenAuthenticationDTO rotateRefreshToken(String rawRefreshToken) {
         String[] tokenParams = getRefreshTokenParams(rawRefreshToken);
         String publicKey = tokenParams[0];
         String rawToken = tokenParams[1];

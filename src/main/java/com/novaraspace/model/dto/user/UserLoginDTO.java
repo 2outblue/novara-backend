@@ -9,7 +9,7 @@ public class UserLoginDTO {
     @Email
     private String email;
     @NotEmpty
-    @Size(min = 5, max = 60)
+    @Size(min = 5, max = 64)
     private String password;
 
     public UserLoginDTO() {

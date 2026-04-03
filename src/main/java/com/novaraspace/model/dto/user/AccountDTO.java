@@ -1,6 +1,7 @@
 package com.novaraspace.model.dto.user;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class AccountDTO {
     private String title;
     private String firstName;
     private String lastName;
-    private Date dob;
+    private LocalDate dob;
     private String email;
     private String countryCode;
     private String phoneNumber;
@@ -73,11 +74,11 @@ public class AccountDTO {
         return this;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public AccountDTO setDob(Date dob) {
+    public AccountDTO setDob(LocalDate dob) {
         this.dob = dob;
         return this;
     }

@@ -2,7 +2,6 @@ package com.novaraspace.service;
 
 import com.novaraspace.component.BookingReferenceGenerator;
 import com.novaraspace.component.DataMasker;
-import com.novaraspace.model.domain.UserBookingsQuery;
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
@@ -12,21 +11,16 @@ import com.novaraspace.model.enums.audit.BookingEventType;
 import com.novaraspace.model.events.BookingEvent;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
-import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.validation.business.BookingValidator;
 //import jakarta.transaction.Transactional;
 import com.novaraspace.validation.business.ChangeFlightValidator;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -107,7 +101,7 @@ public class BookingService {
 
         //TODO: Maybe normalize the prices before saving the booking ? If you do - normalize the payment as well.
         Booking confirmedBooking = bookingRepository.save(booking);
-        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        User user = currentUserService.getUserEntity().orElse(null);
         if (user != null && user.isActive() && !user.isDemo()) {
             user.addBooking(confirmedBooking);
             user.addPayment(payment);
@@ -195,7 +189,7 @@ public class BookingService {
         //TODO: Normalize prices?
         Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
         Booking changedBooking = bookingRepository.save(booking);
-        User user = currentUserService.getAuthenticatedUser().orElse(null);
+        User user = currentUserService.getUserEntity().orElse(null);
         if (user != null && user.isActive() && !user.isDemo()) {
             user.addPayment(payment);
         }

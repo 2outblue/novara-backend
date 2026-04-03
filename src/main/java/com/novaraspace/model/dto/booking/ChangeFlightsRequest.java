@@ -3,8 +3,10 @@ package com.novaraspace.model.dto.booking;
 import com.novaraspace.model.dto.flight.FlightReserveDTO;
 import com.novaraspace.model.dto.payment.NewPaymentDTO;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ChangeFlightsRequest {
     @Valid
@@ -18,7 +20,8 @@ public class ChangeFlightsRequest {
     private FlightReserveDTO departureFlight;
     @Valid
     private FlightReserveDTO returnFlight;
-    @NotEmpty
+    @NotBlank
+    @Size(min = 20, max = 120)
     private String quoteReference;
 
     public BookingSearchParams getBookingParams() {

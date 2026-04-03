@@ -5,10 +5,13 @@ import com.novaraspace.model.dto.user.PasswordResetRequestDTO;
 import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.model.exception.VerificationException;
+import com.novaraspace.security.MinResponseTime;
 import com.novaraspace.service.AuthService;
 import com.novaraspace.service.EmailService;
 import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,10 +23,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("auth")
+@Validated
 public class AuthController {
 
     private final AuthenticationManager authManager;
@@ -50,8 +55,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @MinResponseTime
     @PostMapping("/login")
-    public ResponseEntity<OAuth2AccessTokenResponse> login(@RequestBody UserLoginDTO dto) {
+    public ResponseEntity<OAuth2AccessTokenResponse> login(@Valid @RequestBody UserLoginDTO dto) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );
@@ -68,8 +74,10 @@ public class AuthController {
                 );
     }
 
+
     @PostMapping("/refresh")
-    public ResponseEntity<OAuth2AccessTokenResponse> refresh(@CookieValue String refreshToken) {
+    public ResponseEntity<OAuth2AccessTokenResponse> refresh(@NotBlank @Size(min = 80, max = 140)
+            @CookieValue String refreshToken) {
         AuthResponseDTO authDto = authService.refresh(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authDto.getCookie().toString())
@@ -82,7 +90,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@CookieValue String refreshToken) {
+    public ResponseEntity<Void> logout(@NotBlank @Size(min = 80, max = 140)
+            @CookieValue String refreshToken) {
 //        ResponseCookie invalidCookie = authService.createRefreshTokenCookie("", true);
 //        authService.invalidateActiveTokens(refreshToken);
         ResponseCookie logoutCookie = authService.logout(refreshToken);
@@ -91,14 +100,16 @@ public class AuthController {
                 .build();
     }
 
+    @MinResponseTime
     @PostMapping("/verify")
-    public ResponseEntity<Void> verifyCode(@RequestBody CodeOrLinkTokenDTO codeDTO) {
+    public ResponseEntity<Void> verifyCode(@Valid @RequestBody CodeOrLinkTokenDTO codeDTO) {
         authService.verifyAccountByLinkTokenOrCode(codeDTO.getCodeOrLinkToken());
         return ResponseEntity.ok().build();
     }
 
+    @MinResponseTime(500)
     @PostMapping("/verify/new")
-    public ResponseEntity<Void> generateNewVerification(@RequestBody EmailDTO emailDTO) {
+    public ResponseEntity<Void> generateNewVerification(@Valid @RequestBody EmailDTO emailDTO) {
         VerificationTokenDTO verificationDTO = authService.generateNewVerification(emailDTO.getEmail());
         boolean emailSent = emailService.sendActivationEmail(verificationDTO);
         if (!emailSent) {
@@ -107,12 +118,14 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @MinResponseTime(500)
     @PostMapping("/reset-password-start")
     public ResponseEntity<Void> resetPasswordStart(@Valid @RequestBody EmailDTO dto) {
         authService.sendPasswordResetLink(dto.getEmail());
         return ResponseEntity.ok().build();
     }
 
+    @MinResponseTime(500)
     @PostMapping("/reset-password-complete")
     public ResponseEntity<Void> resetPasswordComplete(@Valid @RequestBody PasswordResetRequestDTO dto) {
         authService.resetUserPassword(dto);
