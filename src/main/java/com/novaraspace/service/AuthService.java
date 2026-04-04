@@ -141,9 +141,6 @@ public class AuthService {
 
     public VerificationTokenDTO generateNewVerification(String email) {
         // Could return a 200 here and in verifyAccountByLinkTokenOrCode()
-        // in order to not expose any implementation details and accounts
-        // with outcome PENDING_ACTIVATION and also standardize response times
-        // but thats an overkill for this project at this stage...
         if (!emailVerificationEnabled) {throw new FailedOperationException();}
 
         User user = userService.getEntityByEmail(email).orElseThrow(VerificationException::failed);
