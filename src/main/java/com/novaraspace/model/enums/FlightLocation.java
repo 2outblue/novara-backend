@@ -22,7 +22,7 @@ public enum FlightLocation {
         ORBITAL_ALPHA(FlightRegion.NEAR_EARTH),
 //        GATEWAY_OTP(FlightRegion.NEAR_EARTH),
         NOVARA_CMC(FlightRegion.NEAR_EARTH),
-        PANGU_ORIENTAL_CMC(FlightRegion.NEAR_EARTH),
+//        PANGU_ORIENTAL_CMC(FlightRegion.NEAR_EARTH),
         WAYFARE_INTERPLAN_CMC(FlightRegion.NEAR_EARTH),
         POLAR_RELAY(FlightRegion.NEAR_EARTH),
 //    MOON
@@ -34,18 +34,18 @@ public enum FlightLocation {
 //    MOON_ORBIT
         LUNAR_ORBIT_RELAY(FlightRegion.MOON_ORBIT),
         CISLUNAR_HABITAT(FlightRegion.MOON_ORBIT),
-        YAMAGUCHI_CMC(FlightRegion.MOON_ORBIT),
-        AL_MANSOUR_CMC(FlightRegion.MOON_ORBIT),
+//        YAMAGUCHI_CMC(FlightRegion.MOON_ORBIT),
+//        AL_MANSOUR_CMC(FlightRegion.MOON_ORBIT),
 //    MARS
         OLYMPUS_MONS(FlightRegion.MARS),
         VALLES_MARINERIS_OTP(FlightRegion.MARS),
         ACIDALIA_PLANITIA(FlightRegion.MARS),
 //    MARS_ORBIT
-        AREOSYNCHRONOUS_STATION_ALPHA(FlightRegion.MARS_ORBIT),
+//        AREOSYNCHRONOUS_STATION_ALPHA(FlightRegion.MARS_ORBIT),
         PHOBOS_RELAY(FlightRegion.MARS_ORBIT),
 //        DEIMOS_HABITAT(FlightRegion.MARS_ORBIT),
         RED_PLANET(FlightRegion.MARS_ORBIT),
-        ORBIT_LAB_OBS(FlightRegion.MARS_ORBIT),
+//        ORBIT_LAB_OBS(FlightRegion.MARS_ORBIT),
 //    VENUS_ORBIT
         CYTHEREAN_HABITAT(FlightRegion.VENUS_ORBIT),
         CLOUD_DOCK_OBS(FlightRegion.VENUS_ORBIT);

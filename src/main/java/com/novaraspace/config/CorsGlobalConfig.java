@@ -14,8 +14,8 @@ import java.util.List;
 @Configuration
 public class CorsGlobalConfig {
 
-    //Servlet filter before spring security since bucket4j short circuits and returns
-    // response with incorrect headers
+    //Servlet filter before spring security since spring-bucket4j short circuits
+    // and returns response with incorrect headers if rate limits are hit
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
         CorsConfiguration config = new CorsConfiguration();

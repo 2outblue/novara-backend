@@ -49,7 +49,16 @@ public class LocationDBInit implements CommandLineRunner {
                     .setName(matchingLocation.getName())
                     .setLongName(matchingLocation.getLongName())
                     .setCode(matchingLocation.getCode())
-                    .setLocationNumber(matchingLocation.getLocationNumber());
+                    .setLocationNumber(matchingLocation.getLocationNumber())
+                    .setNameDetails(matchingLocation.getNameDetails())
+                    .setDesc(matchingLocation.getDesc())
+                    .setType(matchingLocation.getType())
+                    .setCapacity(matchingLocation.getCapacity())
+                    .setArea(matchingLocation.getArea())
+                    .setVolume(matchingLocation.getVolume())
+                    .setPorts(matchingLocation.getPorts())
+                    .setAccommodations(matchingLocation.getAccommodations());
+
             locationsToSave.add(location);
         }
         locationRepository.saveAll(locationsToSave);

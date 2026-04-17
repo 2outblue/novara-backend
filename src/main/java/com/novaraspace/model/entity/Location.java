@@ -24,6 +24,15 @@ public class Location {
     @Column(nullable = false, unique = true)
     private String locationNumber;
 
+    private String nameDetails;
+    private String desc;
+    private String type;
+    private long capacity;
+    private long area;
+    private long volume;
+    private long ports;
+    private long accommodations;
+
     public FlightRegion getRegion() {
         return region;
     }
@@ -84,6 +93,78 @@ public class Location {
 
     public Location setLocationNumber(String locationNumber) {
         this.locationNumber = locationNumber;
+        return this;
+    }
+
+    public String getNameDetails() {
+        return nameDetails;
+    }
+
+    public Location setNameDetails(String nameDetails) {
+        this.nameDetails = nameDetails;
+        return this;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public Location setDesc(String desc) {
+        this.desc = desc;
+        return this;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public Location setType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public long getCapacity() {
+        return capacity;
+    }
+
+    public Location setCapacity(long capacity) {
+        this.capacity = capacity;
+        return this;
+    }
+
+    public long getArea() {
+        return area;
+    }
+
+    public Location setArea(long area) {
+        this.area = area;
+        return this;
+    }
+
+    public long getVolume() {
+        return volume;
+    }
+
+    public Location setVolume(long volume) {
+        this.volume = volume;
+        return this;
+    }
+
+    public long getPorts() {
+        return ports;
+    }
+
+    public Location setPorts(long ports) {
+        this.ports = ports;
+        return this;
+    }
+
+    public long getAccommodations() {
+        return accommodations;
+    }
+
+    public Location setAccommodations(long accommodations) {
+        this.accommodations = accommodations;
         return this;
     }
 }

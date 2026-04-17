@@ -69,7 +69,15 @@
     "name": "Orbital Alpha Station",
     "longName": "Orbital Station Alpha, Low Earth Orbit",
     "code": "OAS",
-    "locationNumber": "102"
+    "locationNumber": "102",
+    "nameDetails": "International Superhub",
+    "desc": "Orbital Alpha Station is Earth's largest orbital facility, positioned in low Earth orbit as the central hub for solar system departures and arrivals. As the busiest station overall, it supports extensive activity between Earth and destinations across the system. Designed with expansive observation decks, it provides impressive views of the planet below.",
+    "type": "Orbital",
+    "capacity": 42000,
+    "area": 185000,
+    "volume": 1250000,
+    "ports": 24,
+    "accommodations": 18500
   },
   {
     "id": 22,
@@ -77,7 +85,15 @@
     "name": "Novara CMC Station",
     "longName": "Novara Space Modular Complex, Low Earth Orbit",
     "code": "NVRC",
-    "locationNumber": "167"
+    "locationNumber": "167",
+    "nameDetails": "Commercial Modular Complex",
+    "desc": "Novara CMC serves as a dedicated commercial orbital station in low Earth orbit, offering convenient access for passengers and operations. As a company-focused facility, it provides streamlined support for travelers heading to lunar and deeper space destinations. Its well-appointed observation areas deliver clear views of Earth below.",
+    "type": "Orbital",
+    "capacity": 8500,
+    "area": 42000,
+    "volume": 280000,
+    "ports": 9,
+    "accommodations": 3200
   },
   {
     "id": 23,
@@ -93,7 +109,15 @@
     "name": "Wayfare CMC Station",
     "longName": "Wayfare Interplanetary Modular Complex, Low Earth Orbit",
     "code": "WYF",
-    "locationNumber": "194"
+    "locationNumber": "194",
+    "nameDetails": "Commercial Modular Complex",
+    "desc": "Wayfare CMC is a commercial orbital station in low Earth orbit, designed for flexible passenger and operational support. It serves as a convenient hub for travelers and groups heading outward. With thoughtfully placed observation lounges, it presents excellent views of the planet rotating below.",
+    "type": "Orbital",
+    "capacity": 6800,
+    "area": 38000,
+    "volume": 260000,
+    "ports": 7,
+    "accommodations": 2500
   },
   {
     "id": 25,
@@ -101,23 +125,47 @@
     "name": "Polar Relay Station",
     "longName": "Polar Relay Station, Low Earth Orbit",
     "code": "PRS",
-    "locationNumber": "138"
+    "locationNumber": "138",
+    "nameDetails": "High Latitude Hub",
+    "desc": "Polar Relay Station operates from a high-inclination Earth orbit, enabling efficient coverage for polar and high-latitude access routes. It functions as a reliable relay point supporting activity to various orbital and surface destinations. Equipped with dedicated viewing platforms, it offers striking perspectives of Earth's polar regions.",
+    "type": "Orbital",
+    "capacity": 7200,
+    "area": 35000,
+    "volume": 240000,
+    "ports": 8,
+    "accommodations": 2800
   },
   {
     "id": 31,
-    "location": "SOUTH_POLE",
-    "name": "South Pole Base",
-    "longName": "South Pole Lunar Base, Moon",
-    "code": "SPB",
-    "locationNumber": "211"
-  },
-  {
-    "id": 32,
     "location": "SHACKLETON_CRATER",
     "name": "Shackleton Outpost",
     "longName": "Shackleton Crater Outpost, Moon",
     "code": "SHCO",
-    "locationNumber": "202"
+    "locationNumber": "202",
+    "nameDetails": "Lunar Premier Complex",
+    "desc": "Shackleton Outpost stands as the Moon’s largest surface facility, located near the south pole for excellent resource access and lighting conditions. As one of the most visited sites in the solar system, it blends tourism with operational support. Its observation areas frame impressive views of the rugged lunar terrain.",
+    "type": "Surface",
+    "capacity": 28000,
+    "area": 95000,
+    "volume": 620000,
+    "ports": 12,
+    "accommodations": 12000
+  },
+  {
+    "id": 32,
+    "location": "SOUTH_POLE",
+    "name": "South Pole Base",
+    "longName": "South Pole Lunar Base, Moon",
+    "code": "SPB",
+    "locationNumber": "211",
+    "nameDetails": "Science & Tourism Center",
+    "desc": "South Pole Base is a major lunar surface facility positioned for near-constant sunlight and resource potential. It combines scientific research with visitor experiences in a growing lunar community. Designed with panoramic viewing zones, it reveals striking vistas of the lunar south pole landscape.",
+    "type": "Surface",
+    "capacity": 16500,
+    "area": 62000,
+    "volume": 410000,
+    "ports": 8,
+    "accommodations": 6800
   },
   {
     "id": 33,
@@ -125,7 +173,15 @@
     "name": "Tranquility Base",
     "longName": "Tranquility Landing Site, Moon",
     "code": "TRQ",
-    "locationNumber": "258"
+    "locationNumber": "258",
+    "nameDetails": "Heritage & Leisure Site",
+    "desc": "Tranquility Base serves as a dedicated tourism-focused lunar surface complex at the historic Apollo 11 landing site. It features a unique museum dedicated to the history of space exploration. Sweeping observation decks provide memorable views of the surrounding Sea of Tranquility plains.",
+    "type": "Surface",
+    "capacity": 9200,
+    "area": 48000,
+    "volume": 310000,
+    "ports": 6,
+    "accommodations": 4100
   },
   {
     "id": 34,
@@ -133,7 +189,15 @@
     "name": "Oceanus Camp",
     "longName": "Oceanus Procellarum Camp, Moon",
     "code": "OPCC",
-    "locationNumber": "271"
+    "locationNumber": "271",
+    "nameDetails": "Luxury Retreat",
+    "desc": "Oceanus Camp offers an exclusive lunar surface experience in the Oceanus Procellarum region. This smaller, upscale facility emphasizes comfort and personalized service for discerning travelers. Its intimate viewing areas highlight the broad lunar mare landscape and distant horizons.",
+    "type": "Surface",
+    "capacity": 4800,
+    "area": 22000,
+    "volume": 145000,
+    "ports": 4,
+    "accommodations": 2100
   },
   {
     "id": 35,
@@ -141,7 +205,15 @@
     "name": "Lunar Relay",
     "longName": "Lunar Orbit Relay Station, Lunar Orbit",
     "code": "LOR",
-    "locationNumber": "203"
+    "locationNumber": "203",
+    "nameDetails": "Primary Orbital Hub",
+    "desc": "Lunar Relay functions as the Moon’s main orbital station in low lunar orbit for reliable surface access. As the busiest facility in cislunar space, it supports broad lunar operations and tourism. Sweeping observation decks deliver impressive views of the lunar surface below.",
+    "type": "Orbital",
+    "capacity": 18500,
+    "area": 78000,
+    "volume": 520000,
+    "ports": 14,
+    "accommodations": 7200
   },
   {
     "id": 36,
@@ -149,7 +221,15 @@
     "name": "Cislunar Habitat",
     "longName": "Cislunar Habitat, Lunar Orbit",
     "code": "CIS",
-    "locationNumber": "264"
+    "locationNumber": "264",
+    "nameDetails": "Modular Living Complex",
+    "desc": "Cislunar Habitat provides comfortable orbital accommodation between Earth and the Moon. Positioned in a stable cislunar orbit, it serves as a practical waypoint for travelers and crews. Its observation lounges offer serene views of both Earth and the Moon in the distance.",
+    "type": "Orbital",
+    "capacity": 9500,
+    "area": 45000,
+    "volume": 295000,
+    "ports": 8,
+    "accommodations": 3800
   },
   {
     "id": 37,
@@ -169,19 +249,35 @@
   },
   {
     "id": 41,
-    "location": "OLYMPUS_MONS",
-    "name": "Olympus Mons Base",
-    "longName": "Olympus Mons Base, Mars",
-    "code": "OMB",
-    "locationNumber": "307"
-  },
-  {
-    "id": 42,
     "location": "VALLES_MARINERIS_OTP",
     "name": "Valles Marineris Outpost",
     "longName": "Valles Marineris Outpost, Mars",
     "code": "VMO",
-    "locationNumber": "302"
+    "locationNumber": "302",
+    "nameDetails": "Canyon Exploration Hub",
+    "desc": "Valles Marineris Outpost is the largest surface facility on Mars, situated along the rim of the solar system’s grandest canyon system. It delivers exceptional access to dramatic geology and exploration opportunities. Observation platforms showcase breathtaking vistas of the vast canyon network below.",
+    "type": "Surface",
+    "capacity": 14200,
+    "area": 68000,
+    "volume": 450000,
+    "ports": 9,
+    "accommodations": 5800
+  },
+  {
+    "id": 42,
+    "location": "OLYMPUS_MONS",
+    "name": "Olympus Mons Base",
+    "longName": "Olympus Mons Base, Mars",
+    "code": "OMB",
+    "locationNumber": "307",
+    "nameDetails": "Mountain Outpost",
+    "desc": "Olympus Mons Base occupies a strategic location on the slopes of the solar system’s tallest volcano. This mid-sized facility supports both scientific study and visitor experiences with unique high-altitude perspectives. Its viewing areas reveal sweeping Martian plains and the mountain’s immense scale.",
+    "type": "Surface",
+    "capacity": 9800,
+    "area": 52000,
+    "volume": 340000,
+    "ports": 7,
+    "accommodations": 3900
   },
   {
     "id": 43,
@@ -189,15 +285,31 @@
     "name": "Acidalia Station",
     "longName": "Acidalia Planitia Station, Mars",
     "code": "APS2",
-    "locationNumber": "359"
+    "locationNumber": "359",
+    "nameDetails": "Research Outpost",
+    "desc": "Acidalia Station operates as a compact surface facility in the northern plains of Mars. It balances scientific research with limited tourism in a quieter setting. Observation decks provide clear sightlines across the expansive, flat Martian landscape.",
+    "type": "Surface",
+    "capacity": 5200,
+    "area": 28000,
+    "volume": 185000,
+    "ports": 5,
+    "accommodations": 2100
   },
   {
     "id": 44,
-    "location": "AREOSYNCHRONOUS_STATION_ALPHA",
-    "name": "Areosynchronous Station",
-    "longName": "Areosynchronous Station Alpha, Mars Orbit",
-    "code": "ASA",
-    "locationNumber": "303"
+    "location": "RED_PLANET",
+    "name": "Red Planet Gateway",
+    "longName": "Red Planet Gateway, International Mars Joint Venture, Mars Orbit",
+    "code": "RPG",
+    "locationNumber": "376",
+    "nameDetails": "Mars Orbital Hub",
+    "desc": "Red Planet Gateway acts as the primary orbital station around Mars, positioned for efficient surface access. As a major international facility, it handles significant traffic for Mars operations and exploration. Designed with wide observation decks, it offers striking views of the red planet below.",
+    "type": "Orbital",
+    "capacity": 16800,
+    "area": 72000,
+    "volume": 480000,
+    "ports": 16,
+    "accommodations": 6500
   },
   {
     "id": 45,
@@ -205,15 +317,23 @@
     "name": "Phobos Relay",
     "longName": "Phobos Relay Dock, Mars Orbit",
     "code": "PHR",
-    "locationNumber": "368"
+    "locationNumber": "368",
+    "nameDetails": "Moon-Based Relay",
+    "desc": "Phobos Relay utilizes the surface and vicinity of Mars’ larger moon as a logistical support point. This specialized station aids operations in the Martian system with convenient proximity to the planet. Its viewing platforms capture unique perspectives of Mars and the small moon’s rugged terrain.",
+    "type": "Orbital",
+    "capacity": 6400,
+    "area": 31000,
+    "volume": 205000,
+    "ports": 6,
+    "accommodations": 2400
   },
   {
     "id": 46,
-    "location": "RED_PLANET",
-    "name": "Red Planet Gateway",
-    "longName": "Red Planet Gateway, International Mars Joint Venture, Mars Orbit",
-    "code": "RPG",
-    "locationNumber": "376"
+    "location": "AREOSYNCHRONOUS_STATION_ALPHA",
+    "name": "Areosynchronous Station",
+    "longName": "Areosynchronous Station Alpha, Mars Orbit",
+    "code": "ASA",
+    "locationNumber": "303"
   },
   {
     "id": 47,
@@ -229,14 +349,30 @@
     "name": "Cytherean Habitat",
     "longName": "Cytherean Habitat, Venus Orbit",
     "code": "CYH",
-    "locationNumber": "401"
+    "locationNumber": "401",
+    "nameDetails": "Venus Orbital Station",
+    "desc": "Cytherean Habitat functions as a key orbital station around Venus, supporting observation and transit in the planet’s vicinity. As one of only a handful of facilities here, it provides essential services for visitors and researchers. Observation areas present dramatic views of Venus’s thick atmosphere and cloud layers.",
+    "type": "Orbital",
+    "capacity": 7200,
+    "area": 38000,
+    "volume": 250000,
+    "ports": 7,
+    "accommodations": 2800
   },
   {
     "id": 62,
     "location": "CLOUD_DOCK_OBS",
     "name": "Cloud Dock",
-    "longName": "Cloud Dock Observatory, Venus Orbit",
+    "longName": "Cloud Dock Observatory, Venus Atmosphere",
     "code": "CDO",
-    "locationNumber": "402"
+    "locationNumber": "402",
+    "nameDetails": "Atmospheric Platform",
+    "desc": "Cloud Dock is the unique floating station operating in Venus’s upper atmosphere, offering a one-of-a-kind experience among the clouds. It provides stable access for scientific study and limited tourism in this extreme environment. Its specialized viewing galleries reveal the swirling cloud decks and atmospheric phenomena below.",
+    "type": "Atmospheric",
+    "capacity": 1800,
+    "area": 9500,
+    "volume": 62000,
+    "ports": 3,
+    "accommodations": 650
   }
 ]
