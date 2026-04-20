@@ -3,66 +3,103 @@
     "id": 1,
     "location": "FRANKFURT",
     "name": "EU Space Central",
-    "longName": "EU Central Hub 1, Frankfurt, Germany",
+    "longName": "EU Central Hub, Frankfurt, Germany",
     "code": "EFRX",
-    "locationNumber": "001"
+    "locationNumber": "001",
+    "nameDetails": "Frankfurt Central Hub",
+    "desc": "EU Space Central serves as Europe’s primary departure hub, located in Frankfurt, Germany. As one of the busiest spaceports on the continent, it provides seamless processing for passengers heading to orbital stations and lunar destinations. Its modern terminals and observation areas offer clear views of departing vehicles and the surrounding landscape.",
+    "type": "Surface",
+    "capacity": 2450000,
+    "area": 185000,
+    "volume": 1250000,
+    "ports": 18,
+    "accommodations": 1200
   },
   {
     "id": 2,
-    "location": "KENNEDY",
-    "name": "Kennedy Spaceport",
-    "longName": "Kennedy Spaceport, Orlando, USA",
-    "code": "AKSP",
-    "locationNumber": "010"
+    "location": "TOULOUSE",
+    "name": "Aerospace Valley Launch Hub",
+    "longName": "Toulouse Commercial Spaceport, Occitanie, France",
+    "code": "FRTL",
+    "locationNumber": "002",
+    "nameDetails": "Toulouse Commercial Spaceport",
+    "desc": "Aerospace Valley Launch Hub operates as France’s leading commercial spaceport in Toulouse, Occitanie. It supports efficient passenger processing and departures toward cislunar and deeper space routes. Designed with traveler comfort in mind, the facility includes spacious lounges and viewing platforms overlooking the launch complex.",
+    "type": "Surface",
+    "capacity": 980000,
+    "area": 92000,
+    "volume": 620000,
+    "ports": 12,
+    "accommodations": 650
   },
   {
     "id": 3,
-    "location": "NARITA",
-    "name": "Narita Spaceport",
-    "longName": "Narita Spaceport, Tokyo, Japan",
-    "code": "NNSP",
-    "locationNumber": "071"
-  },
-  {
-    "id": 4,
-    "location": "BEIJING_CAPITAL",
-    "name": "Beijing Capital Spaceport",
-    "longName": "Beijing Capital Spaceport, Beijing, China",
-    "code": "CBC",
-    "locationNumber": "089"
+    "location": "TEXAS_COAST",
+    "name": "Gulf Launch Solutions",
+    "longName": "Texas Commercial Spaceport, near Brownsville, USA",
+    "code": "GTXS",
+    "locationNumber": "003",
+    "nameDetails": "Texas Commercial Spaceport",
+    "desc": "Gulf Launch Solutions functions as a major commercial spaceport near Brownsville, Texas. It handles significant passenger traffic for orbital and lunar journeys from the United States. The expansive terminal complex features comfortable waiting areas and observation decks with views across the coastal launch site.",
+    "type": "Surface",
+    "capacity": 1850000,
+    "area": 142000,
+    "volume": 950000,
+    "ports": 15,
+    "accommodations": 950
   },
   {
     "id": 5,
-    "location": "SAO_PAULO_GUARULHOS",
-    "name": "Sao Paulo Spaceport",
-    "longName": "Sao Paulo-Guarulhos Spaceport, Sao Paulo, Brazil",
-    "code": "SPGX",
-    "locationNumber": "037"
+    "location": "RAS_AL_KHAIMAH",
+    "name": "UAE Spaceport",
+    "longName": "Ras Al Khaimah Commercial Spaceport, United Arab Emirates",
+    "code": "RAKS",
+    "locationNumber": "005",
+    "nameDetails": "Ras Al Khaimah Commercial Spaceport",
+    "desc": "UAE Spaceport serves as the Middle East’s flagship commercial space hub in Ras Al Khaimah. It offers streamlined departures for passengers traveling to orbital stations and beyond. Its sleek architecture includes premium lounges and elevated viewing galleries overlooking the desert launch facilities.",
+    "type": "Surface",
+    "capacity": 1150000,
+    "area": 98000,
+    "volume": 680000,
+    "ports": 11,
+    "accommodations": 780
   },
   {
     "id": 6,
-    "location": "MUMBAI_CHHATRAPATI",
-    "name": "Mumbai Spaceport",
-    "longName": "Chhatrapati Shivaji Spaceport, Mumbai, India",
-    "code": "LBOM",
-    "locationNumber": "065"
+    "location": "KUALA_LUMPUR",
+    "name": "Equatorial Launch One",
+    "longName": "Malaysian Commercial Space Hub, near Kuala Lumpur",
+    "code": "MYS1",
+    "locationNumber": "006",
+    "nameDetails": "Malaysian Commercial Space Hub",
+    "desc": "Equatorial Launch One operates as Southeast Asia’s key commercial spaceport near Kuala Lumpur, Malaysia. Its equatorial location supports efficient access to various orbital paths. The modern terminal provides smooth passenger processing along with comfortable lounges and observation areas facing the tropical launch site.",
+    "type": "Surface",
+    "capacity": 720000,
+    "area": 75000,
+    "volume": 510000,
+    "ports": 9,
+    "accommodations": 520
   },
   {
     "id": 7,
-    "location": "LOS_ANGELES",
-    "name": "Los Angeles Spaceport",
-    "longName": "Los Angeles International, California, USA",
-    "code": "LAXS",
-    "locationNumber": "058"
+    "location": "CHRISTMAS_ISLAND",
+    "name": "Pacific Spaceport Ventures",
+    "longName": "Christmas Island Commercial Launch Facility, Australia",
+    "code": "CXRV",
+    "locationNumber": "007",
+    "nameDetails": "Christmas Island Commercial Launch Facility",
+    "desc": "Pacific Spaceport Ventures is Australia’s premier commercial launch facility on Christmas Island. It serves as a strategic departure point for passengers bound for orbital and lunar destinations. The facility features well-designed terminals and viewing platforms that overlook the vast ocean and launch complex.",
+    "type": "Surface",
+    "capacity": 680000,
+    "area": 68000,
+    "volume": 460000,
+    "ports": 8,
+    "accommodations": 480
   },
-  {
-    "id": 8,
-    "location": "SINGAPORE_CHANGI",
-    "name": "Singapore Spaceport",
-    "longName": "Singapore Changi Spaceport, Singapore",
-    "code": "SINX",
-    "locationNumber": "076"
-  },
+
+
+
+
+
   {
     "id": 21,
     "location": "ORBITAL_ALPHA",
@@ -94,14 +131,6 @@
     "volume": 280000,
     "ports": 9,
     "accommodations": 3200
-  },
-  {
-    "id": 23,
-    "location": "PANGU_ORIENTAL_CMC",
-    "name": "Pangu Oriental CMC Station",
-    "longName": "Pangu Oriental Modular Complex, Low Earth Orbit",
-    "code": "PNGO",
-    "locationNumber": "182"
   },
   {
     "id": 24,
@@ -232,22 +261,6 @@
     "accommodations": 3800
   },
   {
-    "id": 37,
-    "location": "YAMAGUCHI_CMC",
-    "name": "Yamaguchi CMC Station",
-    "longName": "Yamaguchi Modular Complex, Lunar Orbit",
-    "code": "YMC",
-    "locationNumber": "277"
-  },
-  {
-    "id": 38,
-    "location": "AL_MANSOUR_CMC",
-    "name": "Al Mansour CMC Station",
-    "longName": "Al Mansour Group Modular Complex, Lunar Orbit",
-    "code": "AMSC",
-    "locationNumber": "295"
-  },
-  {
     "id": 41,
     "location": "VALLES_MARINERIS_OTP",
     "name": "Valles Marineris Outpost",
@@ -326,22 +339,6 @@
     "volume": 205000,
     "ports": 6,
     "accommodations": 2400
-  },
-  {
-    "id": 46,
-    "location": "AREOSYNCHRONOUS_STATION_ALPHA",
-    "name": "Areosynchronous Station",
-    "longName": "Areosynchronous Station Alpha, Mars Orbit",
-    "code": "ASA",
-    "locationNumber": "303"
-  },
-  {
-    "id": 47,
-    "location": "ORBIT_LAB_OBS",
-    "name": "Martian Orbit Lab",
-    "longName": "Martian Orbit Laboratory Observatory, Mars Orbit",
-    "code": "MOL",
-    "locationNumber": "391"
   },
   {
     "id": 61,

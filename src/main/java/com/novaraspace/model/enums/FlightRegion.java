@@ -26,6 +26,15 @@ public enum FlightRegion {
     }
     public String getRegionCode() {return regionCode;}
 
+    public CelestialBody toCelestialBody() {
+        return switch (this) {
+            case EARTH, NEAR_EARTH -> CelestialBody.EARTH;
+            case MOON, MOON_ORBIT -> CelestialBody.MOON;
+            case MARS, MARS_ORBIT -> CelestialBody.MARS;
+            case VENUS_ORBIT -> CelestialBody.VENUS;
+        };
+    }
+
     public int getTravelMinutesFromEarth() {
         return travelMinutesFromEarth;
     }

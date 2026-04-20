@@ -24,13 +24,21 @@ public class Location {
     @Column(nullable = false, unique = true)
     private String locationNumber;
 
+    @Column(nullable = false)
     private String nameDetails;
-    private String desc;
-    private String type;
+    @Column(nullable = false, length = 400)
+    private String description;
+    @Column(nullable = false)
+    private String locationType;
+    @Column(nullable = false)
     private long capacity;
+    @Column(nullable = false)
     private long area;
+    @Column(nullable = false)
     private long volume;
+    @Column(nullable = false)
     private long ports;
+    @Column(nullable = false)
     private long accommodations;
 
     public FlightRegion getRegion() {
@@ -105,21 +113,21 @@ public class Location {
         return this;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public Location setDesc(String desc) {
-        this.desc = desc;
+    public Location setDescription(String desc) {
+        this.description = desc;
         return this;
     }
 
-    public String getType() {
-        return type;
+    public String getLocationType() {
+        return locationType;
     }
 
-    public Location setType(String type) {
-        this.type = type;
+    public Location setLocationType(String type) {
+        this.locationType = type;
         return this;
     }
 

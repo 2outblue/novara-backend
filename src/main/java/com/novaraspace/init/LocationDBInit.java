@@ -38,7 +38,7 @@ public class LocationDBInit implements CommandLineRunner {
         List<LocationJSON> locationsData = Arrays.asList(objectMapper.readValue(locationsPath.getInputStream(), LocationJSON[].class));
         Map<FlightLocation, LocationJSON> locationsMap = locationsData.stream()
                 .collect(Collectors.toMap(l -> FlightLocation.valueOf(l.getLocation()), l -> l ));
-
+        
         List<Location> locationsToSave = new ArrayList<>();
         for (FlightLocation fl : FlightLocation.values()) {
             LocationJSON matchingLocation = locationsMap.get(fl);
@@ -51,8 +51,8 @@ public class LocationDBInit implements CommandLineRunner {
                     .setCode(matchingLocation.getCode())
                     .setLocationNumber(matchingLocation.getLocationNumber())
                     .setNameDetails(matchingLocation.getNameDetails())
-                    .setDesc(matchingLocation.getDesc())
-                    .setType(matchingLocation.getType())
+                    .setDescription(matchingLocation.getDesc())
+                    .setLocationType(matchingLocation.getType())
                     .setCapacity(matchingLocation.getCapacity())
                     .setArea(matchingLocation.getArea())
                     .setVolume(matchingLocation.getVolume())
