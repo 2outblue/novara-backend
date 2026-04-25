@@ -84,7 +84,8 @@ public class BookingService {
         booking.setReturnFlight(returnFlight);
 
         String bookingReference = bookingReferenceGenerator.generateUniqueReference();
-        Payment payment = paymentService.createNewPayment(request.getPaymentDTO(), bookingReference);
+//        Payment payment = paymentService.createNewPayment(request.getPaymentDTO(), bookingReference);
+        Payment payment = paymentService.createBookingConfirmPayment(request.getPaymentDTO(), bookingReference);
 
         boolean validBooking = bookingValidator.validateNewBooking(booking, bookingDTO.getQuoteReference());
         boolean validBookingPayment = bookingValidator.validateBookingAgainstPayment(booking, payment);

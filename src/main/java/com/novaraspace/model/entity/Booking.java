@@ -4,6 +4,9 @@ import com.novaraspace.model.dto.flight.FlightReserveDTO;
 import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.exception.BookingException;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,11 +28,11 @@ public class Booking extends BaseEntity {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Passenger> passengers = new ArrayList<>();
 
-    //TODO: Probably make this @ElementCollection and table and the
-    // ExtraService as @Embeddable like the UserDocument in User
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "booking_id")
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "extra_services", joinColumns = @JoinColumn(name = "booking_id"))
     private List<ExtraService> extraServices = new ArrayList<>();
+
 
     private String contactCountryCode;
     private String contactMobile;
@@ -40,6 +43,7 @@ public class Booking extends BaseEntity {
     // the user can do, or just limit the amount of flight changes in FE and BE
     @OneToOne
     @JoinColumn(name = "payment_id")
+//    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Payment payment;
 
     private LocalDateTime createdAt;
@@ -100,10 +104,6 @@ public class Booking extends BaseEntity {
         this.setReturnFlightPrice(reserveDTO.getPrice());
         this.returnFlight.reserveSeats(newCabinClass, paxCount);
     }
-
-//    TODO:
-//    Already exists in the BookingValidator - if you need it here, move it
-//    private boolean checkPaxBaggageMatchesServicePrice(Booking booking)
 
     public double getMinimumSeparationDays() {
         double departureSep = departureFlight.getFlightTemplate().getDepartureLocation().getRegion().getSeparationFactor();

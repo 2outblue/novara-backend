@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -43,4 +44,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     @Query("select count(distinct t.userAuthId) from RefreshToken t where cast(t.createdOn as localdatetime) >= :date and t.revoked = false")
     Integer getCountForActiveUsers(LocalDateTime date);
+
+    void deleteAllByExpiryDateBeforeOrRevokedTrue(Instant beforeDate);
 }

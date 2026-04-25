@@ -7,6 +7,8 @@ import com.novaraspace.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -30,7 +32,6 @@ public class User extends BaseEntity {
     private Instant deletedAt;
     private boolean isDemo = false;
 
-    //TODO: This should be a manyToMany
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
@@ -39,6 +40,7 @@ public class User extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verification;
 
+    private String accountNumber;
     private String title;
     private String firstName;
     private String lastName;
@@ -55,8 +57,7 @@ public class User extends BaseEntity {
     private boolean marketing = false;
     private double totalInvoiced = 0;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "user_id")
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_documents", joinColumns = @JoinColumn(name = "user_id"))
     @Size(max = 10)
@@ -209,6 +210,15 @@ public class User extends BaseEntity {
 
     public User setVerification(VerificationToken verification) {
         this.verification = verification;
+        return this;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public User setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
         return this;
     }
 

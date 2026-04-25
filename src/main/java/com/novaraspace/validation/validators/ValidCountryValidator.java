@@ -1,6 +1,6 @@
 package com.novaraspace.validation.validators;
 
-import com.novaraspace.util.CountryCodeLoader;
+import com.novaraspace.component.CountryCodeLoader;
 import com.novaraspace.validation.annotations.ValidCountry;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

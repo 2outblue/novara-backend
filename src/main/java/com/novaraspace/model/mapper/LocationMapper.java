@@ -1,6 +1,7 @@
 package com.novaraspace.model.mapper;
 
 import com.novaraspace.model.dto.location.LocationDTO;
+import com.novaraspace.model.dto.location.LocationDetailsDTO;
 import com.novaraspace.model.entity.Location;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -9,4 +10,6 @@ import org.mapstruct.ReportingPolicy;
 public abstract class LocationMapper {
 
     public abstract LocationDTO locationToLocationDTO(Location location);
+
+    public abstract LocationDetailsDTO toLocationDetailsDTO(Location location);
 }

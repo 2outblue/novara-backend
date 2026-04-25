@@ -28,38 +28,26 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByAuthId(String authId);
 
-//    @Query("select u.authId as authId from User u where u.email = :email")
-//    Optional<String> getAuthIdByEmail(@Param("email") String email);
-//
-//    @Query("select u.email as email from User u where u.authId = :authId")
-//    Optional<String> getEmailByAuthId(@Param("authId") String authId);
-//
-//    @Modifying
-//    @Query("update User u set u.outcome = :newStatus where u.id = :userId")
-//    @Transactional
-//    void updateUserStatusById(@Param("userId") Long userId, @Param("newStatus") AccountStatus newStatus);
-//
-//    @Modifying
-//    @Query("update User u set u.verification = :verification where u.id = :userId")
-//    @Transactional
-//    void updateVerification(@Param("userId") Long userId, @Param("verification")VerificationToken verification);
-
 
     @Query("""
     select b from User u join u.bookings b where u.id = :#{#params.userId}
     and ((b.returnFlight is null OR (cast(b.returnFlight.departureDate as localdatetime) >= :#{#params.minDate}
         and cast(b.returnFlight.departureDate as localdatetime) < :#{#params.maxDate}))
-    or (cast(b.departureFlight.departureDate as localdatetime) >= :#{#params.minDate}
+      or (cast(b.departureFlight.departureDate as localdatetime) >= :#{#params.minDate}
         and cast(b.departureFlight.departureDate as localdatetime) < :#{#params.maxDate}))
+    and b.cancelled = false
 """)
     Page<Booking> getUserUpcomingBookings(@Param("params") UserBookingsQuery params, Pageable pageable);
 
     @Query("""
     select b from User u join u.bookings b where u.id = :#{#params.userId}
-    and ((b.returnFlight is null OR (cast(b.returnFlight.arrivalDate as localdatetime) <= :#{#params.maxDate}
-        and cast(b.returnFlight.departureDate as localdatetime) > :#{#params.minDate}))
-    and (cast(b.departureFlight.arrivalDate as localdatetime) <= :#{#params.maxDate}
-        and cast(b.departureFlight.departureDate as localdatetime) > :#{#params.minDate}))
+    and (
+        b.cancelled = true OR
+        ((b.returnFlight is null OR (cast(b.returnFlight.arrivalDate as localdatetime) <= :#{#params.maxDate}
+            and cast(b.returnFlight.departureDate as localdatetime) > :#{#params.minDate}))
+          and (cast(b.departureFlight.arrivalDate as localdatetime) <= :#{#params.maxDate}
+            and cast(b.departureFlight.departureDate as localdatetime) > :#{#params.minDate}))
+        )
 """)
     Page<Booking> getUserBookingsHistory(@Param("params") UserBookingsQuery params, Pageable pageable);
 

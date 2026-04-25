@@ -28,7 +28,7 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ${MYSQL_PASS1:1q2w3e4r}
   jpa:
-    show-sql: true
+    show-sql: false
     open-in-view: 'false'
     defer-datasource-initialization: true
     properties:

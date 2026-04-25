@@ -19,6 +19,7 @@ public class Payment extends BaseEntity{
     private Double amount;
 
     private LocalDateTime createdAt;
+    private boolean BookingConfirm;
 
     public String getReference() {
         return reference;
@@ -107,6 +108,15 @@ public class Payment extends BaseEntity{
 
     public Payment setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+        return this;
+    }
+
+    public boolean isBookingConfirm() {
+        return BookingConfirm;
+    }
+
+    public Payment setBookingConfirm(boolean bookingConfirm) {
+        BookingConfirm = bookingConfirm;
         return this;
     }
 }

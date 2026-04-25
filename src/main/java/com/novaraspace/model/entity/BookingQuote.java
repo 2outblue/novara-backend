@@ -18,7 +18,7 @@ public class BookingQuote extends BaseEntity {
     private String arrivalCode;
     private LocalDate departureLowerDate;
     private LocalDate departureUpperDate;
-    private LocalDate returnLowerDate; //TODO: WHY ARRIVAL ??? THIS IS **RETURN DATE** - Nothing to do with the arrival...?
+    private LocalDate returnLowerDate;
     private LocalDate returnUpperDate;
 
     public String getReference() {

@@ -1,0 +1,231 @@
+[
+{
+  "name": "MOON",
+  "mainDesc": "The Moon is Earth's only natural satellite, a celestial body that orbits our planet. It's the fifth largest moon in our solar system and is composed of a rocky surface with an iron-rich core, a mantle, and a crust.",
+  "primaryDets": [
+    {
+      "detailName": "Distance from Sun",
+      "detailValue": "150m km"
+    },
+    {
+      "detailName": "Gravitation",
+      "detailValue": "0.16g"
+    },
+    {
+      "detailName": "Day length",
+      "detailValue": "29.5 Earth days"
+    },
+    {
+      "detailName": "Year length",
+      "detailValue": "354 Earth days"
+    },
+    {
+      "detailName": "Circumference",
+      "detailValue": "10,921 km"
+    }
+  ],
+  "secondaryDesc": "Our lunar orbital stations form the backbone of the Earth–Moon transport network, supporting scientific operations, lunar tourism, and as staging points for Mars-bound craft.",
+  "locations": [],
+  "bodyPoints": [
+    {
+      "angle": 320,
+      "textTop": "Surface Temperature",
+      "textBottom": "-173 °C to +127 °C",
+      "pointId": "temp"
+    },
+    {
+      "angle": 58,
+      "textTop": "Highest point",
+      "textBottom": "Mons Huygens — 5.5 km",
+      "pointId": "highest-point"
+    },
+    {
+      "angle": 190,
+      "textTop": "Station count",
+      "textBottom": "11 permanent",
+      "pointId": "station"
+    },
+    {
+      "angle": 255,
+      "textTop": "Comms delay",
+      "textBottom": "2.56s round-trip",
+      "pointId": "comms"
+    },
+    {
+      "angle": 115,
+      "textTop": "Ice deposits",
+      "textBottom": "Permanently shadowed polar craters",
+      "pointId": "ice"
+    }
+  ]
+},
+  {
+    "name": "EARTH",
+    "mainDesc": "Seen from orbit, Earth is a living artwork — swirling clouds, blue oceans, and city lights at night. It's where every journey begins and ends, and the standard against which all other destinations are measured.",
+    "primaryDets": [
+      {
+        "detailName": "Distance from Sun",
+        "detailValue": "150m km"
+      },
+      {
+        "detailName": "Gravitation",
+        "detailValue": "1.00g"
+      },
+      {
+        "detailName": "Day length",
+        "detailValue": "24 hours"
+      },
+      {
+        "detailName": "Year length",
+        "detailValue": "365.25 days"
+      },
+      {
+        "detailName": "Circumference",
+        "detailValue": "40,074 km"
+      }
+    ],
+    "secondaryDesc": "Low Earth orbit hosts the densest concentration of stations in the solar system. These range from legacy research modules to luxury orbital hotels, all connected by regular shuttle services and offering a variety of experiences minutes from Earth.",
+    "locations": [],
+    "bodyPoints": [
+      {
+        "angle": 320,
+        "textTop": "Low orbit period",
+        "textBottom": "90-120 minutes",
+        "pointId": "leo-period"
+      },
+      {
+        "angle": 58,
+        "textTop": "Sunrises per day at low orbit",
+        "textBottom": "11-16",
+        "pointId": "leo-sun"
+      },
+      {
+        "angle": 137,
+        "textTop": "Station count",
+        "textBottom": "14 major stations",
+        "pointId": "stations"
+      },
+      {
+        "angle": 218,
+        "textTop": "Annual visitors",
+        "textBottom": "500 000",
+        "pointId": "visitors"
+      }
+    ]
+  },
+  {
+    "name": "MARS",
+    "mainDesc": "Mars is the most Earth‑like destination in the solar system, with a familiar day length and polar ice caps. Its rusty desert landscapes offer vast territories for exploration, from deep canyons to dormant volcanoes.",
+    "primaryDets": [
+      {
+        "detailName": "Distance from Sun",
+        "detailValue": "228m km"
+      },
+      {
+        "detailName": "Gravitation",
+        "detailValue": "0.38g"
+      },
+      {
+        "detailName": "Day length",
+        "detailValue": "24h 37m"
+      },
+      {
+        "detailName": "Year length",
+        "detailValue": "687 Earth days"
+      },
+      {
+        "detailName": "Circumference",
+        "detailValue": "21,344 km"
+      }
+    ],
+    "secondaryDesc": "Mars hosts orbital gateways plus surface habitats across several major regions. Facilities include research stations, greenhouse complexes, and pressurized rover networks for travel between outposts.",
+    "locations": [],
+    "bodyPoints": [
+      {
+        "angle": 320,
+        "textTop": "Sky color",
+        "textBottom": "Usually reddish-brown, blue at sunset",
+        "pointId": "sky"
+      },
+      {
+        "angle": 35,
+        "textTop": "Surface Temperature",
+        "textBottom": "-140°C to +20°C",
+        "pointId": "temp"
+      },
+      {
+        "angle": 100,
+        "textTop": "Highest point",
+        "textBottom": "Olympus Mons — 21.9 km (tallest in solar system)",
+        "pointId": "high-point"
+      },
+      {
+        "angle": 180,
+        "textTop": "Surface composition",
+        "textBottom": "Basalt, andesite, rust",
+        "pointId": "surface"
+      },
+      {
+        "angle": 255,
+        "textTop": "Dust storm frequency",
+        "textBottom": "Global storms every 3–4 Mars years",
+        "pointId": "storms"
+      }
+    ]
+  },
+  {
+    "name": "VENUS",
+    "mainDesc": "Venus is Earth's twin in size but a world apart. Above its crushing surface, the upper atmosphere offers the most habitable non‑Earth environment in the solar system — with gentle breezes and Earth‑like temperatures.",
+    "primaryDets": [
+      {
+        "detailName": "Distance from Sun",
+        "detailValue": "108m km"
+      },
+      {
+        "detailName": "Gravitation",
+        "detailValue": "0.91g"
+      },
+      {
+        "detailName": "Day length",
+        "detailValue": "243 Earth days"
+      },
+      {
+        "detailName": "Year length",
+        "detailValue": "225 Earth days"
+      },
+      {
+        "detailName": "Circumference",
+        "detailValue": "38,025 km"
+      }
+    ],
+    "secondaryDesc": "Visitors to Venus can choose between orbital stations with panoramic views of the planet below, or cloud-level facilities drifting in the temperate upper atmosphere. Both options are connected by shuttle transfers.",
+    "locations": [],
+    "bodyPoints": [
+      {
+        "angle": 320,
+        "textTop": "Retrograde rotation",
+        "textBottom": "Sun rises in the west, sets in the east",
+        "pointId": "rotation"
+      },
+      {
+        "angle": 58,
+        "textTop": "Surface Temperature",
+        "textBottom": "464°C",
+        "pointId": "temp"
+      },
+      {
+        "angle": 137,
+        "textTop": "Temperature at 50km altitude",
+        "textBottom": "0°C to 50°C",
+        "pointId": "alt-temp"
+      },
+      {
+        "angle": 218,
+        "textTop": "Atmospheric pressure at 50km altitude",
+        "textBottom": "1 atm - equal to Earth's surface",
+        "pointId": "atm"
+      }
+    ]
+  }
+
+]

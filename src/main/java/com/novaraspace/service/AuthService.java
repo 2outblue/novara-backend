@@ -130,10 +130,10 @@ public class AuthService {
     public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
         VerificationToken verification = verificationService.getEntityByLinkTokenOrCode(linkOrCode);
         if (verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
-            throw VerificationException.disabled(); //TODO: Don't throw .disabled() anywhere - just failed.
+            throw VerificationException.failed();
         }
         User user = userService.getEntityByEmail(verification.getUserEmail()).orElseThrow(VerificationException::failed);
-        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.disabled();}
+        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.failed();}
         userService.activateUserAccount(verification.getUserEmail());
     }
 

@@ -29,9 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 
-
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -98,12 +99,14 @@ public class UserService {
     public PageResponse<AccountBookingDTO> getCurrentUserBookingsPage(UserBookingsRequestDTO req) {
         User user = currentUserService.getUserEntity().orElseThrow(BookingException::notFound);
 
+        LocalDateTime now = LocalDateTime.now();
+
         LocalDateTime minDate = req.getTimeFrame().equals("upcoming")
-                ? LocalDateTime.now().plusHours(5)
-                : LocalDateTime.now().minusMonths(6);
+                ? now
+                : now.minusMonths(6);
         LocalDateTime maxDate = req.getTimeFrame().equals("upcoming")
-                ? LocalDateTime.now().plusMonths(6)
-                : LocalDateTime.now().minusHours(5);
+                ? now.plusMonths(6)
+                : now;
 
         UserBookingsQuery query = new UserBookingsQuery(
                 user.getId(),
@@ -197,7 +200,15 @@ public class UserService {
 
     public User createUser(UserRegisterDTO dto) {
         User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
+        newUser.setAccountNumber(createAccountNumber(newUser.getEmail()));
         return userRepository.save(newUser);
+    }
+
+    private String createAccountNumber(String email) {
+        byte[] md5Digest = DigestUtils.md5Digest(email.getBytes());
+        BigInteger num = new BigInteger(1, md5Digest);
+        String base36 = num.toString(36).toUpperCase();
+        return base36.length() >= 12 ? base36.substring(0, 12) : base36;
     }
 
     public Optional<User> findEntityByAuthId(String authId) {return userRepository.findByAuthId(authId);}

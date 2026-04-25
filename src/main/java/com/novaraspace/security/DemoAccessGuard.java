@@ -18,20 +18,14 @@ public class DemoAccessGuard {
     }
 
     public boolean canModify() {
-//        Optional<User> userOpt = currentUserService.getUserEntity();
         Optional<UserSummary> userSummary = currentUserService.getUserSummary();
         if (userSummary.isEmpty()) {
-//            return false;
-            //TODO: Access denied exception here?
             throw UserException.notFound();
-
         }
 
-//        User user = userOpt.get();
         if (userSummary.get().isDemo()) {
             throw UserException.demo();
         }
-
         return true;
     }
 }

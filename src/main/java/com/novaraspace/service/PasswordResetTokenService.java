@@ -13,13 +13,13 @@ import java.util.Optional;
 @Service
 public class PasswordResetTokenService {
 
-    //TODO: Need a scheduler to delete expired/unused links
     private final PasswordResetTokenRepository repository;
 
     public PasswordResetTokenService(PasswordResetTokenRepository repository) {
         this.repository = repository;
     }
 
+    //TODO: Encode the token value in the DB
     public PasswordResetToken generateNewToken(String authId) {
         repository.deleteAllByUserAuthId(authId);
         PasswordResetToken token = new PasswordResetToken()

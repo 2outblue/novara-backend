@@ -1,7 +1,9 @@
 package com.novaraspace.web;
 
+import com.novaraspace.model.dto.destination.DestinationDTO;
 import com.novaraspace.model.dto.flight.RouteAvailabilityRequestDTO;
 import com.novaraspace.model.dto.location.LocationGroupDTO;
+import com.novaraspace.service.DestinationService;
 import com.novaraspace.service.FlightService;
 import com.novaraspace.service.LocationService;
 import jakarta.validation.Valid;
@@ -17,10 +19,12 @@ public class PublicController {
 
     private final LocationService locationService;
     private final FlightService flightService;
+    private final DestinationService destinationService;
 
-    public PublicController(LocationService locationService, FlightService flightService) {
+    public PublicController(LocationService locationService, FlightService flightService, DestinationService destinationService) {
         this.locationService = locationService;
         this.flightService = flightService;
+        this.destinationService = destinationService;
     }
 
     @GetMapping("/location")
@@ -33,5 +37,11 @@ public class PublicController {
     public ResponseEntity<List<LocalDate>> getFlightAvailability(@Valid @RequestBody RouteAvailabilityRequestDTO dto) {
         List<LocalDate> availabilityDates = flightService.getRouteAvailability(dto.getDepartureCode(), dto.getArrivalCode());
         return ResponseEntity.ok(availabilityDates);
+    }
+
+    @GetMapping("/destinations")
+    public ResponseEntity<List<DestinationDTO>> getDestinations() {
+        List<DestinationDTO> destinations = destinationService.getAllDestinations();
+        return ResponseEntity.ok(destinations);
     }
 }

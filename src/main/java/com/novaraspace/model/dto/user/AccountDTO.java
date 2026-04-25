@@ -8,6 +8,7 @@ import java.util.List;
 public class AccountDTO {
 
     private String publicId;
+    private String accountNumber;
     private Instant createdAt;
     private String title;
     private String firstName;
@@ -35,6 +36,15 @@ public class AccountDTO {
 
     public AccountDTO setPublicId(String publicId) {
         this.publicId = publicId;
+        return this;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public AccountDTO setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
         return this;
     }
 
