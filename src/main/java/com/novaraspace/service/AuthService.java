@@ -127,20 +127,22 @@ public class AuthService {
         return createRefreshTokenCookie("", true);
     }
 
+    //TODO: Test if generating old verification removes the old one
     public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
         VerificationToken verification = verificationService.getEntityByLinkTokenOrCode(linkOrCode);
         if (verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
-            throw VerificationException.disabled(); //TODO: Don't throw .disabled() anywhere - just failed.
+            throw VerificationException.failed();
         }
         User user = userService.getEntityByEmail(verification.getUserEmail()).orElseThrow(VerificationException::failed);
-        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.disabled();}
+        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.failed();}
         userService.activateUserAccount(verification.getUserEmail());
     }
 
 
 
     public VerificationTokenDTO generateNewVerification(String email) {
-        // Could return a 200 here and in verifyAccountByLinkTokenOrCode()
+        // TODO: Could return a 200 here and in verifyAccountByLinkTokenOrCode() ?
+        //  or just surround the controller method in try-catch..?
         if (!emailVerificationEnabled) {throw new FailedOperationException();}
 
         User user = userService.getEntityByEmail(email).orElseThrow(VerificationException::failed);

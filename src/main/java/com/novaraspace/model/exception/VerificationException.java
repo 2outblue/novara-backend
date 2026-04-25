@@ -13,10 +13,6 @@ public class VerificationException extends RuntimeException{
         this.status = status;
     }
 
-    public static VerificationException disabled() {
-        return new VerificationException(ErrCode.VERIFICATION_DISABLED, HttpStatus.FORBIDDEN, "Verification disabled.");
-    }
-
     public static VerificationException failed() {
         return new VerificationException(ErrCode.VERIFICATION_FAILED, HttpStatus.BAD_REQUEST, "Verification failed.");
     }

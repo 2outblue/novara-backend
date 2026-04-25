@@ -364,7 +364,7 @@
     "code": "CDO",
     "locationNumber": "402",
     "nameDetails": "Atmospheric Platform",
-    "desc": "Cloud Dock is the unique floating station operating in Venus’s upper atmosphere, offering a one-of-a-kind experience among the clouds. It provides stable access for scientific study and limited tourism in this extreme environment. Its specialized viewing galleries reveal the swirling cloud decks and atmospheric phenomena below.",
+    "desc": "Cloud Dock is the unique floating station operating in Venus’s upper atmosphere, offering a one-of-a-kind experience among the clouds. It provides stable access for scientific study and tourism in this extreme environment. Its specialized viewing galleries reveal the swirling cloud decks and atmospheric phenomena below.",
     "type": "Atmospheric",
     "capacity": 1800,
     "area": 9500,

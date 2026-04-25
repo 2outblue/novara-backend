@@ -53,6 +53,7 @@ public class UserDBInit implements CommandLineRunner {
     private List<User> getInitUsers() {
         return Arrays.asList(
                 new User()
+                        .setAccountNumber("89IADQZ2PDIU")
                         .setTitle("Mr")
                         .setFirstName("John")
                         .setLastName("Kelly")
@@ -88,6 +89,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setRoles(Set.of(UserRole.ADMIN, UserRole.USER))
                 ,
                 new User()
+                        .setAccountNumber("CYAL8H1IRZT4")
                         .setFirstName("Douglas")
                         .setLastName("Ivanov")
                         .setDob(LocalDate.of(1981, 2, 7))
@@ -107,6 +109,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setRoles(Set.of(UserRole.ADMIN))
                 ,
                 new User()
+                        .setAccountNumber("123K7M6KRTQX")
                         .setTitle("Mr")
                         .setFirstName("Public")
                         .setLastName("Admin1")

@@ -26,7 +26,7 @@ public class UserRegisterDTO {
     private String email;
     @NotEmpty
     @Size(min = 5, max = 64)
-    private String password; //TODO: Probably make a custom password annotation and validator.
+    private String password;
     @NotEmpty
     @ValidCountry
     private String country;

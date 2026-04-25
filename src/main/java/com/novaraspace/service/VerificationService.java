@@ -30,7 +30,11 @@ public class VerificationService {
         return verificationTokenRepository.findByLinkToken(linkOrCode).orElseThrow(VerificationException::failed);
     }
 
-    public VerificationToken generateVerificationToken(String email) { //TODO: Maybe hash these with the passwordEncoder ?
+    public VerificationToken generateVerificationToken(String email) {
+        //TODO: Maybe hash these with the passwordEncoder ?
+        //TODO: test this deleteAllByUserEmail
+        verificationTokenRepository.deleteAllByUserEmail(email);
+
         VerificationToken verificationToken = new VerificationToken();
         SecureRandom random = new SecureRandom();
         byte[] randomBytes = new byte[32];

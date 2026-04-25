@@ -1,17 +1,15 @@
 package com.novaraspace.model.entity;
 
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-@Entity
-public class ExtraService extends BaseEntity {
+//@Entity
+@Embeddable
+public class ExtraService {
     private String code;
     private double price;
-
-//    @ManyToOne
-//    @JoinColumn(name = "booking_id")
-//    private Booking booking;
 
     public String getCode() {
         return code;
@@ -31,12 +29,4 @@ public class ExtraService extends BaseEntity {
         return this;
     }
 
-//    public Booking getBooking() {
-//        return booking;
-//    }
-//
-//    public ExtraService setBooking(Booking booking) {
-//        this.booking = booking;
-//        return this;
-//    }
 }

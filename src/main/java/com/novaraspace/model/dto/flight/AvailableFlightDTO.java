@@ -5,9 +5,6 @@ import com.novaraspace.model.enums.VehicleAmenity;
 
 import java.util.Set;
 
-//TODO: Rename this to something like AvailableFlightDTO or something like that
-// Its not a general UI model as it contains the cabin classes with available seats,
-// and other data which is used only on flight selection...
 public class AvailableFlightDTO {
     private String id;
     private FlightStatus status;

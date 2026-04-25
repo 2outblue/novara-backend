@@ -11,9 +11,11 @@ import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -28,21 +30,37 @@ public class PaymentService {
         this.paymentMapper = paymentMapper;
     }
 
-    public Payment createNewPayment(@Valid NewPaymentDTO dto) {
-        Payment payment = createPaymentFromNewPaymentDTO(dto);
-        payment.setServiceReference(generateRandomServiceReference());
+    public Payment createBookingConfirmPayment(@Valid NewPaymentDTO dto, String bookingReference) {
+        Payment payment = createPaymentEntity(dto, bookingReference);
+        payment.setBookingConfirm(true);
         return paymentRepository.save(payment);
     }
 
     public Payment createNewPayment(@Valid NewPaymentDTO dto, String serviceReference) {
+        Payment payment = createPaymentEntity(dto, serviceReference);
+        return paymentRepository.save(payment);
+    }
+
+    //Probably unnecessary measure to limit amount of payment records as there is no limit
+    // on how many flight changes for example can be done (and therefore payments) for a certain booking.
+    public boolean checkServiceReferenceOverLimits(String serviceReference) {
+        Long count = paymentRepository.countByServiceReference(serviceReference);
+        return count <= 15;
+    }
+
+    private Payment createPaymentEntity(NewPaymentDTO dto, String serviceReference) {
         boolean invalidServiceReference = serviceReference == null || serviceReference.isBlank();
         String validServiceReference = invalidServiceReference
                 ? generateRandomServiceReference()
                 : serviceReference;
 
-        Payment payment = createPaymentFromNewPaymentDTO(dto);
-        payment.setServiceReference(validServiceReference);
-        return paymentRepository.save(payment);
+        Payment payment = paymentMapper.newPaymentDTOToEntity(dto);
+        payment.setReference(UUID.randomUUID().toString())
+                .setCardType(determineCardType(payment.getFirstFour()))
+                .setCreatedAt(LocalDateTime.now())
+                .setServiceReference(validServiceReference);
+
+        return payment;
     }
 
     public UserPaymentCard getUserPaymentCard(@Valid AddCardDTO dto) {
@@ -61,25 +79,26 @@ public class PaymentService {
     }
 
 
-    //TODO: Implement - probably need some const as the payment type - so
-    // for example if it is a booking payment the reference is the booking ref
-    // if it is a voucher payment, it may be the voucher ref or something like that
-    // and you can have a default which is just some random reference which is not
-    // super random (like 'xdfjkKLdjkfp23lPeZDSSqj') but more like '0009020BFAYTX'
     private String generateRandomServiceReference() {
-        return "RANDOM_REF";
+        String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random random = new SecureRandom();
+        StringBuilder code = new StringBuilder(13);
+        for (int i = 0; i < 13; i++) {
+            code.append(CHARS.charAt(random.nextInt(CHARS.length())));
+        }
+        return code.toString();
     }
 
     /**
      * Doesn't set the serviceReference
      */
-    private Payment createPaymentFromNewPaymentDTO(NewPaymentDTO dto) {
-        Payment partialEntity = paymentMapper.newPaymentDTOToEntity(dto);
-        return partialEntity
-                .setReference(UUID.randomUUID().toString())
-                .setCardType(determineCardType(partialEntity.getFirstFour()))
-                .setCreatedAt(LocalDateTime.now());
-    }
+//    private Payment createPaymentFromNewPaymentDTO(NewPaymentDTO dto) {
+//        Payment partialEntity = paymentMapper.newPaymentDTOToEntity(dto);
+//        return partialEntity
+//                .setReference(UUID.randomUUID().toString())
+//                .setCardType(determineCardType(partialEntity.getFirstFour()))
+//                .setCreatedAt(LocalDateTime.now());
+//    }
 
     private String determineCardType(String firstFourDigits) {
         if (firstFourDigits.length() != 4) {return "Card";}

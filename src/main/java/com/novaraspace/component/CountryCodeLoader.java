@@ -1,4 +1,4 @@
-package com.novaraspace.util;
+package com.novaraspace.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novaraspace.model.other.CountryCode;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class CountryCodeLoader { //TODO: Move this to the component package ?
+public class CountryCodeLoader {
     private final ObjectMapper mapper;
     private List<CountryCode> cachedData;
 

@@ -3,6 +3,7 @@ package com.novaraspace.model.entity;
 import com.novaraspace.model.embedded.CabinClassData;
 import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.enums.FlightStatus;
+import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.exception.FlightException;
 import jakarta.persistence.*;
 
@@ -46,6 +47,8 @@ public class FlightInstance extends BaseEntity {
     private LocalDateTime arrivalDate;
     @Column(nullable = false)
     private int totalSeatsAvailable;
+    @Column(nullable = false)
+    private int totalBookedSeats = 0;
 
     @ManyToOne
     private FlightTemplate flightTemplate;
@@ -81,24 +84,6 @@ public class FlightInstance extends BaseEntity {
         return this.departureDate.isAfter(aDayFromNow);
     }
 
-    //TODO: Cant you just get the correct cabin class with one switch statement, then do the rest without a second switch?
-//    public void reserveSeats(CabinClassEnum cabinClass, int count) {
-//        int unreservedSeats = switch (cabinClass) {
-//            case FIRST -> firstClass.getAvailableSeats() - firstClass.getLockedSeats();
-//            case MIDDLE -> middleClass.getAvailableSeats() - middleClass.getLockedSeats();
-//            case LOWER -> lowerClass.getAvailableSeats() - lowerClass.getLockedSeats();
-//        };
-//        if (unreservedSeats < count) {throw FlightException.reservationFailed();}
-//
-//        switch (cabinClass) {
-//            case FIRST -> firstClass.setAvailableSeats(firstClass.getAvailableSeats() - count);
-//            case MIDDLE -> middleClass.setAvailableSeats(middleClass.getAvailableSeats() - count);
-//            case LOWER -> lowerClass.setAvailableSeats(lowerClass.getAvailableSeats() - count);
-//        }
-//        recalculateTotalSeats();
-//    }
-
-    // TODO: Test this
     public void reserveSeats(CabinClassEnum cabinClass, int count) {
         if (cabinClass == null) {return;}
         CabinClassData selectedClass = getCabinClassData(cabinClass);
@@ -107,7 +92,8 @@ public class FlightInstance extends BaseEntity {
 
         if (unreservedSeats < count) {throw FlightException.reservationFailed();}
         selectedClass.setAvailableSeats(availableSeats - count);
-        recalculateTotalSeats();
+        setTotalBookedSeats(totalBookedSeats + count);
+        recalculateTotalAvailableSeats();
     }
 
     public void unReserveSeats(CabinClassEnum cabinClass, int count) {
@@ -120,11 +106,11 @@ public class FlightInstance extends BaseEntity {
 
         int availableSeatsAfterUnReserve = selectedClass.getAvailableSeats() + count;
         if (availableSeatsAfterUnReserve > cabinTotalSeats) {
-            //TODO: Throw some error here, (when finished with testing cancel features)
-            return;
+            throw BookingException.changeFailed();
         }
         selectedClass.setAvailableSeats(availableSeatsAfterUnReserve);
-        recalculateTotalSeats();
+        setTotalBookedSeats(totalBookedSeats - count);
+        recalculateTotalAvailableSeats();
     }
 
     public boolean departureDateIsBetween(LocalDate lowerDate, LocalDate upperDate) {
@@ -141,7 +127,7 @@ public class FlightInstance extends BaseEntity {
         };
     }
 
-    private void recalculateTotalSeats() {
+    private void recalculateTotalAvailableSeats() {
         totalSeatsAvailable = firstClass.getAvailableSeats()
                 + middleClass.getAvailableSeats()
                 + lowerClass.getAvailableSeats();
@@ -216,6 +202,15 @@ public class FlightInstance extends BaseEntity {
 
     public FlightInstance setTotalSeatsAvailable(int totalSeatsAvailable) {
         this.totalSeatsAvailable = totalSeatsAvailable;
+        return this;
+    }
+
+    public int getTotalBookedSeats() {
+        return totalBookedSeats;
+    }
+
+    public FlightInstance setTotalBookedSeats(int totalBookedSeats) {
+        this.totalBookedSeats = totalBookedSeats;
         return this;
     }
 
