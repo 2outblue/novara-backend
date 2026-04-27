@@ -47,6 +47,8 @@ public class FlightInstance extends BaseEntity {
     private LocalDateTime arrivalDate;
     @Column(nullable = false)
     private int totalSeatsAvailable;
+    @Column(nullable = false)
+    private int totalBookedSeats = 0;
 
     @ManyToOne
     private FlightTemplate flightTemplate;
@@ -90,7 +92,8 @@ public class FlightInstance extends BaseEntity {
 
         if (unreservedSeats < count) {throw FlightException.reservationFailed();}
         selectedClass.setAvailableSeats(availableSeats - count);
-        recalculateTotalSeats();
+        setTotalBookedSeats(totalBookedSeats + count);
+        recalculateTotalAvailableSeats();
     }
 
     public void unReserveSeats(CabinClassEnum cabinClass, int count) {
@@ -106,7 +109,8 @@ public class FlightInstance extends BaseEntity {
             throw BookingException.changeFailed();
         }
         selectedClass.setAvailableSeats(availableSeatsAfterUnReserve);
-        recalculateTotalSeats();
+        setTotalBookedSeats(totalBookedSeats - count);
+        recalculateTotalAvailableSeats();
     }
 
     public boolean departureDateIsBetween(LocalDate lowerDate, LocalDate upperDate) {
@@ -123,7 +127,7 @@ public class FlightInstance extends BaseEntity {
         };
     }
 
-    private void recalculateTotalSeats() {
+    private void recalculateTotalAvailableSeats() {
         totalSeatsAvailable = firstClass.getAvailableSeats()
                 + middleClass.getAvailableSeats()
                 + lowerClass.getAvailableSeats();
@@ -198,6 +202,15 @@ public class FlightInstance extends BaseEntity {
 
     public FlightInstance setTotalSeatsAvailable(int totalSeatsAvailable) {
         this.totalSeatsAvailable = totalSeatsAvailable;
+        return this;
+    }
+
+    public int getTotalBookedSeats() {
+        return totalBookedSeats;
+    }
+
+    public FlightInstance setTotalBookedSeats(int totalBookedSeats) {
+        this.totalBookedSeats = totalBookedSeats;
         return this;
     }
 

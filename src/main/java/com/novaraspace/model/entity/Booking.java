@@ -38,9 +38,7 @@ public class Booking extends BaseEntity {
     private String contactMobile;
     private String contactEmail;
 
-    //TODO: MAYBE have a scheduler that cleans up payments connected to bookings if
-    // they are more than 10, since there is no limit on how many flight changes
-    // the user can do, or just limit the amount of flight changes in FE and BE
+
     @OneToOne
     @JoinColumn(name = "payment_id")
 //    @OnDelete(action = OnDeleteAction.SET_NULL)

@@ -36,7 +36,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   servlet:
     multipart:
       max-request-size: 2MB
@@ -53,6 +53,8 @@ app:
   frontend-url: http://localhost:4200
   flight:
     padding-days-on-fetch: 14
+  booking:
+    cleanup-months-back: 24
 
 server:
   port: 8095

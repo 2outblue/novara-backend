@@ -45,5 +45,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     @Query("select count(distinct t.userAuthId) from RefreshToken t where cast(t.createdOn as localdatetime) >= :date and t.revoked = false")
     Integer getCountForActiveUsers(LocalDateTime date);
 
+//    @Transactional
     void deleteAllByExpiryDateBeforeOrRevokedTrue(Instant beforeDate);
 }

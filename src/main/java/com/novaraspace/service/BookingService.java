@@ -187,11 +187,13 @@ public class BookingService {
                     .orElseThrow(BookingException::changeFailed);
             booking.changeReturnFlight(newRetFlight, request.getReturnFlight());
         }
-        //TODO: Normalize prices?
-        Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
         Booking changedBooking = bookingRepository.save(booking);
         User user = currentUserService.getUserEntity().orElse(null);
-        if (user != null && user.isActive() && !user.isDemo()) {
+
+        boolean paymentRecordAllowed = paymentService.checkServiceReferenceOverLimits(booking.getReference());
+        if (user != null && user.isActive() && !user.isDemo() && paymentRecordAllowed) {
+            //TODO: Normalize prices?
+            Payment payment = paymentService.createNewPayment(request.getPayment(), booking.getReference());
             user.addPayment(payment);
         }
         BookingDTO dto = bookingMapper.entityToDTO(changedBooking);

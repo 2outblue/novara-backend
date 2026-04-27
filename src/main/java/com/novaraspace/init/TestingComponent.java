@@ -4,9 +4,8 @@ import com.novaraspace.init.data.TestingDTO;
 import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.repository.PaymentRepository;
 import com.novaraspace.repository.RefreshTokenRepository;
-import com.novaraspace.service.UserService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class TestingComponent {
@@ -21,32 +20,23 @@ public class TestingComponent {
         this.bookingRepository = bookingRepository;
     }
 
-//    private final UserService userService;
-//
-//    public TestingComponent(UserService userService) {
-//        this.userService = userService;
-//    }
-//
-//    private final String[] arr = new String[]{"kelly@mail.com", "doug@e.com", "paAdmin1@novara"};
-//
-//
-//    @PostConstruct
-//    public void init() {
-//        for (String s : arr) {
-//            System.out.println(userService.createAccountNumber(s));
-//        }
-//    }
 
+    @Transactional
     public void deletePayment(TestingDTO tDto) {
-        paymentRepository.deleteJoinTableRowsByReference(tDto.getId());
-        paymentRepository.deleteById(tDto.getId());
+        paymentRepository.deleteUserPaymentsRowsOlderThan(tDto.getDate());
+        paymentRepository.deleteByCreatedAtBeforeAndBookingConfirmIsFalse(tDto.getDate());
     }
 
+    @Transactional
     public void deleteRefreshToken(TestingDTO tDto) {
         refreshTokenRepository.deleteById(tDto.getId());
     }
 
+    @Transactional
     public void deleteBooking(TestingDTO tDto) {
-        bookingRepository.deleteById(tDto.getId());
+//        bookingRepository.deleteById(tDto.getId());
+//        LocalDateTime now = LocalDateTime.now();
+        bookingRepository.deleteUserBookingsRowsBefore(tDto.getDate());
+        bookingRepository.deleteAllByCreatedAtBefore(tDto.getDate());
     }
 }

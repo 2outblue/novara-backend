@@ -41,6 +41,13 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
+    //Probably unnecessary measure to limit amount of payment records as there is no limit
+    // on how many flight changes for example can be done (and therefore payments) for a certain booking.
+    public boolean checkServiceReferenceOverLimits(String serviceReference) {
+        Long count = paymentRepository.countByServiceReference(serviceReference);
+        return count <= 15;
+    }
+
     private Payment createPaymentEntity(NewPaymentDTO dto, String serviceReference) {
         boolean invalidServiceReference = serviceReference == null || serviceReference.isBlank();
         String validServiceReference = invalidServiceReference
