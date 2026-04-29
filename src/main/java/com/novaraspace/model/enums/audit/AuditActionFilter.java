@@ -4,7 +4,7 @@ import java.util.*;
 
 public enum AuditActionFilter {
 
-    ALL, ALL_USER_EVENTS, LOGIN, LOGOUT, REGISTER, PASSWORD_EVENT, BOOKING_EVENT;
+    ALL, ALL_USER_EVENTS, LOGIN, LOGOUT, REGISTER, PASSWORD_EVENT, BOOKING_EVENT, SYSTEM_EVENTS;
 
     public Set<AuditAction> toAuditActions() {
         List<AuditAction> list = switch (this) {
@@ -18,6 +18,7 @@ public enum AuditActionFilter {
             case PASSWORD_EVENT -> Arrays.asList(AuditAction.PASSWORD_RESET_REQUEST, AuditAction.PASSWORD_CHANGE);
             case BOOKING_EVENT -> Arrays.asList(AuditAction.BOOKING_CANCEL, AuditAction.BOOKING_CREATE,
                     AuditAction.BOOKING_FLIGHT_CHANGE);
+            case SYSTEM_EVENTS -> Arrays.asList(AuditAction.SCHEDULED_TASK);
 
         };
         return new HashSet<>(list);

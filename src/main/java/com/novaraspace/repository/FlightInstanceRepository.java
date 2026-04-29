@@ -6,11 +6,14 @@ import com.novaraspace.model.entity.FlightInstance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,5 +45,19 @@ public interface FlightInstanceRepository extends JpaRepository<FlightInstance, 
 """)
     Page<FlightInstance> getFlightsForSchedule(@Param("params")FlightsScheduleFetchParams params, Pageable pageable);
 
+
+    @Transactional
+    @Modifying
+    @Query("""
+    delete from FlightInstance fi where cast(fi.departureDate as localdatetime) <= :arrivalDate
+    and fi.totalBookedSeats <= 0
+    """)
+    int deleteUnbookedFlightsDepartingBefore(LocalDateTime arrivalDate);
+
+
+    @Transactional
+    int deleteAllByArrivalDateBefore(LocalDateTime date);
+
+    Optional<FlightInstance> findTopByOrderByDepartureDateDesc();
 
 }

@@ -1,43 +1,36 @@
 package com.novaraspace.schedulers;
 
-import com.novaraspace.repository.PasswordResetTokenRepository;
+import com.novaraspace.model.enums.audit.AuditScheduledTaskType;
+import com.novaraspace.model.enums.audit.Outcome;
+import com.novaraspace.model.events.ScheduledTaskEvent;
 import com.novaraspace.repository.RefreshTokenRepository;
-import com.novaraspace.repository.VerificationTokenRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Component
 public class AuthCleanupScheduler {
-
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final VerificationTokenRepository verificationTokenRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public AuthCleanupScheduler(PasswordResetTokenRepository passwordResetTokenRepository, RefreshTokenRepository refreshTokenRepository, VerificationTokenRepository verificationTokenRepository) {
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
+    public AuthCleanupScheduler(RefreshTokenRepository refreshTokenRepository, ApplicationEventPublisher eventPublisher) {
         this.refreshTokenRepository = refreshTokenRepository;
-        this.verificationTokenRepository = verificationTokenRepository;
+        this.eventPublisher = eventPublisher;
     }
 
-//TODO: NEeed transactional
-
-//    @Scheduled(cron = "0 0 4 * * *")
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     @Transactional
     public void cleanupInvalidRefreshTokens() {
         Instant now = Instant.now();
-        refreshTokenRepository.deleteAllByExpiryDateBeforeOrRevokedTrue(now);
+        int deletedTokens = refreshTokenRepository.deleteAllByExpiryDateBeforeOrRevokedTrue(now);
+
+        eventPublisher.publishEvent(new ScheduledTaskEvent(
+                AuditScheduledTaskType.REFRESH_TOKEN_CLEANUP,
+                deletedTokens,
+                Outcome.SUCCESS
+        ));
     }
-
-
-//    //    @Scheduled(cron = "0 0 4 * * *")
-//    @Scheduled(cron = "0 * * * * *")
-//    public void cleanupInvalidVerificationTokens() {
-//        Instant now = Instant.now();
-//        verificationTokenRepository.deleteAllByExpiresAtBeforeOrUsedTrue(now);
-//    }
 }

@@ -45,7 +45,7 @@ public class PaymentService {
     // on how many flight changes for example can be done (and therefore payments) for a certain booking.
     public boolean checkServiceReferenceOverLimits(String serviceReference) {
         Long count = paymentRepository.countByServiceReference(serviceReference);
-        return count <= 15;
+        return count <= 10;
     }
 
     private Payment createPaymentEntity(NewPaymentDTO dto, String serviceReference) {

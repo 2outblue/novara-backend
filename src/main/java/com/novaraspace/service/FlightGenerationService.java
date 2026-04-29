@@ -2,6 +2,7 @@ package com.novaraspace.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novaraspace.factory.FlightJSONFactory;
+import com.novaraspace.model.dto.flight.FlightInstanceGenerationParams;
 import com.novaraspace.model.dto.flight.FlightTemplateGenerationRequest;
 import com.novaraspace.model.embedded.CabinClassData;
 import com.novaraspace.model.entity.FlightInstance;
@@ -11,6 +12,9 @@ import com.novaraspace.model.enums.FlightStatus;
 import com.novaraspace.model.enums.VehicleAmenity;
 import com.novaraspace.model.other.FlightGenerationProperties;
 import com.novaraspace.model.other.FlightJSON;
+import com.novaraspace.repository.FlightInstanceRepository;
+import com.novaraspace.repository.FlightTemplateRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -20,21 +24,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FlightGenerationService {
 
+    private final FlightInstanceRepository flightInstanceRepository;
     private FlightGenerationProperties flightProps;
     private final ObjectMapper mapper;
     private final FlightJSONFactory jsonFactory;
+    private final FlightTemplateRepository flightTemplateRepository;
 
-    public FlightGenerationService(ObjectMapper mapper, FlightJSONFactory jsonFactory) {
+
+    public FlightGenerationService(ObjectMapper mapper, FlightJSONFactory jsonFactory, FlightTemplateRepository flightTemplateRepository, FlightInstanceRepository flightInstanceRepository) {
         this.mapper = mapper;
         this.jsonFactory = jsonFactory;
+        this.flightTemplateRepository = flightTemplateRepository;
+        this.flightInstanceRepository = flightInstanceRepository;
 
         this.initFlightProps();
     }
@@ -53,12 +59,11 @@ public class FlightGenerationService {
         return jsonFactory.generateNewFlightJSON(data);
     }
 
-
-    public List<FlightInstance> generateInstancesForTemplate(FlightTemplate template, LocalDate startDate, LocalDate endDate) {
+    public List<FlightInstance> generateInstancesForTemplate(FlightTemplate template, FlightInstanceGenerationParams params) {
         List<FlightInstance> instances = new ArrayList<>();
 
         int[] weeklySchedule = Arrays.stream(template.getWeeklySchedule().split("")).mapToInt(Integer::parseInt).toArray();
-        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+        for (LocalDate date = params.getStartDate(); date.isBefore(params.getEndDate()); date = date.plusDays(1)) {
             int dayOfWeek = date.getDayOfWeek().getValue();
             int currentDaySchedule = weeklySchedule[dayOfWeek - 1];
             if (shouldOperateOnDate(date, currentDaySchedule)) {
@@ -70,7 +75,17 @@ public class FlightGenerationService {
 
     }
 
+    public int generateForAllTemplates(FlightInstanceGenerationParams params) {
+        List<FlightTemplate> templates = flightTemplateRepository.findAll();
 
+        int totalCount = 0;
+        for (FlightTemplate template : templates) {
+            List<FlightInstance> instances = generateInstancesForTemplate(template, params);
+            totalCount += instances.size();
+            flightInstanceRepository.saveAll(instances);
+        }
+        return totalCount;
+    }
 
     private boolean shouldOperateOnDate(LocalDate date, int frequency) {
         if (frequency == 1) {return true;}
@@ -120,7 +135,6 @@ public class FlightGenerationService {
     }
 
     private double[] calculatePrices(Vehicle vehicle, double basePrice) {
-
         Set<VehicleAmenity> amenities = vehicle.getAmenities();
 
         double evaM = amenities.contains(VehicleAmenity.EVA) ? flightProps.getEvaMultiplier() : 1.0;
@@ -155,4 +169,5 @@ public class FlightGenerationService {
         intPrice -= remainder;
         return intPrice;
     }
+
 }

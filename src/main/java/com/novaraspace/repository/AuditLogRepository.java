@@ -18,8 +18,9 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
 
     @Query("""
     select a from AuditLog a where a.timestamp >= :#{#params.startDate}
-    and a.timestamp <= :#{#params.endDate} and a.outcome in :#{#params.outcome.toOutcomes()}
+    and a.timestamp <= :#{#params.endDate}
     and a.action in :#{#params.action.toAuditActions()}
+    and a.outcome in :#{#params.outcome.toOutcomes()}
     and (:#{#params.userId} is null or a.actorId = :#{#params.userId})
     """)
     Page<AuditLog> getPage(@Param("params") AuditLogRequestDTO params, Pageable pageable);

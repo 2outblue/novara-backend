@@ -53,6 +53,8 @@ app:
   frontend-url: http://localhost:4200
   flight:
     padding-days-on-fetch: 14
+    unbooked-cleanup-days-back: 10
+    max-future-departure-days: 200
   booking:
     cleanup-months-back: 24
 

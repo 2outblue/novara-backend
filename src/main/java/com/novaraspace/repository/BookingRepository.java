@@ -25,7 +25,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     void deleteUserBookingsRowsBefore(LocalDateTime date);
 
     @Transactional
-    void deleteAllByCreatedAtBefore(LocalDateTime date);
+    Integer deleteAllByCreatedAtBefore(LocalDateTime date);
 
 //    @Query("""
 //    select b from User u join u.bookings b where u.id = :#{#params.userId}

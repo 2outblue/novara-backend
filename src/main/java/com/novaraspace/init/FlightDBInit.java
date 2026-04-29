@@ -1,6 +1,7 @@
 package com.novaraspace.init;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.novaraspace.model.dto.flight.FlightInstanceGenerationParams;
 import com.novaraspace.model.entity.*;
 import com.novaraspace.model.other.FlightJSON;
 import com.novaraspace.repository.*;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Order(3)
@@ -27,12 +30,20 @@ public class FlightDBInit implements CommandLineRunner {
     private final FlightTemplateRepository flightTemplateRepository;
 
 
+    private Map<Long, Location> locationsMap;
+    private Map<Long, Vehicle> vehiclesMap;
+
     public FlightDBInit(ObjectMapper mapper, LocationRepository locationRepository, VehicleRepository vehicleRepository, FlightGenerationService flightGenerationService, FlightTemplateRepository flightTemplateRepository) {
         this.mapper = mapper;
         this.locationRepository = locationRepository;
         this.vehicleRepository = vehicleRepository;
         this.flightGenerationService = flightGenerationService;
         this.flightTemplateRepository = flightTemplateRepository;
+
+        locationsMap = locationRepository.findAll().stream()
+                .collect(Collectors.toMap(Location::getId, l -> l));
+        vehiclesMap = vehicleRepository.findAll().stream()
+                .collect(Collectors.toMap(Vehicle::getId, v -> v));
     }
 
     @Override
@@ -52,7 +63,8 @@ public class FlightDBInit implements CommandLineRunner {
         List<FlightTemplate> templatesWithInstances1 = flightsData.stream()
                 .map(this::jsonToTemplate)
                 .map(t -> {
-                    List<FlightInstance> instances = flightGenerationService.generateInstancesForTemplate(t, startDate, endDate);
+                    List<FlightInstance> instances = flightGenerationService
+                            .generateInstancesForTemplate(t, new FlightInstanceGenerationParams(startDate, endDate));
                     return t.setInstances(instances);
                 }).toList();
         flightTemplateRepository.saveAll(templatesWithInstances1);
@@ -60,9 +72,13 @@ public class FlightDBInit implements CommandLineRunner {
     }
 
     private FlightTemplate jsonToTemplate(FlightJSON json) {
-        Location departureLocation = locationRepository.findById(json.getDepartureLocationId()).orElseThrow();
-        Location arrivalLocation = locationRepository.findById(json.getArrivalLocationId()).orElseThrow();
-        Vehicle vehicle = vehicleRepository.findById(json.getVehicleId()).orElseThrow();
+        Location departureLocation = locationsMap.get(json.getDepartureLocationId());
+        Location arrivalLocation = locationsMap.get(json.getArrivalLocationId());
+        Vehicle vehicle = vehiclesMap.get(json.getVehicleId());
+
+        if (departureLocation == null || arrivalLocation == null || vehicle == null) {
+            throw new RuntimeException("Could not convert Flight data to FlightTemplate");
+        }
 
         return new FlightTemplate()
                 .setPublicIdPrefix(json.getPublicIdPrefix())

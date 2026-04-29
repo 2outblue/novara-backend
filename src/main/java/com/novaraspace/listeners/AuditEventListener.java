@@ -131,14 +131,25 @@ public class AuditEventListener {
         logRepository.save(log);
     }
 
+    @EventListener
+    public void handleScheduledTaskEvent(ScheduledTaskEvent e) {
+        String details = e.type() + " records affected: " + e.count();
+
+        AuditLog log = new AuditLog()
+                .setActorRole(AuditRole.SYSTEM)
+                .setAction(AuditAction.SCHEDULED_TASK)
+                .setTargetType(AuditTargetType.MAINTENANCE)
+                .setOutcome(e.outcome())
+                .setDetails(details);
+        logRepository.save(log);
+    }
+
 
     private AuditRole determineAuditRole(Set<UserRole> userRoles) {
         if (userRoles.contains(UserRole.ADMIN) || userRoles.contains(UserRole.PUBLIC_ADMIN)) {
             return AuditRole.ADMIN;
         }
-//        if (userRoles.contains(UserRole.USER) && !userRoles.contains(UserRole.ADMIN)) {
-//            return AuditRole.USER;
-//        }
+
         return AuditRole.USER;
     }
 }

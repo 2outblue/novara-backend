@@ -36,7 +36,7 @@ public class FlightTemplate extends BaseEntity {
     @Column(nullable = false, length = 7)
     private String weeklySchedule;
 
-    @OneToMany(mappedBy = "flightTemplate", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flightTemplate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FlightInstance> instances;
 
     public String getPublicIdPrefix() {

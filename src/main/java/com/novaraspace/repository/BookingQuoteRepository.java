@@ -12,5 +12,5 @@ public interface BookingQuoteRepository extends JpaRepository<BookingQuote, Long
 
     Optional<BookingQuote> findByReference(String reference);
 
-    void deleteAllByExpiresAtBefore(LocalDateTime date);
+    Integer deleteAllByExpiresAtBefore(LocalDateTime date);
 }

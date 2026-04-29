@@ -46,5 +46,5 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     Integer getCountForActiveUsers(LocalDateTime date);
 
 //    @Transactional
-    void deleteAllByExpiryDateBeforeOrRevokedTrue(Instant beforeDate);
+    Integer deleteAllByExpiryDateBeforeOrRevokedTrue(Instant beforeDate);
 }
