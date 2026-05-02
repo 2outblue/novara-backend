@@ -6,4 +6,5 @@ public enum AuditScheduledTaskType {
     REFRESH_TOKEN_CLEANUP,
     BOOKING_CLEANUP,
     BOOKING_QUOTE_CLEANUP,
+    UNVERIFIED_USER_CLEANUP
 }

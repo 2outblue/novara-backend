@@ -131,8 +131,8 @@ public class BookingService {
     public BookingDTO cancelBooking(BookingSearchParams params) {
         //TODO: Maybe make 'reverse' payments of refundable amount to show them as refunds on user account?
         Booking booking = findValidBooking(params);
-        FlightInstance departureFlight = booking.getDepartureFlight();
-        if (!departureFlight.departsAtLeast3HoursFromNow() || booking.isCancelled()) {
+//        FlightInstance departureFlight = booking.getDepartureFlight();
+        if (!booking.canModify()) {
             throw BookingException.changeFailed();
         }
         booking.cancel();
@@ -173,6 +173,8 @@ public class BookingService {
     @Transactional
     public BookingDTO changeFlights(ChangeFlightsRequest request) {
         Booking booking = findValidBooking(request.getBookingParams());
+        if (!booking.canModify()) { throw BookingException.changeFailed(); }
+
         boolean validChange = changeFlightValidator.validateFlightChange(booking, request);
         if (!validChange) {throw BookingException.changeFailed();}
 

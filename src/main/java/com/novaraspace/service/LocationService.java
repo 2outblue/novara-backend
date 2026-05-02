@@ -7,6 +7,7 @@ import com.novaraspace.model.enums.FlightRegion;
 import com.novaraspace.model.exception.FailedOperationException;
 import com.novaraspace.model.mapper.LocationMapper;
 import com.novaraspace.repository.LocationRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class LocationService {
     }
 
 
-    // TODO: Cache this
+    @Cacheable(value = "locationGroups", unless = "#result == null || #result.isEmpty()")
     public List<LocationGroupDTO> getAllLocationGroups() {
         List<Location> locations = locationRepository.findAll();
         if (locations.isEmpty()) {throw new FailedOperationException();}
@@ -48,9 +49,7 @@ public class LocationService {
         return locationGroups.values().stream().toList();
     }
 
-    //TODO: Cache this OR better fetch all locations in @PostConstruct and then have them
-    // in memory as long as the app is alive - and just use this collection of locations
-    // instead of the repository in every other method as well
+    @Cacheable(value = "location", key = "#code", unless = "#result == null")
     public Location getLocationByCode(String code) {
         return locationRepository
                 .findByCode(code)

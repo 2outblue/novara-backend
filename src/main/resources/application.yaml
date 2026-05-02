@@ -2,10 +2,13 @@ spring:
   config:
     import: classpath:rate-limit.yaml
   cache:
-    cache-names:
-      - buckets
-    caffeine:
-      spec: maximumSize=5000,expireAfterAccess=600s,
+#    type: jcache
+#    jcache:
+#      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+#    cache-names:
+#      - buckets
+#    caffeine:
+#      spec: maximumSize=5000,expireAfterAccess=600s,
   mail:
     host: smtp.mailersend.net
     port: 587
@@ -35,6 +38,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
+        generate_statistics: false
     hibernate:
       ddl-auto: update
   servlet:
@@ -57,6 +61,9 @@ app:
     max-future-departure-days: 200
   booking:
     cleanup-months-back: 24
+  user:
+    max-activation-attempts: 4
+    unverified-cleanup-days: 10
 
 server:
   port: 8095
@@ -64,6 +71,7 @@ server:
 logging:
   level:
     org.hibernate.SQL: ERROR
+    org.hibernate.stat: DEBUG
     org.hibernate.arm.jdbc.bind: ERROR
     org.springframework: WARN
     org.springframework.boot.actuate: ERROR

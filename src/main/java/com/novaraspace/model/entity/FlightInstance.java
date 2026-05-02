@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_departureDate", columnList = "departure_date"),
+        @Index(name = "idx_templateId_departureDate", columnList = "flight_template_id, departure_date")
+})
 public class FlightInstance extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String publicId;

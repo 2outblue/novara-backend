@@ -1,13 +1,9 @@
 package com.novaraspace.repository;
 
-import com.novaraspace.model.domain.UserBookingsQuery;
 import com.novaraspace.model.entity.Booking;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -21,11 +17,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM users_bookings WHERE booking_id IN (SELECT id FROM booking WHERE created_at < :date)", nativeQuery = true)
+    @Query(value = "DELETE FROM users_bookings WHERE booking_id IN (SELECT id FROM booking WHERE created_at < :date AND demo = false)", nativeQuery = true)
     void deleteUserBookingsRowsBefore(LocalDateTime date);
 
     @Transactional
-    Integer deleteAllByCreatedAtBefore(LocalDateTime date);
+    Integer deleteAllByDemoIsFalseAndCreatedAtBefore(LocalDateTime date);
 
 //    @Query("""
 //    select b from User u join u.bookings b where u.id = :#{#params.userId}

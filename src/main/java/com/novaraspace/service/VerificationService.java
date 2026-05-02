@@ -1,6 +1,5 @@
 package com.novaraspace.service;
 
-import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.exception.FailedOperationException;
 import com.novaraspace.model.exception.VerificationException;
@@ -25,30 +24,48 @@ public class VerificationService {
 
     public VerificationToken getEntityByLinkTokenOrCode(String linkOrCode) {
         if (linkOrCode.length() <= 7 && linkOrCode.matches("\\d+")) {
-            return verificationTokenRepository.findByCode(linkOrCode).orElseThrow(VerificationException::failed);
+            return verificationTokenRepository.findByCode(linkOrCode).orElse(null);
         }
-        return verificationTokenRepository.findByLinkToken(linkOrCode).orElseThrow(VerificationException::failed);
+        return verificationTokenRepository.findByLinkToken(linkOrCode).orElse(null);
     }
 
-    public VerificationToken generateVerificationToken(String email) {
-        //TODO: Maybe hash these with the passwordEncoder ?
-        //TODO: test this deleteAllByUserEmail
-        verificationTokenRepository.deleteAllByUserEmail(email);
+    public VerificationToken generateTokenForUserRegister(String email) {
+        deleteAllExistingTokensForEmail(email);
 
-        VerificationToken verificationToken = new VerificationToken();
-        SecureRandom random = new SecureRandom();
-        byte[] randomBytes = new byte[32];
-        random.nextBytes(randomBytes);
-        String linkToken = java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+        String linkToken = generateLinkToken();
         String code = generateVerificationCode();
-
-        return verificationToken
+        return new VerificationToken()
                 .setLinkToken(linkToken)
                 .setCode(code)
                 .setUserEmail(email)
                 .setCreatedAt(Instant.now())
                 .setExpiresAt(Instant.now().plusSeconds(verificationTokenExpiryHours * 60 * 60))
                 .setUsed(false);
+    }
+
+    public VerificationToken generateTokenForRetryActivation(VerificationToken existingToken) {
+        String linkToken = generateLinkToken();
+        String code = generateVerificationCode();
+        return new VerificationToken()
+                .setLinkToken(linkToken)
+                .setCode(code)
+                .setUserEmail(existingToken.getUserEmail())
+                .setCreatedAt(Instant.now())
+                .setExpiresAt(Instant.now().plusSeconds(verificationTokenExpiryHours * 60 * 60))
+                .setUsed(false)
+                .setSerialNumber(existingToken.getSerialNumber() + 1);
+    }
+
+    public void deleteAllExistingTokensForEmail(String email) {
+        verificationTokenRepository.deleteAllByUserEmail(email);
+        verificationTokenRepository.flush();
+    }
+
+    private String generateLinkToken() {
+        SecureRandom random = new SecureRandom();
+        byte[] randomBytes = new byte[32];
+        random.nextBytes(randomBytes);
+        return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
 
 

@@ -12,13 +12,17 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.sql.Types.VARCHAR;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_lastLogin", columnList = "last_login_at"),
+        @Index(name = "idx_creationDate", columnList = "created_at")
+})
 public class User extends BaseEntity {
 
 
@@ -30,6 +34,8 @@ public class User extends BaseEntity {
     private AccountStatus status;
     private Instant lastLoginAt;
     private Instant deletedAt;
+    private LocalDateTime lastResetStamp;
+    private int recentResetCount = 0;
     private boolean isDemo = false;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -132,6 +138,25 @@ public class User extends BaseEntity {
         return status.equals(AccountStatus.ACTIVE);
     }
 
+    public boolean acquireResetPasswordSlot() {
+        if (recentResetCount <= 0) {
+            lastResetStamp = LocalDateTime.now();
+        }
+
+        if (recentResetCount < 3) {
+            recentResetCount++;
+            return true;
+        };
+
+        LocalDateTime resetWindowLimit = LocalDateTime.now().minusHours(30);
+        if (lastResetStamp == null || lastResetStamp.isBefore(resetWindowLimit)) {
+            lastResetStamp = LocalDateTime.now();
+            recentResetCount = 1;
+            return true;
+        }
+        return false;
+    }
+
     public String getPublicId() {
         return publicId;
     }
@@ -185,6 +210,24 @@ public class User extends BaseEntity {
         this.deletedAt = deletedAt;
         return this;
     }
+
+//    public LocalDateTime getLastResetStamp() {
+//        return lastResetStamp;
+//    }
+//
+//    public User setLastResetStamp(LocalDateTime lastResetStamp) {
+//        this.lastResetStamp = lastResetStamp;
+//        return this;
+//    }
+//
+//    public int getRecentResetCount() {
+//        return recentResetCount;
+//    }
+//
+//    public User setRecentResetCount(int recentResetCount) {
+//        this.recentResetCount = recentResetCount;
+//        return this;
+//    }
 
     public boolean isDemo() {
         return isDemo;

@@ -4,7 +4,6 @@ import com.novaraspace.model.dto.auth.*;
 import com.novaraspace.model.dto.user.PasswordResetRequestDTO;
 import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
-import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.security.MinResponseTime;
 import com.novaraspace.service.AuthService;
 import com.novaraspace.service.EmailService;
@@ -48,10 +47,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userDto) {
-        VerificationTokenDTO verificationDTO = authService.registerUser(userDto);
-        if (emailVerificationEnabled) {
-            emailService.sendActivationEmail(verificationDTO);
-        }
+//        VerificationTokenDTO verificationDTO = authService.registerUser(userDto);
+        authService.registerUser(userDto);
+//        if (emailVerificationEnabled) {
+//            emailService.sendActivationEmail(verificationDTO);
+//        }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -110,11 +110,12 @@ public class AuthController {
     @MinResponseTime(500)
     @PostMapping("/verify/new")
     public ResponseEntity<Void> generateNewVerification(@Valid @RequestBody EmailDTO emailDTO) {
-        VerificationTokenDTO verificationDTO = authService.generateNewVerification(emailDTO.getEmail());
-        boolean emailSent = emailService.sendActivationEmail(verificationDTO);
-        if (!emailSent) {
-            throw VerificationException.failed();
-        }
+//        VerificationTokenDTO verificationDTO = authService.generateNewVerification(emailDTO.getEmail());
+        authService.retryAccountActivation(emailDTO.getEmail());
+//        boolean emailSent = emailService.sendActivationEmail(verificationDTO);
+//        if (!emailSent) {
+//            throw VerificationException.failed();
+//        }
         return ResponseEntity.ok().build();
     }
 

@@ -59,6 +59,8 @@ public class AuthService {
     private long refreshExpiryHours;
     @Value("${app.enable-email-verification}")
     private boolean emailVerificationEnabled;
+    @Value("${app.user.max-activation-attempts}")
+    private int maxUserActivationAttempts;
 
     private final JwtEncoder jwtEncoder;
     private final UserService userService;
@@ -86,19 +88,22 @@ public class AuthService {
 
 
     @Transactional
-    public VerificationTokenDTO registerUser(UserRegisterDTO dto) {
+    public void registerUser(UserRegisterDTO dto) {
 //        User newUser = userMapper.registerToUser(dto); //Passwords are hashed in the mapper
         User newUser = userService.createUser(dto);
-        VerificationToken verificationToken = verificationService.generateVerificationToken(dto.getEmail());
+        VerificationToken verificationToken = verificationService.generateTokenForUserRegister(dto.getEmail());
         if (emailVerificationEnabled) {
             newUser.setVerification(verificationToken);
+            VerificationTokenDTO verificationDTO = new VerificationTokenDTO(
+                    newUser.getEmail(), verificationToken.getCode(), verificationToken.getLinkToken());
+            emailService.sendActivationEmail(verificationDTO);
         }
 //        userService.persistUser(newUser);
         eventPublisher.publishEvent(new UserRegisterEvent(newUser.getId(), newUser.getEmail()));
-        return new VerificationTokenDTO()
-                .setEmail(newUser.getEmail())
-                .setCode(verificationToken.getCode())
-                .setLinkToken(verificationToken.getLinkToken());
+//        return new VerificationTokenDTO()
+//                .setEmail(newUser.getEmail())
+//                .setCode(verificationToken.getCode())
+//                .setLinkToken(verificationToken.getLinkToken());
     }
 
     @Transactional
@@ -127,32 +132,44 @@ public class AuthService {
         return createRefreshTokenCookie("", true);
     }
 
-    //TODO: Test if generating old verification removes the old one
+    @Transactional
     public void verifyAccountByLinkTokenOrCode(String linkOrCode) {
         VerificationToken verification = verificationService.getEntityByLinkTokenOrCode(linkOrCode);
-        if (verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
-            throw VerificationException.failed();
+        if (verification == null || verification.getExpiresAt().isBefore(Instant.now()) || verification.isUsed()) {
+            return;
         }
-        User user = userService.getEntityByEmail(verification.getUserEmail()).orElseThrow(VerificationException::failed);
-        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.failed();}
-        userService.activateUserAccount(verification.getUserEmail());
+        User user = userService.getEntityByEmail(verification.getUserEmail()).orElse(null);
+        if (user == null || !user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {
+            return;
+        }
+        user.setStatus(AccountStatus.ACTIVE);
+        user.setVerification(null);
     }
 
 
 
-    public VerificationTokenDTO generateNewVerification(String email) {
-        // TODO: Could return a 200 here and in verifyAccountByLinkTokenOrCode() ?
-        //  or just surround the controller method in try-catch..?
+    @Transactional
+    public void retryAccountActivation(String email) {
         if (!emailVerificationEnabled) {throw new FailedOperationException();}
 
-        User user = userService.getEntityByEmail(email).orElseThrow(VerificationException::failed);
-        if (!user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {throw VerificationException.failed();}
-        VerificationToken newVerification = verificationService.generateVerificationToken(email);
-        userService.updateUserVerification(email, newVerification);
-        return new VerificationTokenDTO()
-                .setEmail(user.getEmail())
-                .setCode(newVerification.getCode())
-                .setLinkToken(newVerification.getLinkToken());
+        User user = userService.getEntityByEmail(email).orElse(null);
+        if (user == null || !user.getStatus().equals(AccountStatus.PENDING_ACTIVATION)) {
+            return;
+        }
+        VerificationToken existingVerification = user.getVerification();
+        if (existingVerification == null || existingVerification.getSerialNumber() > maxUserActivationAttempts) {
+            return;
+        }
+
+        VerificationToken newVerification = verificationService.generateTokenForRetryActivation(existingVerification);
+        boolean emailSend = emailService.sendActivationEmail(new VerificationTokenDTO(
+                user.getEmail(), newVerification.getCode(), newVerification.getLinkToken()
+        ));
+        if (emailSend) {
+            //TODO: Definitely test this
+            verificationService.deleteAllExistingTokensForEmail(user.getEmail());
+            user.setVerification(newVerification);
+        }
     }
 
     @Transactional
@@ -161,6 +178,9 @@ public class AuthService {
         if (user == null || !user.isActive() || user.isDemo()) {
             return;
         }
+        boolean resetPossible = user.acquireResetPasswordSlot();
+        if (!resetPossible) { return; }
+
         PasswordResetToken token = this.passwordResetService.generateNewToken(user.getAuthId());
         PassResetEmailParams emailParams = new PassResetEmailParams(
                 email,

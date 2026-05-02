@@ -7,7 +7,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Range;
 
 public class UserBookingsRequestDTO {
-    @Max(100)
+    @Max(40)
     @PositiveOrZero
     private int page;
     @Range(min = 1, max = 30)

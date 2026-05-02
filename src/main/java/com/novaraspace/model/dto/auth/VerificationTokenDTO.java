@@ -6,6 +6,14 @@ public class VerificationTokenDTO {
     private String code;
     private String linkToken;
 
+    public VerificationTokenDTO() {}
+
+    public VerificationTokenDTO(String email, String code, String linkToken) {
+        this.email = email;
+        this.code = code;
+        this.linkToken = linkToken;
+    }
+
     public String getEmail() {
         return email;
     }

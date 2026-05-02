@@ -4,9 +4,6 @@ import com.novaraspace.model.dto.flight.FlightReserveDTO;
 import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.model.exception.BookingException;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,6 +43,7 @@ public class Booking extends BaseEntity {
 
     private LocalDateTime createdAt;
     private boolean cancelled = false;
+    private boolean demo = false;
 
     public double getTotalPrice() {
         double servicesPrice = extraServices.stream()
@@ -61,6 +59,12 @@ public class Booking extends BaseEntity {
                 : departureFlightPrice;
         double flightsPrice = validDeparturePrice + validReturnPrice;
         return servicesPrice + flightsPrice;
+    }
+
+    public boolean canModify() {
+        return !isCancelled()
+                && !isDemo()
+                && departureFlight.departsAtLeast3HoursFromNow();
     }
 
     public void cancel() {
@@ -239,7 +243,11 @@ public class Booking extends BaseEntity {
         return cancelled;
     }
 
-//    public Booking setCancelled(boolean cancelled) {
+    public boolean isDemo() {
+        return demo;
+    }
+
+    //    public Booking setCancelled(boolean cancelled) {
 //        this.cancelled = cancelled;
 //        return this;
 //    }

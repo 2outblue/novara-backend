@@ -25,6 +25,8 @@ public class VerificationToken extends BaseEntity {
     private Instant expiresAt;
     @Column(nullable = false)
     private boolean used;
+    @Column(nullable = false)
+    private int serialNumber = 1;
 
     public String getLinkToken() {
         return linkToken;
@@ -86,6 +88,15 @@ public class VerificationToken extends BaseEntity {
 
     public VerificationToken setUsed(boolean used) {
         this.used = used;
+        return this;
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
+    }
+
+    public VerificationToken setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
         return this;
     }
 }

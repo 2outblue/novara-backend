@@ -6,6 +6,8 @@ import com.novaraspace.model.enums.audit.AuditRole;
 import com.novaraspace.model.enums.audit.AuditTargetType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.Instant;
@@ -13,6 +15,9 @@ import java.time.Instant;
 import static java.sql.Types.VARCHAR;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_timestamp_action_outcome", columnList = "timestamp, action, outcome")
+})
 public class AuditLog extends BaseEntity {
     @Column(nullable = false)
     private Instant timestamp;

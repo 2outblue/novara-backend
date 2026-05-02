@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class FlightScheduleRequestDTO {
     @Max(100)
@@ -17,6 +18,7 @@ public class FlightScheduleRequestDTO {
     @NotBlank
     @Size(min = 3, max = 4)
     private String arrivalLocationCode;
+    @FutureOrPresent
     private LocalDate departureDate;
 
     public int getPage() {
@@ -62,5 +64,18 @@ public class FlightScheduleRequestDTO {
     public FlightScheduleRequestDTO setDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlightScheduleRequestDTO that = (FlightScheduleRequestDTO) o;
+        return page == that.page && size == that.size && Objects.equals(departureLocationCode, that.departureLocationCode) && Objects.equals(arrivalLocationCode, that.arrivalLocationCode) && Objects.equals(departureDate, that.departureDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(page, size, departureLocationCode, arrivalLocationCode, departureDate);
     }
 }

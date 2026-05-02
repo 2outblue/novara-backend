@@ -16,7 +16,7 @@ bucket4j:
       rate-limits:
         - cache-key: '"global-total"'
           bandwidths:
-            - capacity: 1000
+            - capacity: 5000
               time: 4
               unit: minutes
               refill-speed: greedy

@@ -12,6 +12,7 @@ import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.repository.FlightTemplateRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,9 @@ import java.util.Optional;
 public class FlightService {
 
     private final int availabilityMonthsFromToday = 6;
+
+    @Value("${app.flight.max-future-departure-days}")
+    private int maxFutureDepartureDays;
 
     @Value("${app.flight.padding-days-on-fetch}")
     private int paddingRange;
@@ -46,6 +50,9 @@ public class FlightService {
     }
 
 
+    @Cacheable(value = "routeAvailability",
+            key = "#departureCode + '_' + #arrivalCode",
+            unless = "#result == null || #result.isEmpty()")
     public List<LocalDate> getRouteAvailability(String departureCode, String arrivalCode) {
         long dptId = locationService.getLocationByCode(departureCode).getId();
         long arrId = locationService.getLocationByCode(arrivalCode).getId();
@@ -57,7 +64,7 @@ public class FlightService {
         if (matchingTemplates.isEmpty()) {throw FlightException.noAvailability();}
 
         LocalDate availabilityStartDate = LocalDate.now().plusDays(1);
-        LocalDate endDate = availabilityStartDate.plusMonths(availabilityMonthsFromToday);
+        LocalDate endDate = availabilityStartDate.plusDays(maxFutureDepartureDays);
 
         return flightInstanceRepository.findDistinctAvailabilityDates(availabilityStartDate, endDate, matchingTemplates);
     }
@@ -108,6 +115,9 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "flightSchedule",
+            key = "#request",
+            unless = "#result == null || #result.content.isEmpty()")
     public PageResponse<FlightScheduleDTO> getFlightsScheduleResponse(FlightScheduleRequestDTO request) {
         if (request.getDepartureDate() == null) {
             request.setDepartureDate(LocalDate.now());

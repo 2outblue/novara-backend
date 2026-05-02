@@ -4,6 +4,7 @@ import com.novaraspace.model.dto.destination.DestinationDTO;
 import com.novaraspace.model.entity.Destination;
 import com.novaraspace.model.mapper.DestinationMapper;
 import com.novaraspace.repository.DestinationRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,9 @@ public class DestinationService {
         this.destinationMapper = destinationMapper;
     }
 
-    //TODO: Cache this
+
     @Transactional
+    @Cacheable(value = "destinations", unless = "#result == null || #result.isEmpty()")
     public List<DestinationDTO> getAllDestinations() {
         return destinationRepository.findAll().stream()
                 .map(destinationMapper::toDTO).toList();

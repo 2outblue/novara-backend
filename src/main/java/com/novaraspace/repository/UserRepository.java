@@ -8,6 +8,7 @@ import com.novaraspace.model.dto.admin.UserControlSearchDTO;
 import com.novaraspace.model.dto.admin.UsersStatusRequestDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.User;
+import com.novaraspace.model.enums.AccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByAuthId(String authId);
     Optional<User> findByEmail(String email);
     Optional<User> findByAuthId(String authId);
-
 
     @Query("""
     select b from User u join u.bookings b where u.id = :#{#params.userId}
@@ -81,4 +81,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.status = :#{#params.status} where u.id = :#{#params.id}")
     @Transactional
     int updateUserStatus(@Param("params") ChangeUserStatusRequestDTO params);
+
+    int deleteAllByCreatedAtBeforeAndStatusIs(Instant createdAtBefore, AccountStatus status);
 }

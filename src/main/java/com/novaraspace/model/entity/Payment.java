@@ -1,10 +1,15 @@
 package com.novaraspace.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_serviceReference", columnList = "service_reference")
+})
 public class Payment extends BaseEntity{
     private String reference;
     private String serviceReference;

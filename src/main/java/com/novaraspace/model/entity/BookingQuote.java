@@ -1,12 +1,17 @@
 package com.novaraspace.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 //TODO: need a scheduled task to clean these up if expired
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_reference", columnList = "reference")
+})
 public class BookingQuote extends BaseEntity {
     private String reference;
     private LocalDateTime expiresAt;

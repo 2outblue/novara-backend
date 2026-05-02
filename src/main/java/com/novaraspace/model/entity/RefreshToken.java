@@ -2,6 +2,8 @@ package com.novaraspace.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.Instant;
@@ -11,6 +13,11 @@ import java.util.UUID;
 import static java.sql.Types.VARCHAR;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_familyId", columnList = "family_id"),
+        @Index(name = "idx_userAuthId", columnList = "user_auth_id"),
+        @Index(name = "idx_creationDate", columnList = "created_on")
+})
 public class RefreshToken extends BaseEntity{
     private LocalDateTime createdOn;
     @Column(nullable = false, unique = true)

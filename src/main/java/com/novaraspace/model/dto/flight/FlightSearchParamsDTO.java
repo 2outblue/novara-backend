@@ -3,6 +3,7 @@ package com.novaraspace.model.dto.flight;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class FlightSearchParamsDTO {
     @NotBlank
@@ -78,5 +79,18 @@ public class FlightSearchParamsDTO {
     public FlightSearchParamsDTO setReturnFlight(boolean returnFlight) {
         this.returnFlight = returnFlight;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlightSearchParamsDTO that = (FlightSearchParamsDTO) o;
+        return totalPaxCount == that.totalPaxCount && returnFlight == that.returnFlight && Objects.equals(departureCode, that.departureCode) && Objects.equals(arrivalCode, that.arrivalCode) && Objects.equals(departureDate, that.departureDate) && Objects.equals(returnDate, that.returnDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(departureCode, arrivalCode, departureDate, returnDate, totalPaxCount, returnFlight);
     }
 }

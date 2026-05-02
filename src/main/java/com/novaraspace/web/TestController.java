@@ -5,6 +5,7 @@ import com.novaraspace.init.data.TestingDTO;
 import com.novaraspace.model.dto.flight.AvailableFlightDTO;
 import com.novaraspace.model.dto.flight.FlightInstanceGenerationParams;
 import com.novaraspace.model.entity.FlightInstance;
+import com.novaraspace.schedulers.AuthCleanupScheduler;
 import com.novaraspace.service.FlightGenerationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,12 @@ public class TestController {
     private final TestingComponent testingComponent;
     private final FlightGenerationService flightGenerationService;
 
-    public TestController(TestingComponent testingComponent, FlightGenerationService flightGenerationService) {
+    private final AuthCleanupScheduler authCleanupScheduler;
+
+    public TestController(TestingComponent testingComponent, FlightGenerationService flightGenerationService, AuthCleanupScheduler authCleanupScheduler) {
         this.testingComponent = testingComponent;
         this.flightGenerationService = flightGenerationService;
+        this.authCleanupScheduler = authCleanupScheduler;
     }
 
     @GetMapping
@@ -70,5 +74,11 @@ public class TestController {
     public ResponseEntity<AvailableFlightDTO> getLatestFlight() {
         AvailableFlightDTO fi = testingComponent.getLatestFlight();
         return ResponseEntity.ok(fi);
+    }
+
+    @PostMapping("/delete-users")
+    public ResponseEntity<Void> deleteUsers(@RequestBody TestingDTO tDto) {
+        authCleanupScheduler.cleanupUnverifiedAccounts();
+        return ResponseEntity.ok().build();
     }
 }

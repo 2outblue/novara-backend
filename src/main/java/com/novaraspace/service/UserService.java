@@ -65,18 +65,18 @@ public class UserService {
         this.eventPublisher = eventPublisher;
     }
 
-    @Transactional
-    public void activateUserAccount(String userEmail) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(VerificationException::failed);
-        user.setStatus(AccountStatus.ACTIVE);
-        user.setVerification(null);
-    }
+//    @Transactional
+//    public void activateUserAccount(String userEmail) {
+//        User user = userRepository.findByEmail(userEmail).orElseThrow(VerificationException::failed);
+//        user.setStatus(AccountStatus.ACTIVE);
+//        user.setVerification(null);
+//    }
 
-    @Transactional
-    public void updateUserVerification(String email, VerificationToken verification) {
-        User user = userRepository.findByEmail(email).orElseThrow(VerificationException::failed);
-        user.setVerification(verification);
-    }
+//    @Transactional
+//    public void updateUserVerification(String email, VerificationToken verification) {
+//        User user = userRepository.findByEmail(email).orElseThrow(VerificationException::failed);
+//        user.setVerification(verification);
+//    }
 
     @Transactional
     public void setLastLoginNow(String email) {

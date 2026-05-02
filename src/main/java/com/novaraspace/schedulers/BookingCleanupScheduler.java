@@ -35,7 +35,7 @@ public class BookingCleanupScheduler {
         LocalDateTime cleanUpDate = LocalDateTime.now().minusMonths(cleanupMonthsBack);
 
         bookingRepository.deleteUserBookingsRowsBefore(cleanUpDate);
-        int deletedBookings = bookingRepository.deleteAllByCreatedAtBefore(cleanUpDate);
+        int deletedBookings = bookingRepository.deleteAllByDemoIsFalseAndCreatedAtBefore(cleanUpDate);
 
         eventPublisher.publishEvent(new ScheduledTaskEvent(
                 AuditScheduledTaskType.BOOKING_CLEANUP,

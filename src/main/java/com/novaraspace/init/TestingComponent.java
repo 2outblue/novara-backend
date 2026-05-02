@@ -8,6 +8,8 @@ import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.repository.PaymentRepository;
 import com.novaraspace.repository.RefreshTokenRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,10 +50,11 @@ public class TestingComponent {
 //        bookingRepository.deleteById(tDto.getId());
 //        LocalDateTime now = LocalDateTime.now();
         bookingRepository.deleteUserBookingsRowsBefore(tDto.getDate());
-        bookingRepository.deleteAllByCreatedAtBefore(tDto.getDate());
+        bookingRepository.deleteAllByDemoIsFalseAndCreatedAtBefore(tDto.getDate());
     }
 
     @Transactional
+    @CacheEvict(value = "routeAvailability", allEntries = true)
     public void deleteFlights(TestingDTO tDto) {
         int deletedFLights = flightInstanceRepository.deleteUnbookedFlightsDepartingBefore(tDto.getDate());
         System.out.println("DELETED FLIGHT RECORDS:");
@@ -59,6 +62,7 @@ public class TestingComponent {
     }
 
     @Transactional
+    @CacheEvict(value = "routeAvailability", allEntries = true)
     public void deleteBookedFlights(TestingDTO tDto) {
         int deletedFlights = flightInstanceRepository.deleteAllByArrivalDateBefore(tDto.getDate());
         System.out.println("DELETED TOTAL FLIGHT RECORDS:");
@@ -70,6 +74,7 @@ public class TestingComponent {
         Optional<FlightInstance> fi = flightInstanceRepository.findTopByOrderByDepartureDateDesc();
         return fi.map(flightMapper::instanceToAvailableFlightDTO).orElse(null);
     }
+
 
 //    @Transactional
 //    public void cleanUpNonBookedFlights() {

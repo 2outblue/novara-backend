@@ -15,6 +15,7 @@ import com.novaraspace.model.other.FlightJSON;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.repository.FlightTemplateRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,7 @@ public class FlightGenerationService {
 
     }
 
+    @CacheEvict(value = {"routeAvailability", "flightSchedule"}, allEntries = true)
     public int generateForAllTemplates(FlightInstanceGenerationParams params) {
         List<FlightTemplate> templates = flightTemplateRepository.findAll();
 

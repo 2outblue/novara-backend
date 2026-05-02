@@ -5,6 +5,7 @@ import com.novaraspace.model.enums.audit.Outcome;
 import com.novaraspace.model.events.ScheduledTaskEvent;
 import com.novaraspace.repository.FlightInstanceRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class FlightCleanupScheduler {
 
     @Transactional
     @Scheduled(cron = "0 0 4 * * MON")
+    @CacheEvict(value = "routeAvailability", allEntries = true)
     public void cleanUpNonBookedFlights() {
         LocalDateTime cleanupDate = LocalDateTime.now().minusDays(unbookedFlightsCleanupDaysBack);
         int deletedFlights = flightInstanceRepository.deleteUnbookedFlightsDepartingBefore(cleanupDate);
@@ -42,6 +44,7 @@ public class FlightCleanupScheduler {
 
     @Transactional
     @Scheduled(cron = "0 0 4 3 * ?")
+    @CacheEvict(value = "routeAvailability", allEntries = true)
     public void cleanUpBookedFlights() {
         //Delete booked flights which won't have FK constraint violation as the bookings
         // with which they are associated were already deleted.

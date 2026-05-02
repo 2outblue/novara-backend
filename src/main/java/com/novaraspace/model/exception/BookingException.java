@@ -33,6 +33,10 @@ public class BookingException extends RuntimeException {
         return new BookingException(ErrCode.BOOKING_CREATION_FAILED, HttpStatus.BAD_REQUEST, message);
     }
 
+    public static BookingException demo() {
+        return new BookingException(ErrCode.BOOKING_CHANGE_FAILED, HttpStatus.BAD_REQUEST, "This is a demo booking");
+    }
+
     public ErrCode getErrorCode() {
         return errorCode;
     }
