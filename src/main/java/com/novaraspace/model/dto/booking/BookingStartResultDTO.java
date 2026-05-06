@@ -5,6 +5,7 @@ import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 public class BookingStartResultDTO {
     private FlightSearchResultDTO flightSearchResult;
     private String quoteRef;
+    private ServicesPricingDTO servicesPricing;
 
     public FlightSearchResultDTO getFlightSearchResult() {
         return flightSearchResult;
@@ -21,6 +22,15 @@ public class BookingStartResultDTO {
 
     public BookingStartResultDTO setQuoteRef(String quoteRef) {
         this.quoteRef = quoteRef;
+        return this;
+    }
+
+    public ServicesPricingDTO getServicesPricing() {
+        return servicesPricing;
+    }
+
+    public BookingStartResultDTO setServicesPricing(ServicesPricingDTO servicesPricing) {
+        this.servicesPricing = servicesPricing;
         return this;
     }
 }

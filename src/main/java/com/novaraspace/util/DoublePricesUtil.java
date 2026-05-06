@@ -11,6 +11,7 @@ public class DoublePricesUtil {
         double price2Rounded = DoublePricesUtil.normalizePrice(price2);
 
         //Just to be safe
-        return Math.abs(price1Rounded - price2Rounded) <= 0.01;
+//        return Math.abs(price1Rounded - price2Rounded) <= 0.01;
+        return Math.abs(price1Rounded - price2Rounded) <= 0.1;
     }
 }

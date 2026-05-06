@@ -32,6 +32,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final BookingValidator bookingValidator;
     private final BookingReferenceGenerator bookingReferenceGenerator;
+    private final PricingService pricingService;
     private final PaymentService paymentService;
     private final DataMasker dataMasker;
     private final ChangeFlightValidator changeFlightValidator;
@@ -46,7 +47,7 @@ public class BookingService {
             BookingQuoteService bookingQuoteService,
             BookingRepository bookingRepository,
             BookingValidator bookingValidator,
-            BookingReferenceGenerator bookingReferenceGenerator,
+            BookingReferenceGenerator bookingReferenceGenerator, PricingService pricingService,
             PaymentService paymentService,
             DataMasker dataMasker, ChangeFlightValidator changeFlightValidator, CurrentUserService currentUserService, ApplicationEventPublisher eventPublisher) {
         this.bookingMapper = bookingMapper;
@@ -55,6 +56,7 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
         this.bookingValidator = bookingValidator;
         this.bookingReferenceGenerator = bookingReferenceGenerator;
+        this.pricingService = pricingService;
         this.paymentService = paymentService;
         this.dataMasker = dataMasker;
         this.changeFlightValidator = changeFlightValidator;
@@ -62,13 +64,16 @@ public class BookingService {
         this.eventPublisher = eventPublisher;
     }
 
-    public BookingStartResultDTO getResultForNewBookingStart(FlightSearchParamsDTO flightSearchParamsDTO) {
+    public BookingStartResultDTO startBookingCreation(FlightSearchParamsDTO flightSearchParamsDTO) {
         FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(flightSearchParamsDTO);
         BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(flightSearchParamsDTO, flightSearchResultDTO);
+        ServicesPricingDTO servicesPricing = pricingService
+                .getServiceOfferForNewBooking(flightSearchParamsDTO.getTotalPaxCount());
 
         return new BookingStartResultDTO()
                 .setFlightSearchResult(flightSearchResultDTO)
-                .setQuoteRef(bookingQuote.getReference());
+                .setQuoteRef(bookingQuote.getReference())
+                .setServicesPricing(servicesPricing);
     }
 
     @Transactional

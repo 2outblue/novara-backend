@@ -2,13 +2,9 @@ package com.novaraspace.web;
 
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
-import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +22,7 @@ public class BookingController {
 
     @PostMapping("/start")
     public ResponseEntity<BookingStartResultDTO> startBookingProcess(@Valid @RequestBody FlightSearchParamsDTO paramsDTO) {
-        BookingStartResultDTO result = bookingService.getResultForNewBookingStart(paramsDTO);
+        BookingStartResultDTO result = bookingService.startBookingCreation(paramsDTO);
         return ResponseEntity.ok(result);
     }
 

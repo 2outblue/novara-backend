@@ -1,0 +1,26 @@
+[
+  {
+    "service": "priority",
+    "lowSeason": "630",
+    "basePrice": "850",
+    "highSeason": "990"
+  },
+  {
+  "service": "shared",
+  "lowSeason": "630",
+  "basePrice": "1200",
+  "highSeason": "990"
+  },
+  {
+    "service": "baggage",
+    "lowSeason": "300",
+    "basePrice": "420",
+    "highSeason": "600"
+  },
+  {
+    "service": "insurance",
+    "lowSeason": "550",
+    "basePrice": "740",
+    "highSeason": "870"
+  }
+]

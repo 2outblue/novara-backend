@@ -8,8 +8,8 @@ public class LocationJSON {
     private String code;
     private String locationNumber;
     private String nameDetails;
-    private String desc;
-    private String type;
+    private String description;
+    private String stationType;
     private long capacity;
     private long area;
     private long volume;
@@ -79,21 +79,21 @@ public class LocationJSON {
         return this;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public LocationJSON setDesc(String desc) {
-        this.desc = desc;
+    public LocationJSON setDescription(String description) {
+        this.description = description;
         return this;
     }
 
-    public String getType() {
-        return type;
+    public String getStationType() {
+        return stationType;
     }
 
-    public LocationJSON setType(String type) {
-        this.type = type;
+    public LocationJSON setStationType(String stationType) {
+        this.stationType = stationType;
         return this;
     }
 

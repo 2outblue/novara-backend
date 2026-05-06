@@ -22,13 +22,11 @@ import java.util.stream.Collectors;
 @Component
 @Order(3)
 public class FlightDBInit implements CommandLineRunner {
-
     private final ObjectMapper mapper;
     private final LocationRepository locationRepository;
     private final VehicleRepository vehicleRepository;
     private final FlightGenerationService flightGenerationService;
     private final FlightTemplateRepository flightTemplateRepository;
-
 
     private Map<Long, Location> locationsMap;
     private Map<Long, Vehicle> vehiclesMap;
@@ -40,15 +38,17 @@ public class FlightDBInit implements CommandLineRunner {
         this.flightGenerationService = flightGenerationService;
         this.flightTemplateRepository = flightTemplateRepository;
 
-        locationsMap = locationRepository.findAll().stream()
-                .collect(Collectors.toMap(Location::getId, l -> l));
-        vehiclesMap = vehicleRepository.findAll().stream()
-                .collect(Collectors.toMap(Vehicle::getId, v -> v));
+
     }
 
     @Override
     public void run(String... args) throws Exception {
         if (flightTemplateRepository.count() == 0) {
+            locationsMap = this.locationRepository.findAll().stream()
+                    .collect(Collectors.toMap(Location::getId, l -> l));
+            vehiclesMap = this.vehicleRepository.findAll().stream()
+                    .collect(Collectors.toMap(Vehicle::getId, v -> v));
+
             generateFlights();
         }
     }

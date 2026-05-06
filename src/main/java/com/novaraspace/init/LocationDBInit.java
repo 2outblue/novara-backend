@@ -51,8 +51,8 @@ public class LocationDBInit implements CommandLineRunner {
                     .setCode(matchingLocation.getCode())
                     .setLocationNumber(matchingLocation.getLocationNumber())
                     .setNameDetails(matchingLocation.getNameDetails())
-                    .setDescription(matchingLocation.getDesc())
-                    .setLocationType(matchingLocation.getType())
+                    .setDescription(matchingLocation.getDescription())
+                    .setLocationType(matchingLocation.getStationType())
                     .setCapacity(matchingLocation.getCapacity())
                     .setArea(matchingLocation.getArea())
                     .setVolume(matchingLocation.getVolume())
@@ -62,5 +62,6 @@ public class LocationDBInit implements CommandLineRunner {
             locationsToSave.add(location);
         }
         locationRepository.saveAll(locationsToSave);
+        locationRepository.flush();
     }
 }
