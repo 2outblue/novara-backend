@@ -2,11 +2,14 @@ package com.novaraspace.model.dto.payment;
 
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDateTime;
+
 public class PaymentDTO {
     private String lastFour;
     private String cardType;
     private String serviceReference;
     private Double amount;
+    private LocalDateTime createdAt;
 
     public String getLastFour() {
         return lastFour;
@@ -41,6 +44,15 @@ public class PaymentDTO {
 
     public PaymentDTO setAmount(Double amount) {
         this.amount = amount;
+        return this;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public PaymentDTO setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
         return this;
     }
 }

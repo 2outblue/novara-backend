@@ -2,6 +2,8 @@ package com.novaraspace.service;
 
 import com.novaraspace.component.BookingReferenceGenerator;
 import com.novaraspace.component.DataMasker;
+import com.novaraspace.model.domain.BookingQuoteParams;
+import com.novaraspace.model.domain.BookingValidationParams;
 import com.novaraspace.model.dto.booking.*;
 import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
@@ -66,13 +68,17 @@ public class BookingService {
 
     public BookingStartResultDTO startBookingCreation(FlightSearchParamsDTO flightSearchParamsDTO) {
         FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(flightSearchParamsDTO);
-        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(flightSearchParamsDTO, flightSearchResultDTO);
-        ServicesPricingDTO servicesPricing = pricingService
+        ServicesPricingOffer servicesPricing = pricingService
                 .getServiceOfferForNewBooking(flightSearchParamsDTO.getTotalPaxCount());
+//        BookingQuoteDTO bookingQuote = bookingQuoteService.createQuoteWithoutServicesOffer(flightSearchParamsDTO, flightSearchResultDTO);
+
+        String quoteReference = bookingQuoteService.createQuoteForNewBooking(
+                new BookingQuoteParams(flightSearchParamsDTO, flightSearchResultDTO, servicesPricing)
+        );
 
         return new BookingStartResultDTO()
                 .setFlightSearchResult(flightSearchResultDTO)
-                .setQuoteRef(bookingQuote.getReference())
+                .setQuoteRef(quoteReference)
                 .setServicesPricing(servicesPricing);
     }
 
@@ -92,9 +98,12 @@ public class BookingService {
 //        Payment payment = paymentService.createNewPayment(request.getPaymentDTO(), bookingReference);
         Payment payment = paymentService.createBookingConfirmPayment(request.getPaymentDTO(), bookingReference);
 
-        boolean validBooking = bookingValidator.validateNewBooking(booking, bookingDTO.getQuoteReference());
-        boolean validBookingPayment = bookingValidator.validateBookingAgainstPayment(booking, payment);
-        if (!validBooking || !validBookingPayment) {throw BookingException.creationFailed();}
+        BookingQuote quote = bookingQuoteService.getValidQuoteByReference(request.getBookingDTO().getQuoteReference());
+        boolean validBooking = bookingValidator.validateNewBooking(
+                new BookingValidationParams(booking, payment, quote));
+
+//        boolean validBookingPayment = bookingValidator.validateBookingAgainstPayment(booking, payment);
+        if (!validBooking) {throw BookingException.creationFailed();}
 
         int paxCount = booking.getPassengers().size();
         departureFlight.reserveSeats(booking.getDepartureClass(), paxCount);
@@ -168,11 +177,13 @@ public class BookingService {
                 .setDepartureFlights(depFlightsWithoutExisting)
                 .setReturnFlights(retFlightsWithoutExisting)
                 .setLimits(initialResult.getLimits());
-        BookingQuoteDTO bookingQuote = bookingQuoteService.createNewQuote(request.getFlightSearchParams(), finalResult);
+        String quoteReference = bookingQuoteService.createQuoteWithoutServicesOffer(
+                new BookingQuoteParams(request.getFlightSearchParams(), finalResult, null)
+        );
 
         return new ChangeFlightsStartResponse()
                 .setFlightSearchResult(finalResult)
-                .setQuoteReference(bookingQuote.getReference());
+                .setQuoteReference(quoteReference);
     }
 
     @Transactional

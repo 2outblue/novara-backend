@@ -1,5 +1,6 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.enums.ExtraServiceCode;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -8,14 +9,14 @@ import jakarta.persistence.ManyToOne;
 //@Entity
 @Embeddable
 public class ExtraService {
-    private String code;
+    private ExtraServiceCode code;
     private double price;
 
-    public String getCode() {
+    public ExtraServiceCode getCode() {
         return code;
     }
 
-    public ExtraService setCode(String code) {
+    public ExtraService setCode(ExtraServiceCode code) {
         this.code = code;
         return this;
     }

@@ -1,7 +1,9 @@
 package com.novaraspace.service;
 
 import com.nimbusds.jose.util.Base64;
+import com.novaraspace.model.domain.BookingQuoteParams;
 import com.novaraspace.model.dto.booking.BookingQuoteDTO;
+import com.novaraspace.model.dto.booking.ServicesPricingOffer;
 import com.novaraspace.model.dto.flight.FlightSearchParamsDTO;
 import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 import com.novaraspace.model.entity.BookingQuote;
@@ -34,7 +36,32 @@ public class BookingQuoteService {
         return quoteRepository.findByReference(reference);
     }
 
-    public BookingQuoteDTO createNewQuote(FlightSearchParamsDTO searchParams, FlightSearchResultDTO searchResult) {
+    public BookingQuote getValidQuoteByReference(String reference) {
+        return quoteRepository.findByReference(reference).orElseThrow(BookingException::invalidQuote);
+    }
+
+    public String createQuoteWithoutServicesOffer(BookingQuoteParams params) {
+        BookingQuote quote = getGeneralValidQuote(params);
+        return quoteRepository.save(quote).getReference();
+//        return mapper.entityToDto(persistedQuote);
+    }
+
+    public String createQuoteForNewBooking(BookingQuoteParams params) {
+        BookingQuote quote = getGeneralValidQuote(params);
+
+        ServicesPricingOffer servicesOffer = params.servicesPricing();
+        if (servicesOffer == null || !servicesOffer.looksValid()) {
+            throw BookingException.invalidQuote();
+        }
+        quote.setServicesPricing(servicesOffer);
+        BookingQuote persistedQuote = quoteRepository.save(quote);
+        return persistedQuote.getReference();
+//        return mapper.entityToDto(persistedQuote);
+    }
+
+    private BookingQuote getGeneralValidQuote(BookingQuoteParams params) {
+        FlightSearchParamsDTO searchParams = params.flightSearchParams();
+        FlightSearchResultDTO searchResult = params.flightSearchResult();
         BookingQuoteDTO dto = new BookingQuoteDTO()
                 .setReference(Base64.encode(UUID.randomUUID().toString()).toString())
                 .setExpiresAt(LocalDateTime.now().plusHours(1))
@@ -51,9 +78,7 @@ public class BookingQuoteService {
             throw BookingException.invalidQuote();
         }
 
-        BookingQuote newQuote = mapper.dtoToEntity(dto);
-        BookingQuote persistedQuote = quoteRepository.save(newQuote);
-        return mapper.entityToDto(persistedQuote);
+        return mapper.dtoToEntity(dto);
     }
 
     private boolean checkBookingQuoteDTOValid(BookingQuoteDTO dto) {

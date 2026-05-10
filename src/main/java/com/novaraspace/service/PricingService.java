@@ -2,7 +2,7 @@ package com.novaraspace.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.novaraspace.model.dto.booking.ServicesPricingDTO;
+import com.novaraspace.model.dto.booking.ServicesPricingOffer;
 import com.novaraspace.model.enums.BaggageCapacity;
 import com.novaraspace.model.enums.ExtraServiceCode;
 import com.novaraspace.model.other.ServicePricesJSON;
@@ -31,12 +31,12 @@ public class PricingService {
         this.objectMapper = objectMapper;
     }
 
-    public ServicesPricingDTO getServiceOfferForNewBooking(int paxCount) {
+    public ServicesPricingOffer getServiceOfferForNewBooking(int paxCount) {
         Map<ExtraServiceCode, Double> servicesPrices = simulateDynamicServicePrices(paxCount);
 
         Double baggageBasePrice = servicesPrices.get(ExtraServiceCode.baggage);
         if (baggageBasePrice == null) {
-            return new ServicesPricingDTO().setServicesPrices(servicesPrices);
+            return new ServicesPricingOffer().setServicesPrices(servicesPrices);
         }
 
         if (paxCount < 2) {
@@ -49,7 +49,7 @@ public class PricingService {
                     return DoublePricesUtil.normalizePrice(baggageBasePrice * multiplier);
                 },(v1, v2) -> v1, LinkedHashMap<BaggageCapacity, Double>::new));
 
-        return new ServicesPricingDTO()
+        return new ServicesPricingOffer()
                 .setServicesPrices(servicesPrices)
                 .setBaggagePrices(baggagePrices);
     }

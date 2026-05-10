@@ -29,6 +29,8 @@ public class BookingQuoteDTO {
     @NotNull
     private LocalDate returnUpperDate;
 
+    private ServicesPricingOffer servicesPricing;
+
     public String getReference() {
         return reference;
     }
@@ -116,6 +118,15 @@ public class BookingQuoteDTO {
 
     public BookingQuoteDTO setReturnUpperDate(LocalDate returnUpperDate) {
         this.returnUpperDate = returnUpperDate;
+        return this;
+    }
+
+    public ServicesPricingOffer getServicesPricing() {
+        return servicesPricing;
+    }
+
+    public BookingQuoteDTO setServicesPricing(ServicesPricingOffer servicesPricing) {
+        this.servicesPricing = servicesPricing;
         return this;
     }
 }

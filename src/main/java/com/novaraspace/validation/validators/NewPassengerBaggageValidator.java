@@ -16,14 +16,15 @@ public class NewPassengerBaggageValidator implements ConstraintValidator<ValidNe
 
     @Override
     public boolean isValid(PassengerBaggageDTO dto, ConstraintValidatorContext context) {
-        String capacity = dto.getCapacity();
-        if (capacity == null) {return false;}
-
-        boolean noBaggage = capacity.isEmpty() && dto.getPrice() == 0;
-        boolean baggageIsValid =
-                validCapacities.contains(capacity)
-                && dto.getPrice() > 0;
-
-        return noBaggage || baggageIsValid;
+        return true;
+//        String capacity = dto.getCapacity();
+//        if (capacity == null) {return false;}
+//
+//        boolean noBaggage = capacity.isEmpty() && dto.getPrice() == 0;
+//        boolean baggageIsValid =
+//                validCapacities.contains(capacity)
+//                && dto.getPrice() > 0;
+//
+//        return noBaggage || baggageIsValid;
     }
 }

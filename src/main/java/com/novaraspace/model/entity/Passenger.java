@@ -1,5 +1,6 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.enums.PaxAgeGroup;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
@@ -12,7 +13,8 @@ public class Passenger extends BaseEntity {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    private String ageGroup;
+    private PaxAgeGroup ageGroup;
+//    private String ageGroup;
     private long cabinId;
 
     @ManyToOne
@@ -25,6 +27,10 @@ public class Passenger extends BaseEntity {
             @AttributeOverride(name = "price", column = @Column(name = "extra_baggage_price"))
     })
     private PassengerBaggage baggage;
+
+    public boolean isOwned() {
+        return intraBookingId != cabinId;
+    }
 
     public long getIntraBookingId() {
         return intraBookingId;
@@ -71,11 +77,11 @@ public class Passenger extends BaseEntity {
         return this;
     }
 
-    public String getAgeGroup() {
+    public PaxAgeGroup getAgeGroup() {
         return ageGroup;
     }
 
-    public Passenger setAgeGroup(String ageGroup) {
+    public Passenger setAgeGroup(PaxAgeGroup ageGroup) {
         this.ageGroup = ageGroup;
         return this;
     }

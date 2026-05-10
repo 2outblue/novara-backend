@@ -5,16 +5,22 @@ import com.novaraspace.model.enums.ExtraServiceCode;
 
 import java.util.Map;
 
-public class ServicesPricingDTO {
+public class ServicesPricingOffer {
 
     private Map<ExtraServiceCode, Double> servicesPrices;
     private Map<BaggageCapacity, Double> baggagePrices;
+
+
+    public boolean looksValid() {
+        return (servicesPrices != null && baggagePrices != null)
+                && servicesPrices.size() >= 2 && baggagePrices.size() >= 8;
+    }
 
     public Map<ExtraServiceCode, Double> getServicesPrices() {
         return servicesPrices;
     }
 
-    public ServicesPricingDTO setServicesPrices(Map<ExtraServiceCode, Double> servicesPrices) {
+    public ServicesPricingOffer setServicesPrices(Map<ExtraServiceCode, Double> servicesPrices) {
         this.servicesPrices = servicesPrices;
         return this;
     }
@@ -23,7 +29,7 @@ public class ServicesPricingDTO {
         return baggagePrices;
     }
 
-    public ServicesPricingDTO setBaggagePrices(Map<BaggageCapacity, Double> baggagePrices) {
+    public ServicesPricingOffer setBaggagePrices(Map<BaggageCapacity, Double> baggagePrices) {
         this.baggagePrices = baggagePrices;
         return this;
     }

@@ -1,8 +1,12 @@
 package com.novaraspace.model.entity;
 
+import com.novaraspace.model.dto.booking.ServicesPricingOffer;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +29,10 @@ public class BookingQuote extends BaseEntity {
     private LocalDate departureUpperDate;
     private LocalDate returnLowerDate;
     private LocalDate returnUpperDate;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "json")
+    private ServicesPricingOffer servicesPricing;
 
     public String getReference() {
         return reference;
@@ -114,6 +122,15 @@ public class BookingQuote extends BaseEntity {
 
     public BookingQuote setReturnUpperDate(LocalDate arrivalUpperDate) {
         this.returnUpperDate = arrivalUpperDate;
+        return this;
+    }
+
+    public ServicesPricingOffer getServicesPricing() {
+        return servicesPricing;
+    }
+
+    public BookingQuote setServicesPricing(ServicesPricingOffer servicesPricing) {
+        this.servicesPricing = servicesPricing;
         return this;
     }
 }

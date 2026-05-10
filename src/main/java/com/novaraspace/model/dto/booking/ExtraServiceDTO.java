@@ -1,25 +1,24 @@
 package com.novaraspace.model.dto.booking;
 
+import com.novaraspace.model.enums.ExtraServiceCode;
 import com.novaraspace.validation.annotations.ValidExtraServiceCode;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class ExtraServiceDTO {
-    @NotBlank
-    @Size(min = 1, max = 30)
-    @ValidExtraServiceCode
-    private String code;
+//    @NotBlank
+//    @Size(min = 1, max = 30)
+//    @ValidExtraServiceCode
+    @NotNull
+    private ExtraServiceCode code;
 
     @Positive
     private double price;
 
-    public String getCode() {
+    public ExtraServiceCode getCode() {
         return code;
     }
 
-    public ExtraServiceDTO setCode(String code) {
+    public ExtraServiceDTO setCode(ExtraServiceCode code) {
         this.code = code;
         return this;
     }

@@ -63,7 +63,7 @@ app:
     cleanup-months-back: 24
   user:
     max-activation-attempts: 4
-    unverified-cleanup-days: 10
+    unverified-cleanup-days: 5
 
 server:
   port: 8095
