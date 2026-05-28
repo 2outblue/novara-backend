@@ -120,8 +120,8 @@ public class SecurityConfig {
 
     UrlBasedCorsConfigurationSource corsConfigSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:3000", "https://novaraspace.com", "https://www.novaraspace.com"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS"));
         configuration.setMaxAge(3600L);
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList(

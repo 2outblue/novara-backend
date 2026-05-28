@@ -19,8 +19,8 @@ public class CorsGlobalConfig {
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:3000", "https://novaraspace.com", "https://www.novaraspace.com"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS"));
         config.setMaxAge(3600L);
         config.setAllowCredentials(true);
         config.setAllowedHeaders(Arrays.asList(

@@ -27,7 +27,7 @@ bucket4j:
       url: .*
       strategy: first
       rate-limits:
-        - cache-key: getRemoteAddr()
+        - cache-key: "headers['X-Real-IP'] != null ? headers['X-Real-IP'] : getRemoteAddr()"
           skip-condition: "method == 'OPTIONS'"
           bandwidths:
             - capacity: 12
@@ -45,7 +45,7 @@ bucket4j:
       url: ^/auth/(login|reset-password-start|register|verify/new).*
       strategy: first
       rate-limits:
-        - cache-key: getRemoteAddr()
+        - cache-key: "headers['X-Real-IP'] != null ? headers['X-Real-IP'] : getRemoteAddr()"
           skip-condition: "method == 'OPTIONS'"
           bandwidths:
             - capacity: 1
