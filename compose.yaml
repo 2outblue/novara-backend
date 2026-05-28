@@ -31,6 +31,6 @@ services:
       MYSQL_PASS1: ${MYSQL_ROOT_PASSWORD}
       NOVARA_JWT_SECRET: ${NOVARA_JWT_SECRET}
     ports:
-      - "8095:8095"
+      - "127.0.0.1:8095:8095"
 volumes:
   novara-db-data: {}
