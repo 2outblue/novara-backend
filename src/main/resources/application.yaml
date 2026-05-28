@@ -27,7 +27,7 @@ spring:
     name: novara
   datasource:
     username: ${NOVARA_SQL_USER:root}
-    url: jdbc:mysql://localhost:3306/novara-main?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
+    url: ${NOVARA_DB_URL:jdbc:mysql://localhost:3306/novara-main?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ${MYSQL_PASS1:1q2w3e4r}
   jpa:

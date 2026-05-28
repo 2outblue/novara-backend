@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    container_name: novara_db_demo
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - novara-test-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p1q2w3e4r"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  be:
+    image: ghcr.io/2outblue/novara-backend:latest
+    restart: unless-stopped
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    container_name: novara_be_demo
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MAILERSEND_USER: ${MAILERSEND_USER}
+      MAILERSEND_PASS: ${MAILERSEND_USER}
+      NOVARA_SQL_USER: ${NOVARA_SQL_USER}
+      NOVARA_DB_URL: ${NOVARA_DB_URL}
+      MYSQL_PASS1: ${MYSQL_ROOT_PASSWORD}
+      NOVARA_JWT_SECRET: ${NOVARA_JWT_SECRET}
+    ports:
+      - "8095:8095"
+volumes:
+  novara-test-data: {}
