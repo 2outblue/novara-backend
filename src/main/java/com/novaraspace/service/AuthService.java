@@ -211,7 +211,7 @@ public class AuthService {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .path("/auth")
+                .path("/api/auth")
                 .maxAge( logout ? Duration.ZERO : Duration.ofHours(refreshExpiryHours))
                 .sameSite("Strict")
                 .build();
