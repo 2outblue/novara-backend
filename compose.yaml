@@ -2,12 +2,12 @@ services:
   mysql:
     image: mysql:8.0
     restart: unless-stopped
-    container_name: novara_db_demo
+    container_name: novara_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
-      - novara-test-data:/var/lib/mysql
+      - novara-db-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p1q2w3e4r"]
       interval: 5s
@@ -19,7 +19,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
-    container_name: novara_be_demo
+    container_name: novara_be
     depends_on:
       mysql:
         condition: service_healthy
@@ -33,4 +33,4 @@ services:
     ports:
       - "8095:8095"
 volumes:
-  novara-test-data: {}
+  novara-db-data: {}
