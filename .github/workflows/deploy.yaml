@@ -39,7 +39,7 @@ jobs:
               REMOTE_HOST: ${{ secrets.VPS_HOST }}
               REMOTE_USER: ${{ secrets.VPS_USER }}
               REMOTE_PORT: ${{ secrets.VPS_PORT }}
-              SOURCE: docker-compose.yaml
+              SOURCE: compose.yaml
               TARGET: ${{ env.DEPLOY_DIR }}
               ARGS: "-rlgoDzvc --delete"
 
