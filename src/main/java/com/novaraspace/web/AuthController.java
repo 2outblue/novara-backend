@@ -76,8 +76,8 @@ public class AuthController {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<OAuth2AccessTokenResponse> refresh(@NotBlank @Size(min = 80, max = 140)
-            @CookieValue String refreshToken) {
+    public ResponseEntity<OAuth2AccessTokenResponse> refresh(@Size(max = 140)
+            @CookieValue(required = false, defaultValue = "") String refreshToken) {
         AuthResponseDTO authDto = authService.refresh(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authDto.getCookie().toString())
@@ -90,10 +90,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@NotBlank @Size(min = 80, max = 140)
-            @CookieValue String refreshToken) {
-//        ResponseCookie invalidCookie = authService.createRefreshTokenCookie("", true);
-//        authService.invalidateActiveTokens(refreshToken);
+    public ResponseEntity<Void> logout(@Size(max = 140)
+            @CookieValue(required = false, defaultValue = "") String refreshToken) {
         ResponseCookie logoutCookie = authService.logout(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, logoutCookie.toString())

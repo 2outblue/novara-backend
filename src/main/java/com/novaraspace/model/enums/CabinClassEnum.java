@@ -1,9 +1,9 @@
 package com.novaraspace.model.enums;
 
 public enum CabinClassEnum {
-    FIRST("A Class", 0, 0),
-    MIDDLE("B Class", 0, 6300),
-    LOWER("C Class", 3640, 7350);
+    FIRST("First Class", 0, 0),
+    MIDDLE("Premium Class", 0, 6300),
+    LOWER("Explorer Class", 3640, 7350);
 
     //TODO: FEES SHOULD ALWAYS BE THE SAME IN THE FRONTEND
     // Build some endpoint so the frontend can get the fee data from here or some

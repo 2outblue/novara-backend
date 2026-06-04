@@ -3,6 +3,7 @@ package com.novaraspace.service;
 import com.nimbusds.jose.util.Base64;
 import com.novaraspace.config.JWKAlgorithmImpl;
 import com.novaraspace.model.domain.PassResetEmailParams;
+import com.novaraspace.model.domain.RefreshTokenParams;
 import com.novaraspace.model.dto.auth.AuthResponseDTO;
 import com.novaraspace.model.dto.auth.TokenAuthenticationDTO;
 import com.novaraspace.model.dto.auth.VerificationTokenDTO;
@@ -120,15 +121,34 @@ public class AuthService {
         return new AuthResponseDTO().setJwt(tokenDTO.getJwt()).setCookie(cookie);
     }
 
-    public ResponseCookie logout(String refreshToken) {
-        String publicKey = getRefreshTokenParams(refreshToken)[0];
-        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
-                .orElseThrow(RefreshTokenException::invalid);
+//    public ResponseCookie logout(String refreshToken) {
+//        String publicKey = getRefreshTokenParams(refreshToken)[0];
+//
+//        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
+//                .orElseThrow(RefreshTokenException::invalid);
+//        invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+//
+//        Optional<User> user = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId());
+//        user.ifPresent(u -> eventPublisher.publishEvent(new UserLogoutEvent(u.getId(), u.getEmail())));
+//
+//        return createRefreshTokenCookie("", true);
+//    }
 
-        Optional<User> user = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId());
-        user.ifPresent(u -> eventPublisher.publishEvent(new UserLogoutEvent(u.getId(), u.getEmail())));
+    public ResponseCookie logout(String rawToken) {
+        RefreshTokenParams tokenParams = getRefreshTokenParams(rawToken).orElse(null);
+        if (tokenParams == null) {
+            return createRefreshTokenCookie("", true);
+        }
 
-        invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(tokenParams.publicKey())
+                .orElse(null);
+
+        if (refreshTokenEntity != null) {
+            invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+            Optional<User> user = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId());
+            user.ifPresent(u -> eventPublisher.publishEvent(new UserLogoutEvent(u.getId(), u.getEmail())));
+        }
+
         return createRefreshTokenCookie("", true);
     }
 
@@ -211,7 +231,7 @@ public class AuthService {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .path("/api/auth")
+                .path("/auth")
                 .maxAge( logout ? Duration.ZERO : Duration.ofHours(refreshExpiryHours))
                 .sameSite("Strict")
                 .build();
@@ -243,9 +263,14 @@ public class AuthService {
 //    }
 
     private TokenAuthenticationDTO rotateRefreshToken(String rawRefreshToken) {
-        String[] tokenParams = getRefreshTokenParams(rawRefreshToken);
-        String publicKey = tokenParams[0];
-        String rawToken = tokenParams[1];
+//        String[] tokenParams = getRefreshTokenParams(rawRefreshToken);
+//        String publicKey = tokenParams[0];
+//        String rawToken = tokenParams[1];
+
+        RefreshTokenParams tokenParams = getRefreshTokenParams(rawRefreshToken)
+                .orElseThrow(RefreshTokenException::invalid);
+        String publicKey = tokenParams.publicKey();
+        String rawToken = tokenParams.rawToken();
 
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
                 .orElseThrow(RefreshTokenException::invalid);
@@ -331,13 +356,23 @@ public class AuthService {
         return Base64.encode(secret).toString();
     }
 
-    private String[] getRefreshTokenParams(String rawRefreshToken) {
-        if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
-            throw RefreshTokenException.invalid();
+//    private String[] getRefreshTokenParams(String rawRefreshToken) {
+//        if (rawRefreshToken == null || rawRefreshToken.isBlank() || !rawRefreshToken.contains(".")) {
+//            throw RefreshTokenException.invalid();
+//        }
+//        String[] tokenParams = rawRefreshToken.split("\\.");
+//        if (tokenParams.length != 2) {throw RefreshTokenException.invalid();}
+//        return tokenParams;
+//    }
+
+    private Optional<RefreshTokenParams> getRefreshTokenParams(String rawRefreshToken) {
+        if (rawRefreshToken == null || rawRefreshToken.isBlank()
+                || !rawRefreshToken.contains(".") || rawRefreshToken.length() < 80) {
+            return Optional.empty();
         }
         String[] tokenParams = rawRefreshToken.split("\\.");
-        if (tokenParams.length != 2) {throw RefreshTokenException.invalid();}
-        return tokenParams;
+        if (tokenParams.length != 2) { return Optional.empty(); }
+        return Optional.of(new RefreshTokenParams(tokenParams[0], tokenParams[1]));
     }
 
     private void invalidateTokenFamily(UUID familyId) {

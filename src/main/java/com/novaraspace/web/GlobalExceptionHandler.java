@@ -5,6 +5,7 @@ import com.novaraspace.model.enums.ErrCode;
 import com.novaraspace.model.enums.audit.Outcome;
 import com.novaraspace.model.events.UserLoginEvent;
 import com.novaraspace.model.exception.*;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -99,6 +100,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "INVALID_DATA", "NO_ERROR_MESSAGE"));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraintValidationExceptions(ConstraintViolationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), "INVALID_DATA", ""));
     }
 
     @ExceptionHandler(EmailException.class)
