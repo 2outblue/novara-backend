@@ -28,11 +28,6 @@ public class BookingController {
 
     @PostMapping("/complete")
     public ResponseEntity<BookingConfirmedDTO> createBooking(@Valid @RequestBody BookingCreateRequest createRequest) {
-//        String authId = "";
-//        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
-//            authId = auth.getName();
-//        }
-
         BookingConfirmedDTO confirmedBooking = bookingService.createNewBooking(createRequest);
         return ResponseEntity.ok(confirmedBooking);
     }

@@ -157,6 +157,10 @@ public class User extends BaseEntity {
         return false;
     }
 
+    public boolean isPendingActivation() {
+        return status.equals(AccountStatus.PENDING_ACTIVATION);
+    }
+
     public String getPublicId() {
         return publicId;
     }

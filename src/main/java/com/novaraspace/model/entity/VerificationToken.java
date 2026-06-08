@@ -28,6 +28,10 @@ public class VerificationToken extends BaseEntity {
     @Column(nullable = false)
     private int serialNumber = 1;
 
+    public boolean isInvalid() {
+        return expiresAt.isBefore(Instant.now()) || isUsed();
+    }
+
     public String getLinkToken() {
         return linkToken;
     }

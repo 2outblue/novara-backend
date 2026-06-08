@@ -36,6 +36,8 @@ public class RefreshToken extends BaseEntity{
     private String ipAddress;
     @Column(nullable = false)
     private boolean revoked = false;
+    private Instant revokedAt;
+    private String replacedBy;
 
     public RefreshToken() {
     }
@@ -47,6 +49,23 @@ public class RefreshToken extends BaseEntity{
         this.userAuthId = userAuthId;
         this.expiryDate = expiryDate;
         this.familyId = familyId;
+    }
+
+    public boolean maybeBenignReuse() {
+        return revoked
+                && revokedAt != null
+                && revokedAt.isBefore(Instant.now().plusSeconds(20))
+                && replacedBy != null;
+    }
+
+    public boolean isExpired() {
+        return expiryDate.isBefore(Instant.now());
+    }
+
+    public void setRotated(String replacedBy) {
+        revoked = true;
+        revokedAt = Instant.now();
+        this.replacedBy = replacedBy;
     }
 
     public LocalDateTime getCreatedOn() {
@@ -118,6 +137,24 @@ public class RefreshToken extends BaseEntity{
 
     public RefreshToken setRevoked(boolean revoked) {
         this.revoked = revoked;
+        return this;
+    }
+
+    public Instant getRevokedAt() {
+        return revokedAt;
+    }
+
+    public RefreshToken setRevokedAt(Instant revokedAt) {
+        this.revokedAt = revokedAt;
+        return this;
+    }
+
+    public String getReplacedBy() {
+        return replacedBy;
+    }
+
+    public RefreshToken setReplacedBy(String replacedBy) {
+        this.replacedBy = replacedBy;
         return this;
     }
 }

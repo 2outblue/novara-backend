@@ -71,16 +71,6 @@ public class FlightService {
 
 
     public FlightSearchResultDTO getFlightSearchResult(FlightSearchParamsDTO paramsDTO) {
-//        Location departureLocation = locationService.getLocationByCode(paramsDTO.getDepartureCode());
-//        Location arrivalLocation = locationService.getLocationByCode(paramsDTO.getArrivalCode());
-
-//        List<Long> departureTemplateIds = flightTemplateRepository
-//                .findAllByDepartureAndArrivalLocationIds(departureLocation.getId(), arrivalLocation.getId())
-//                .stream().map(fi -> fi.getId()).toList();
-
-        //        List<Long> returnTemplateIds = flightTemplateRepository
-//                .findAllByDepartureAndArrivalLocationIds(arrivalLocation.getId(), departureLocation.getId())
-//                .stream().map(fi -> fi.getId()).toList();
         String departureCode = paramsDTO.getDepartureCode();
         String arrivalCode = paramsDTO.getArrivalCode();
         List<Long> departureTemplateIds = getTemplateIdsByRouteCodes(departureCode, arrivalCode);

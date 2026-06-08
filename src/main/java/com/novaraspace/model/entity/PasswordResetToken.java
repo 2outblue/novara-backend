@@ -10,6 +10,10 @@ public class PasswordResetToken extends BaseEntity {
     private LocalDateTime expiresOn;
     private String userAuthId;
 
+    public boolean isExpired() {
+        return expiresOn.isBefore(LocalDateTime.now());
+    }
+
     public String getTokenValue() {
         return tokenValue;
     }

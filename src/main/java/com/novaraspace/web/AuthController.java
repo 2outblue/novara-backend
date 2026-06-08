@@ -47,12 +47,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userDto) {
-//        VerificationTokenDTO verificationDTO = authService.registerUser(userDto);
         authService.registerUser(userDto);
-//        if (emailVerificationEnabled) {
-//            emailService.sendActivationEmail(verificationDTO);
-//        }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        HttpStatus status = emailVerificationEnabled ? HttpStatus.CREATED : HttpStatus.OK;
+        return ResponseEntity.status(status).build();
     }
 
     @MinResponseTime
@@ -77,7 +74,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<OAuth2AccessTokenResponse> refresh(@Size(max = 140)
-            @CookieValue(required = false, defaultValue = "") String refreshToken) {
+            @CookieValue(value = "refreshToken", required = false, defaultValue = "") String refreshToken) {
         AuthResponseDTO authDto = authService.refresh(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authDto.getCookie().toString())
@@ -91,7 +88,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@Size(max = 140)
-            @CookieValue(required = false, defaultValue = "") String refreshToken) {
+            @CookieValue(value = "refreshToken", required = false, defaultValue = "") String refreshToken) {
         ResponseCookie logoutCookie = authService.logout(refreshToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, logoutCookie.toString())
@@ -108,12 +105,7 @@ public class AuthController {
     @MinResponseTime(500)
     @PostMapping("/verify/new")
     public ResponseEntity<Void> generateNewVerification(@Valid @RequestBody EmailDTO emailDTO) {
-//        VerificationTokenDTO verificationDTO = authService.generateNewVerification(emailDTO.getEmail());
         authService.retryAccountActivation(emailDTO.getEmail());
-//        boolean emailSent = emailService.sendActivationEmail(verificationDTO);
-//        if (!emailSent) {
-//            throw VerificationException.failed();
-//        }
         return ResponseEntity.ok().build();
     }
 

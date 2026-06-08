@@ -33,18 +33,21 @@ spring:
   jpa:
     show-sql: false
     open-in-view: 'false'
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+#        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
 #        generate_statistics: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   servlet:
     multipart:
       max-request-size: 2MB
       max-file-size: 1MB
+  flyway:
+    baseline-version: 1
+    baseline-on-migrate: true
 app:
   jwt:
     issuer: "novara-space"

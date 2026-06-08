@@ -21,6 +21,10 @@ public class RefreshTokenException extends RuntimeException{
         return new RefreshTokenException(ErrCode.EXPIRED_TOKEN, HttpStatus.UNAUTHORIZED, "Expired refresh token.");
     }
 
+    public static RefreshTokenException conflict() {
+        return new RefreshTokenException(ErrCode.INVALID_TOKEN, HttpStatus.CONFLICT, "Conflict.");
+    }
+
     public ErrCode getErrorCode() {
         return errorCode;
     }

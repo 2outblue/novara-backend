@@ -56,3 +56,20 @@ bucket4j:
               time: 2
               unit: minutes
               refill-speed: greedy
+
+    - id: auth-reg
+      cache-name: buckets
+      url: ^/auth/register.*
+      strategy: first
+      rate-limits:
+        - cache-key: "getHeader('X-Real-IP') != null ? getHeader('X-Real-IP') : getRemoteAddr()"
+          skip-condition: "method == 'OPTIONS'"
+          bandwidths:
+            - capacity: 1
+              time: 60
+              unit: seconds
+              refill-speed: greedy
+            - capacity: 10
+              time: 2
+              unit: hours
+              refill-speed: greedy
