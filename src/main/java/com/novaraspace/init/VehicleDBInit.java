@@ -48,6 +48,7 @@ public class VehicleDBInit implements CommandLineRunner {
         List<Vehicle> vehicles = vehiclesData.stream().map(v -> {
             Set<FlightRegion> regions = v.getSupportedRegions().stream().map(FlightRegion::valueOf).collect(Collectors.toSet());
             return new Vehicle()
+                    .setId(v.getId())
                     .setCode(v.getCode())
                     .setName(v.getName())
                     .setAmenities(getVehicleAmenities(v))

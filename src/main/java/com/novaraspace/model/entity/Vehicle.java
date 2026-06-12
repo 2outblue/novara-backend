@@ -9,7 +9,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "vehicle")
-public class Vehicle extends BaseEntity {
+public class Vehicle {
+    @Id
+    private Long id;
     @Column(nullable = false)
     private String code;
     @Column(nullable = false)
@@ -58,6 +60,15 @@ public class Vehicle extends BaseEntity {
             case MIDDLE -> getMiddleClass();
             case LOWER -> getLowerClass();
         };
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Vehicle setId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public String getCode() {

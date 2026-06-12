@@ -15,7 +15,7 @@ public enum FlightLocation {
         FRANKFURT(FlightRegion.EARTH),
         TOULOUSE(FlightRegion.EARTH),
         TEXAS_COAST(FlightRegion.EARTH),
-        RAS_AL_KHAIMAH(FlightRegion.EARTH),
+//        RAS_AL_KHAIMAH(FlightRegion.EARTH),
         KUALA_LUMPUR(FlightRegion.EARTH),
         CHRISTMAS_ISLAND(FlightRegion.EARTH),
 

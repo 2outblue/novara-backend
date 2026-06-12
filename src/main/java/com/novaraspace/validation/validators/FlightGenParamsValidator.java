@@ -19,7 +19,7 @@ public class FlightGenParamsValidator implements ConstraintValidator<ValidFlight
             return false;
         }
 
-        if (value.getStartDate().isBefore(value.getEndDate())) { return false; }
+        if (value.getStartDate().isAfter(value.getEndDate())) { return false; }
 
         LocalDate now = LocalDate.now();
         return value.getEndDate().isBefore(now.plusDays(maxFutureDepartureDays + 1));

@@ -1,7 +1,5 @@
 package com.novaraspace.service;
 
-import com.nimbusds.jose.util.Base64;
-import com.novaraspace.config.JWKAlgorithmImpl;
 import com.novaraspace.model.domain.PassResetEmailParams;
 import com.novaraspace.model.domain.RefreshTokenParams;
 import com.novaraspace.model.dto.auth.AuthResponseDTO;
@@ -15,7 +13,6 @@ import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.ErrCode;
-import com.novaraspace.model.enums.UserRole;
 import com.novaraspace.model.enums.audit.Outcome;
 import com.novaraspace.model.enums.audit.PassEventType;
 import com.novaraspace.model.events.PasswordEvent;
@@ -23,39 +20,21 @@ import com.novaraspace.model.events.UserLoginEvent;
 import com.novaraspace.model.events.UserLogoutEvent;
 import com.novaraspace.model.events.UserRegisterEvent;
 import com.novaraspace.model.exception.*;
-import com.novaraspace.model.mapper.UserMapper;
-import com.novaraspace.repository.RefreshTokenRepository;
-import com.novaraspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class AuthService {
     private final EmailService emailService;
-    private final UserRepository userRepository;
-    @Value("${app.jwt.issuer}")
-    private String issuer;
-    @Value("${app.jwt.expiry-minutes}")
-    private long jwtExpiryMinutes;
     @Value("${app.jwt.refresh-expiry-hours}")
     private long refreshExpiryHours;
     @Value("${app.enable-email-verification}")
@@ -63,28 +42,25 @@ public class AuthService {
     @Value("${app.user.max-activation-attempts}")
     private int maxUserActivationAttempts;
 
-    private final JwtEncoder jwtEncoder;
     private final UserService userService;
     private final VerificationService verificationService;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenService passwordResetService;
     private final ApplicationEventPublisher eventPublisher;
+    private final AuthTokenService tokenService;
 
     public AuthService(
-            JwtEncoder jwtEncoder, UserService userService, VerificationService verificationService,
-            RefreshTokenRepository refreshTokenRepository,
-            PasswordEncoder passwordEncoder, UserMapper userMapper, PasswordResetTokenService passwordResetService,
-            EmailService emailService, ApplicationEventPublisher eventPublisher, UserRepository userRepository) {
-        this.jwtEncoder = jwtEncoder;
+            UserService userService, VerificationService verificationService,
+            PasswordEncoder passwordEncoder, PasswordResetTokenService passwordResetService,
+            EmailService emailService, ApplicationEventPublisher eventPublisher,
+            AuthTokenService tokenService) {
         this.userService = userService;
         this.verificationService = verificationService;
-        this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.passwordResetService = passwordResetService;
         this.emailService = emailService;
         this.eventPublisher = eventPublisher;
-        this.userRepository = userRepository;
+        this.tokenService = tokenService;
     }
 
 
@@ -104,29 +80,31 @@ public class AuthService {
 
     @Transactional
     public AuthResponseDTO login(Authentication auth) {
-        TokenAuthenticationDTO tokenDTO = generateNewTokenAuthentication(auth);
+//        TokenAuthenticationDTO tokenDTO = generateNewTokenAuthentication(auth);
+        TokenAuthenticationDTO tokenDTO = tokenService.generateNewTokenAuthentication(auth);
         ResponseCookie cookie = createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
         eventPublisher.publishEvent(new UserLoginEvent(Outcome.SUCCESS, auth.getName()));
         return new AuthResponseDTO().setJwt(tokenDTO.getJwt()).setCookie(cookie);
     }
 
     public AuthResponseDTO refresh(String refreshToken) {
-        TokenAuthenticationDTO tokenDTO = rotateRefreshToken(refreshToken);
+        TokenAuthenticationDTO tokenDTO = tokenService.rotateRefreshToken(refreshToken);
+
         ResponseCookie cookie = createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
         return new AuthResponseDTO().setJwt(tokenDTO.getJwt()).setCookie(cookie);
     }
 
     public ResponseCookie logout(String rawToken) {
-        RefreshTokenParams tokenParams = getRefreshTokenParams(rawToken).orElse(null);
+        RefreshTokenParams tokenParams = tokenService.getRefreshTokenParams(rawToken).orElse(null);
         if (tokenParams == null) {
             return createRefreshTokenCookie("", true);
         }
 
-        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(tokenParams.publicKey())
+        RefreshToken refreshTokenEntity = tokenService.findRefreshByPublicKey(tokenParams.publicKey())
                 .orElse(null);
 
         if (refreshTokenEntity != null) {
-            invalidateTokenFamily(refreshTokenEntity.getFamilyId());
+            tokenService.invalidateTokenFamily(refreshTokenEntity.getFamilyId());
             Optional<User> user = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId());
             user.ifPresent(u -> eventPublisher.publishEvent(new UserLogoutEvent(u.getId(), u.getEmail())));
         }
@@ -147,7 +125,6 @@ public class AuthService {
         user.setStatus(AccountStatus.ACTIVE);
         user.setVerification(null);
     }
-
 
 
     @Transactional
@@ -224,127 +201,10 @@ public class AuthService {
                 .build();
     }
 
-    public TokenAuthenticationDTO generateNewTokenAuthentication(Authentication authentication) {
-        String authId = userService.getEntityByEmail(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials.")).getAuthId();
-
-        String refreshToken = generateNewRefreshToken(authId);
-        String jwt = generateJwtByAuthId(authId);
-        return new TokenAuthenticationDTO(refreshToken, jwt);
-    }
-
     public void invalidateAllUserSessions(String userAuthId) {
         if (userAuthId == null) { return; }
-        refreshTokenRepository.revokeByUserAuthId(userAuthId);
+        tokenService.revokeTokensByUserAuthId(userAuthId);
 
     }
 
-    private TokenAuthenticationDTO rotateRefreshToken(String rawRefreshToken) {
-        RefreshTokenParams tokenParams = getRefreshTokenParams(rawRefreshToken)
-                .orElseThrow(RefreshTokenException::invalid);
-        String publicKey = tokenParams.publicKey();
-        String rawToken = tokenParams.rawToken();
-
-        RefreshToken refreshTokenEntity = refreshTokenRepository.findByPublicKey(publicKey)
-                .orElseThrow(RefreshTokenException::invalid);
-
-        if (refreshTokenEntity.isExpired()) {
-            throw RefreshTokenException.expired();
-        }
-
-        if (refreshTokenEntity.maybeBenignReuse()) {
-            throw RefreshTokenException.conflict();
-        } else if (refreshTokenEntity.isRevoked()) {
-            invalidateTokenFamily(refreshTokenEntity.getFamilyId());
-            throw RefreshTokenException.invalid();
-        }
-
-        if (!passwordEncoder.matches(rawToken, refreshTokenEntity.getToken())) {
-            throw RefreshTokenException.invalid();
-        }
-
-        User userEntity = userService.findEntityByAuthId(refreshTokenEntity.getUserAuthId())
-                .orElseThrow(RefreshTokenException::invalid);
-
-        if (!userEntity.isActive()) {
-            throw RefreshTokenException.invalid();
-        }
-
-        String newRefreshToken = refreshExistingToken(refreshTokenEntity);
-        String newJwt = generateJwtByAuthId(userEntity.getAuthId());
-        return new TokenAuthenticationDTO(newRefreshToken, newJwt);
-    }
-
-    private String generateJwtByAuthId(String authId) {
-        Instant now = Instant.now();
-        Instant expiresAt = now.plusSeconds(jwtExpiryMinutes * 60);
-
-        User userEntity = userService.findEntityByAuthId(authId)
-                .orElseThrow(() -> new UsernameNotFoundException("Bad credentials."));
-
-        Set<UserRole> roles = userEntity.getRoles();
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer(issuer)
-                .issuedAt(now)
-                .expiresAt(expiresAt)
-                .subject(authId)
-                .claim("roles", roles)
-                .build();
-
-        JwsHeader header = JwsHeader.with(new JWKAlgorithmImpl())
-                .build();
-        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
-    }
-
-    private String refreshExistingToken(RefreshToken oldToken) {
-        String base64Secret = getRandomBase64Secret();
-        String hashedSecret = passwordEncoder.encode(base64Secret);
-        String publicKey = Base64.encode(UUID.randomUUID().toString()).toString();
-        String userAuthId = oldToken.getUserAuthId();
-        Instant expiryDate = oldToken.getExpiryDate();
-        UUID familyId = oldToken.getFamilyId();
-
-        RefreshToken newToken = new RefreshToken(publicKey, hashedSecret, userAuthId, expiryDate, familyId);
-        RefreshToken newSavedToken = refreshTokenRepository.save(newToken);
-
-        oldToken.setRotated(newSavedToken.getPublicKey());
-        refreshTokenRepository.save(oldToken);
-//        refreshTokenRepository.revokeByPublicKey(oldToken.getPublicKey());
-        return publicKey + "." + base64Secret;
-    }
-
-    private String generateNewRefreshToken(String authId) {
-        Instant now = Instant.now();
-        Instant expiry = now.plusSeconds( refreshExpiryHours * 60 * 60);
-
-        String base64Secret = getRandomBase64Secret();
-        String hashedSecret = passwordEncoder.encode(base64Secret);
-        String publicKey = Base64.encode(UUID.randomUUID().toString()).toString();
-        UUID familyId = UUID.randomUUID();
-        RefreshToken newToken = new RefreshToken(publicKey, hashedSecret, authId, expiry, familyId);
-
-        refreshTokenRepository.save(newToken);
-        return publicKey + "." + base64Secret;
-    }
-
-    private String getRandomBase64Secret() {
-        SecureRandom random = new SecureRandom();
-        byte[] secret = new byte[32];
-        random.nextBytes(secret);
-        return Base64.encode(secret).toString();
-    }
-
-    private Optional<RefreshTokenParams> getRefreshTokenParams(String rawRefreshToken) {
-        if (rawRefreshToken == null || rawRefreshToken.isBlank()
-                || !rawRefreshToken.contains(".") || rawRefreshToken.length() < 80) {
-            return Optional.empty();
-        }
-        String[] tokenParams = rawRefreshToken.split("\\.");
-        if (tokenParams.length != 2) { return Optional.empty(); }
-        return Optional.of(new RefreshTokenParams(tokenParams[0], tokenParams[1]));
-    }
-
-    private void invalidateTokenFamily(UUID familyId) {
-        refreshTokenRepository.revokeByFamilyId(familyId);
-    }
 }

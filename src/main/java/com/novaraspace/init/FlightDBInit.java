@@ -3,6 +3,7 @@ package com.novaraspace.init;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novaraspace.model.dto.flight.FlightInstanceGenerationParams;
 import com.novaraspace.model.entity.*;
+import com.novaraspace.model.enums.FlightRegion;
 import com.novaraspace.model.other.FlightJSON;
 import com.novaraspace.repository.*;
 import com.novaraspace.service.FlightGenerationService;
@@ -30,6 +31,7 @@ public class FlightDBInit implements CommandLineRunner {
 
     private Map<Long, Location> locationsMap;
     private Map<Long, Vehicle> vehiclesMap;
+    private List<Location> departureLocations;
 
     public FlightDBInit(ObjectMapper mapper, LocationRepository locationRepository, VehicleRepository vehicleRepository, FlightGenerationService flightGenerationService, FlightTemplateRepository flightTemplateRepository) {
         this.mapper = mapper;
@@ -49,27 +51,65 @@ public class FlightDBInit implements CommandLineRunner {
             vehiclesMap = this.vehicleRepository.findAll().stream()
                     .collect(Collectors.toMap(Vehicle::getId, v -> v));
 
-            generateFlights();
+            departureLocations = this.locationsMap.values().stream()
+                    .filter(l -> l.getRegion().equals(FlightRegion.EARTH))
+                    .collect(Collectors.toList());
+
+//            generateFlights();
+            generateFlightsForAllTemplates();
+        }
+
+    }
+
+    private void generateFlightsForAllTemplates() throws IOException {
+        for (Location location : departureLocations) {
+            String code = location.getCode();
+            String resource = getResourceForLocationCode(code);
+
+            ClassPathResource flightsResource = new ClassPathResource(resource);
+            List<FlightJSON> flightsData = Arrays.asList(
+                    mapper.readValue(flightsResource.getInputStream(), FlightJSON[].class));
+
+            LocalDate startDate = LocalDate.now().plusDays(1);
+            LocalDate endDate = LocalDate.now().plusMonths(1);
+
+            List<FlightTemplate> templatesWithInstances1 = flightsData.stream()
+                    .map(this::jsonToTemplate)
+                    .map(t -> {
+                        List<FlightInstance> instances = flightGenerationService
+                                .generateInstancesForTemplate(t, new FlightInstanceGenerationParams(startDate, endDate));
+                        return t.setInstances(instances);
+                    }).toList();
+            flightTemplateRepository.saveAll(templatesWithInstances1);
+
+
         }
     }
 
-    private void generateFlights() throws IOException {
-        ClassPathResource flightsResource = new ClassPathResource("data/Flights.json");
-        List<FlightJSON> flightsData = Arrays.asList(mapper.readValue(flightsResource.getInputStream(), FlightJSON[].class));
-
-        LocalDate startDate = LocalDate.now().plusDays(1);
-        LocalDate endDate = LocalDate.now().plusMonths(1);
-
-        List<FlightTemplate> templatesWithInstances1 = flightsData.stream()
-                .map(this::jsonToTemplate)
-                .map(t -> {
-                    List<FlightInstance> instances = flightGenerationService
-                            .generateInstancesForTemplate(t, new FlightInstanceGenerationParams(startDate, endDate));
-                    return t.setInstances(instances);
-                }).toList();
-        flightTemplateRepository.saveAll(templatesWithInstances1);
-
+    private String getResourceForLocationCode(String locationCode) {
+        return new StringBuilder()
+                .append("data/flights-templates/")
+                .append(locationCode)
+                .append(".json")
+                .toString();
     }
+
+//    private void generateFlights() throws IOException {
+//        ClassPathResource flightsResource = new ClassPathResource("data/Flights.json");
+//        List<FlightJSON> flightsData = Arrays.asList(mapper.readValue(flightsResource.getInputStream(), FlightJSON[].class));
+//
+//        LocalDate startDate = LocalDate.now().plusDays(1);
+//        LocalDate endDate = LocalDate.now().plusMonths(1);
+//
+//        List<FlightTemplate> templatesWithInstances1 = flightsData.stream()
+//                .map(this::jsonToTemplate)
+//                .map(t -> {
+//                    List<FlightInstance> instances = flightGenerationService
+//                            .generateInstancesForTemplate(t, new FlightInstanceGenerationParams(startDate, endDate));
+//                    return t.setInstances(instances);
+//                }).toList();
+//        flightTemplateRepository.saveAll(templatesWithInstances1);
+//    }
 
     private FlightTemplate jsonToTemplate(FlightJSON json) {
         Location departureLocation = locationsMap.get(json.getDepartureLocationId());

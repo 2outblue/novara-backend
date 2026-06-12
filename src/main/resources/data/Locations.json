@@ -48,22 +48,6 @@
     "accommodations": 950
   },
   {
-    "id": 5,
-    "location": "RAS_AL_KHAIMAH",
-    "name": "UAE Spaceport",
-    "longName": "Ras Al Khaimah Commercial Spaceport, United Arab Emirates",
-    "code": "RAKS",
-    "locationNumber": "005",
-    "nameDetails": "Ras Al Khaimah Commercial Spaceport",
-    "description": "UAE Spaceport serves as the Middle East’s flagship commercial space hub in Ras Al Khaimah. It offers streamlined departures for passengers traveling to orbital stations and beyond. Its sleek architecture includes premium lounges and elevated viewing galleries overlooking the desert launch facilities.",
-    "stationType": "Surface",
-    "capacity": 1150000,
-    "area": 98000,
-    "volume": 680000,
-    "ports": 11,
-    "accommodations": 780
-  },
-  {
     "id": 6,
     "location": "KUALA_LUMPUR",
     "name": "Equatorial Launch One",

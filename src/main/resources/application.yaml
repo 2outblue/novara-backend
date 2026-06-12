@@ -1,14 +1,6 @@
 spring:
   config:
     import: classpath:rate-limit.yaml
-  cache:
-#    type: jcache
-#    jcache:
-#      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
-#    cache-names:
-#      - buckets
-#    caffeine:
-#      spec: maximumSize=5000,expireAfterAccess=600s,
   mail:
     host: smtp.mailersend.net
     port: 587

@@ -3,6 +3,7 @@ package com.novaraspace.model.other;
 import java.util.List;
 
 public class VehicleJSON {
+    private long id;
     private String code;
     private String name;
 
@@ -18,6 +19,15 @@ public class VehicleJSON {
     private Long lowerClassId;
 
     private List<String> supportedRegions;
+
+    public long getId() {
+        return id;
+    }
+
+    public VehicleJSON setId(long id) {
+        this.id = id;
+        return this;
+    }
 
     public java.lang.String getCode() {
         return code;

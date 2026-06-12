@@ -4,7 +4,6 @@ import com.novaraspace.model.dto.admin.*;
 import com.novaraspace.model.dto.admin.publicAdmin.PaAuditLogDTO;
 import com.novaraspace.model.dto.admin.publicAdmin.PaUserControlResult;
 import com.novaraspace.model.dto.admin.publicAdmin.PaUserDetailsDTO;
-import com.novaraspace.model.dto.audit.AuditLogDTO;
 import com.novaraspace.model.dto.audit.AuditLogRequestDTO;
 import com.novaraspace.model.other.PageResponse;
 import com.novaraspace.service.PublicAdminService;

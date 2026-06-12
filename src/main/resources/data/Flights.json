@@ -10,7 +10,7 @@
     "orbitsDeparture": 0,
     "orbitsArrival": 0,
     "vehicleId": 1,
-    "weeklySchedule": "1111111"
+    "weeklySchedule": "2111112"
   },
   {
     "publicIdPrefix": "E1EN21-2",
@@ -23,7 +23,7 @@
     "orbitsDeparture": 0,
     "orbitsArrival": 0,
     "vehicleId": 3,
-    "weeklySchedule": "1111111"
+    "weeklySchedule": "1211211"
   },
   {
     "publicIdPrefix": "E1EN21-3",
@@ -49,7 +49,7 @@
     "orbitsDeparture": 0,
     "orbitsArrival": 0,
     "vehicleId": 7,
-    "weeklySchedule": "2121212"
+    "weeklySchedule": "2122212"
   },
 
   {
@@ -93,7 +93,7 @@
     "orbitsArrival": 0,
     "vehicleId": 3,
 
-    "weeklySchedule": "1111111"
+    "weeklySchedule": "2111112"
   },
   {
     "publicIdPrefix": "E1EN22-2",
@@ -106,7 +106,7 @@
     "orbitsDeparture": 0,
     "orbitsArrival": 0,
     "vehicleId": 1,
-    "weeklySchedule": "1221111"
+    "weeklySchedule": "1221121"
   },
   {
     "publicIdPrefix": "E1EN22-3",

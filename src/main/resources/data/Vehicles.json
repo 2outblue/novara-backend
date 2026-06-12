@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "code": "SLF",
     "name": "Starlifter",
     "firstClassId": 2,
@@ -9,6 +10,7 @@
     "amenities": ["OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
+    "id": 2,
     "code": "ORB",
     "name": "Orbitron",
     "firstClassId": 7,
@@ -18,6 +20,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR"]
   },
   {
+    "id": 3,
     "code": "SKY",
     "name": "Skycruiser",
     "firstClassId": 6,
@@ -27,6 +30,7 @@
     "amenities": ["OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
+    "id": 4,
     "code": "AST",
     "name": "Astra",
     "firstClassId": 5,
@@ -36,6 +40,7 @@
     "amenities": ["EVA", "GALLEY"]
   },
   {
+    "id": 5,
     "code": "LUN",
     "name": "Lunar Voyager",
     "firstClassId": 8,
@@ -45,6 +50,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
+    "id": 6,
     "code": "SEL",
     "name": "Selene",
     "firstClassId": 3,
@@ -54,6 +60,7 @@
     "amenities": ["EVA", "GALLEY"]
   },
   {
+    "id": 7,
     "code": "CRE",
     "name": "Crescent",
     "firstClassId": 9,
@@ -63,6 +70,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
+    "id": 8,
     "code": "TID",
     "name": "Tidal Runner",
     "firstClassId": 5,
@@ -72,6 +80,7 @@
     "amenities": ["EVA", "GALLEY"]
   },
   {
+    "id": 9,
     "code": "APO",
     "name": "Apollo Relay",
     "firstClassId": 7,
@@ -81,6 +90,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR"]
   },
   {
+    "id": 10,
     "code": "ARC",
     "name": "Arcus",
     "firstClassId": 10,
@@ -90,6 +100,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "GALLEY"]
   },
   {
+    "id": 11,
     "code": "VEN",
     "name": "Venera",
     "firstClassId": 4,
@@ -99,6 +110,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
+    "id": 12,
     "code": "CYT",
     "name": "Cythera",
     "firstClassId": 11,
@@ -108,6 +120,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR"]
   },
   {
+    "id": 13,
     "code": "MAR",
     "name": "Martian Trailblazer",
     "firstClassId": 3,
@@ -117,6 +130,7 @@
     "amenities": ["EVA", "GALLEY"]
   },
   {
+    "id": 14,
     "code": "RED",
     "name": "Red Horizon",
     "firstClassId": 8,
@@ -126,6 +140,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "VR", "GALLEY"]
   },
   {
+    "id": 15,
     "code": "ORB",
     "name": "Orbitmaster",
     "firstClassId": 10,
@@ -135,6 +150,7 @@
     "amenities": ["EVA", "OBSERVATION_LOUNGE", "GALLEY"]
   },
   {
+    "id": 16,
     "code": "PHO",
     "name": "Phobos Express",
     "firstClassId": 5,
@@ -144,6 +160,7 @@
     "amenities": ["EVA", "GALLEY"]
   },
   {
+    "id": 17,
     "code": "OLY",
     "name": "Olympus",
     "firstClassId": 3,
@@ -153,6 +170,7 @@
     "amenities": ["EVA", "GALLEY"]
   },
   {
+    "id": 18,
     "code": "VAL",
     "name": "Valles",
     "firstClassId": 3,
