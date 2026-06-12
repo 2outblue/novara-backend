@@ -8,13 +8,10 @@ import com.novaraspace.model.dto.user.*;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.entity.UserPaymentCard;
-import com.novaraspace.model.entity.VerificationToken;
-import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.audit.PassEventType;
 import com.novaraspace.model.events.PasswordEvent;
 import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.exception.UserException;
-import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.model.mapper.PaymentMapper;
 import com.novaraspace.model.mapper.UserMapper;
@@ -65,29 +62,11 @@ public class UserService {
         this.eventPublisher = eventPublisher;
     }
 
-//    @Transactional
-//    public void activateUserAccount(String userEmail) {
-//        User user = userRepository.findByEmail(userEmail).orElseThrow(VerificationException::failed);
-//        user.setStatus(AccountStatus.ACTIVE);
-//        user.setVerification(null);
-//    }
-
-//    @Transactional
-//    public void updateUserVerification(String email, VerificationToken verification) {
-//        User user = userRepository.findByEmail(email).orElseThrow(VerificationException::failed);
-//        user.setVerification(verification);
-//    }
-
     @Transactional
     public void setLastLoginNow(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Bad credentials."));
         user.setLastLoginAt(Instant.now());
     }
-
-//    public AccountDTO getAccountDTO(String authId) {
-//        User user = userRepository.findByAuthId(authId).orElseThrow(UserException::notFound);
-//        return userMapper.entityToAccountDTO(user);
-//    }
 
     public AccountDTO getCurrentAccountDTO() {
         User user = currentUserService.getUserEntity().orElseThrow(UserException::notFound);
@@ -129,12 +108,6 @@ public class UserService {
                 .setTotalPages(page.getTotalPages());
     }
 
-//    @Transactional(readOnly = true)
-//    public PaymentDTO[] getCurrentUserLast10Payments() {
-//        User user = currentUserService.getAuthenticatedUser().orElseThrow(UserException::notFound);
-//        return user.getPayments().stream()
-//                .map(paymentMapper::entityToPaymentDTO).toArray(PaymentDTO[]::new);
-//    }
 
     @Transactional(readOnly = true)
     public UserPaymentsResponseDTO getCurrentUserPaymentsData() {
@@ -146,10 +119,6 @@ public class UserService {
                 .setTotalInvoiced(user.getTotalInvoiced());
     }
 
-//    public EmailDTO getEmailByAuthId(String authId) {
-//        String email = userRepository.getEmailByAuthId(authId).orElseThrow(UserException::notFound);
-//        return new EmailDTO().setEmail(email);
-//    }
 
     @Transactional
     public UserDocumentDTO[] updateUserDocument(UserDocumentUpdateRequest request) {
@@ -212,7 +181,6 @@ public class UserService {
     }
 
     public Optional<User> findEntityByAuthId(String authId) {return userRepository.findByAuthId(authId);}
-//    public Optional<String> getAuthIdByEmail(String email) { return userRepository.getAuthIdByEmail(email);}
     public Optional<User> getEntityByEmail(String email) { return userRepository.findByEmail(email); }
 
 }

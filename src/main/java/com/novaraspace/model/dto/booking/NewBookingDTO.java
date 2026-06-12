@@ -2,7 +2,6 @@ package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.model.dto.flight.FlightReserveDTO;
 import com.novaraspace.validation.annotations.ValidPassengerIntraIds;
-import com.novaraspace.validation.annotations.ValidReturnFlightComponents;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 

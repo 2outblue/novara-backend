@@ -1,18 +1,15 @@
 package com.novaraspace.init;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.novaraspace.model.embedded.DestinationPoint;
 import com.novaraspace.model.entity.Destination;
 import com.novaraspace.model.entity.Location;
 import com.novaraspace.model.enums.FlightRegion;
-import com.novaraspace.model.other.LocationJSON;
 import com.novaraspace.repository.DestinationRepository;
 import com.novaraspace.repository.LocationRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;

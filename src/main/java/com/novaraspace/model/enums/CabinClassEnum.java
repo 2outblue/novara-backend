@@ -6,9 +6,7 @@ public enum CabinClassEnum {
     LOWER("Explorer Class", 3640, 7350);
 
     //TODO: FEES SHOULD ALWAYS BE THE SAME IN THE FRONTEND
-    // Build some endpoint so the frontend can get the fee data from here or some
-    // JSON env file which will also be used through some @Component to get the fees
-    // in the backend as well instead of having them directly in the enum like that
+    // Move the fees here in the BE
     private final String displayName;
     private final double changeFee;
     private final double refundFee;

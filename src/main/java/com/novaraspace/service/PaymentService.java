@@ -89,16 +89,6 @@ public class PaymentService {
         return code.toString();
     }
 
-    /**
-     * Doesn't set the serviceReference
-     */
-//    private Payment createPaymentFromNewPaymentDTO(NewPaymentDTO dto) {
-//        Payment partialEntity = paymentMapper.newPaymentDTOToEntity(dto);
-//        return partialEntity
-//                .setReference(UUID.randomUUID().toString())
-//                .setCardType(determineCardType(partialEntity.getFirstFour()))
-//                .setCreatedAt(LocalDateTime.now());
-//    }
 
     private String determineCardType(String firstFourDigits) {
         if (firstFourDigits.length() != 4) {return "Card";}

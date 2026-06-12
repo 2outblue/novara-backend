@@ -1,16 +1,9 @@
 package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.model.enums.BaggageCapacity;
-import com.novaraspace.validation.annotations.ValidBaggageCapacity;
-import com.novaraspace.validation.annotations.ValidNewPassengerBaggage;
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
-//@ValidNewPassengerBaggage
 public class PassengerBaggageDTO {
-//    @Size(max = 10)
     private BaggageCapacity capacity;
 
     private double price;

@@ -1,7 +1,6 @@
 package com.novaraspace.model.dto.flight;
 
 import com.novaraspace.validation.annotations.ValidFlightGenParams;
-import jakarta.validation.constraints.AssertTrue;
 
 import java.time.LocalDate;
 

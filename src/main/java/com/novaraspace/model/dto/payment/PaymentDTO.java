@@ -1,7 +1,5 @@
 package com.novaraspace.model.dto.payment;
 
-import jakarta.validation.constraints.*;
-
 import java.time.LocalDateTime;
 
 public class PaymentDTO {

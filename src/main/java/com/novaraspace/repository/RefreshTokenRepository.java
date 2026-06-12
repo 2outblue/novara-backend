@@ -1,7 +1,6 @@
 package com.novaraspace.repository;
 
 import com.novaraspace.model.entity.RefreshToken;
-//import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +17,6 @@ import java.util.UUID;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-    Optional<RefreshToken> findByUserAuthId(String userAuthId);
     Optional<RefreshToken> findByPublicKey(String publicKey);
 
     @Modifying
@@ -40,7 +38,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     @Query("select t.userAuthId from RefreshToken t where cast(t.createdOn as localdatetime) >= :date and t.revoked = false")
     List<String> getAllAuthIdsForActiveUsers(LocalDateTime date, Pageable pageable);
 
-//    Integer countByCreatedOnAfter(LocalDateTime date);
 
     @Query("select count(distinct t.userAuthId) from RefreshToken t where cast(t.createdOn as localdatetime) >= :date and t.revoked = false")
     Integer getCountForActiveUsers(LocalDateTime date);

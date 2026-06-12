@@ -100,7 +100,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtEncoder jwtEncoder() { // TODO: Rework this, especially the jwkSource!
+    JwtEncoder jwtEncoder() { // TODO: Rework this!
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
         OctetSequenceKey jwk = new OctetSequenceKey.Builder(secretKey)

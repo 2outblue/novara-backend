@@ -1,7 +1,6 @@
 package com.novaraspace.security;
 
 import com.novaraspace.model.dto.user.UserSummary;
-import com.novaraspace.model.entity.User;
 import com.novaraspace.model.exception.UserException;
 import com.novaraspace.service.CurrentUserService;
 import org.springframework.stereotype.Component;

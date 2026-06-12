@@ -127,7 +127,6 @@ public class AuthTokenService {
 
         oldToken.setRotated(newSavedToken.getPublicKey());
         refreshTokenRepository.save(oldToken);
-//        refreshTokenRepository.revokeByPublicKey(oldToken.getPublicKey());
         return publicKey + "." + base64Secret;
     }
 

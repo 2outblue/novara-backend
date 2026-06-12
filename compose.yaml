@@ -9,10 +9,10 @@ services:
     volumes:
       - novara-db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p1q2w3e4r"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 6
   be:
     image: ghcr.io/2outblue/novara-backend:latest
     restart: unless-stopped
@@ -30,6 +30,8 @@ services:
       NOVARA_DB_URL: ${NOVARA_DB_URL}
       MYSQL_PASS1: ${MYSQL_ROOT_PASSWORD}
       NOVARA_JWT_SECRET: ${NOVARA_JWT_SECRET}
+      NOVARA_ADMIN_PASS: ${NOVARA_ADMIN_PASS}
+      NOVARA_USER_PASS: ${NOVARA_USER_PASS}
     ports:
       - "127.0.0.1:8095:8095"
 volumes:

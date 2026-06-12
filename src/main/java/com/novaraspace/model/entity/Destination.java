@@ -57,16 +57,6 @@ public class Destination extends BaseEntity {
         return this;
     }
 
-
-    //    public DestinationDetails getPrimaryDets() {
-//        return primaryDets;
-//    }
-//
-//    public Destination setPrimaryDets(DestinationDetails primaryDets) {
-//        this.primaryDets = primaryDets;
-//        return this;
-//    }
-
     public String getSecondaryDesc() {
         return secondaryDesc;
     }

@@ -1,7 +1,6 @@
 package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.model.enums.PaxAgeGroup;
-import com.novaraspace.validation.annotations.ValidPassengerAgeGroup;
 import com.novaraspace.validation.annotations.ValidPassengerTitle;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -24,10 +23,6 @@ public class PassengerDTO {
     @NotNull
     @Past
     private LocalDate dob;
-//    @NotBlank
-//    @Size(min = 1, max = 20)
-//    @ValidPassengerAgeGroup
-//    private String ageGroup;
     @NotNull
     private PaxAgeGroup ageGroup;
     @NotNull

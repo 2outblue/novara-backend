@@ -1,7 +1,5 @@
 package com.novaraspace.model.dto.user;
 
-import java.time.LocalDate;
-
 public class UserCardDTO {
     private String reference;
     private String firstFour;

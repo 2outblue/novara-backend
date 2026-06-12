@@ -6,10 +6,7 @@ import com.novaraspace.model.dto.user.UserLoginDTO;
 import com.novaraspace.model.dto.user.UserRegisterDTO;
 import com.novaraspace.security.MinResponseTime;
 import com.novaraspace.service.AuthService;
-import com.novaraspace.service.EmailService;
-import com.novaraspace.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -32,17 +29,15 @@ public class AuthController {
 
     private final AuthenticationManager authManager;
     private final AuthService authService;
-    private final EmailService emailService;
 
     @Value("${app.jwt.expiry-minutes}")
     private long jwtExpiryMinutes;
     @Value("${app.enable-email-verification}")
     private boolean emailVerificationEnabled;
 
-    public AuthController(AuthenticationManager authManager, AuthService authService, EmailService emailService, UserService userService) {
+    public AuthController(AuthenticationManager authManager, AuthService authService) {
         this.authManager = authManager;
         this.authService = authService;
-        this.emailService = emailService;
     }
 
     @PostMapping("/register")

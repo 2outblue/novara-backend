@@ -4,7 +4,7 @@ import com.novaraspace.model.dto.flight.FlightSearchResultDTO;
 
 public class ChangeFlightsStartResponse {
     private FlightSearchResultDTO flightSearchResult;
-    private String quoteReference; //Mainly used to validate flight dates
+    private String quoteReference;
 
     public FlightSearchResultDTO getFlightSearchResult() {
         return flightSearchResult;

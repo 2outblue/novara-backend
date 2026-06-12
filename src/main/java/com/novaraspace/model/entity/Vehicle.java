@@ -16,14 +16,6 @@ public class Vehicle {
     private String code;
     @Column(nullable = false)
     private String name;
-//    @Column(nullable = false)
-//    private boolean eva;
-//    @Column(nullable = false)
-//    private boolean observationLounge;
-//    @Column(nullable = false)
-//    private boolean vr;
-//    @Column(nullable = false)
-//    private boolean galley;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vehicle_amenities", joinColumns = @JoinColumn(name = "vehicle_id"))
@@ -97,42 +89,6 @@ public class Vehicle {
         this.amenities = amenities;
         return this;
     }
-
-    //    public boolean hasEva() {
-//        return eva;
-//    }
-//
-//    public Vehicle setEva(boolean eva) {
-//        this.eva = eva;
-//        return this;
-//    }
-//
-//    public boolean hasObservationLounge() {
-//        return observationLounge;
-//    }
-//
-//    public Vehicle setObservationLounge(boolean observationLounge) {
-//        this.observationLounge = observationLounge;
-//        return this;
-//    }
-//
-//    public boolean hasVr() {
-//        return vr;
-//    }
-//
-//    public Vehicle setVr(boolean vr) {
-//        this.vr = vr;
-//        return this;
-//    }
-//
-//    public boolean hasGalley() {
-//        return galley;
-//    }
-//
-//    public Vehicle setGalley(boolean galley) {
-//        this.galley = galley;
-//        return this;
-//    }
 
     public CabinClass getFirstClass() {
         return firstClass;

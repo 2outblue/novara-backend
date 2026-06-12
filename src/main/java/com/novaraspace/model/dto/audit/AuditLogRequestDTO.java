@@ -1,7 +1,6 @@
 package com.novaraspace.model.dto.audit;
 
 import com.novaraspace.model.enums.audit.AuditActionFilter;
-import com.novaraspace.model.enums.audit.Outcome;
 import com.novaraspace.model.enums.audit.OutcomeFilter;
 import jakarta.validation.constraints.*;
 

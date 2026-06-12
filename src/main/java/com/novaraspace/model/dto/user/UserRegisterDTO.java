@@ -4,8 +4,6 @@ import com.novaraspace.validation.annotations.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.Date;
 
 public class UserRegisterDTO {
     @NotBlank

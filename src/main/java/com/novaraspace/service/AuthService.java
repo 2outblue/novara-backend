@@ -41,6 +41,8 @@ public class AuthService {
     private boolean emailVerificationEnabled;
     @Value("${app.user.max-activation-attempts}")
     private int maxUserActivationAttempts;
+    @Value("${app.user.reset-token-expiry-minutes}")
+    private int resetTokenExpiryMinutes;
 
     private final UserService userService;
     private final VerificationService verificationService;
@@ -80,7 +82,6 @@ public class AuthService {
 
     @Transactional
     public AuthResponseDTO login(Authentication auth) {
-//        TokenAuthenticationDTO tokenDTO = generateNewTokenAuthentication(auth);
         TokenAuthenticationDTO tokenDTO = tokenService.generateNewTokenAuthentication(auth);
         ResponseCookie cookie = createRefreshTokenCookie(tokenDTO.getRefreshToken(), false);
         eventPublisher.publishEvent(new UserLoginEvent(Outcome.SUCCESS, auth.getName()));
@@ -147,7 +148,6 @@ public class AuthService {
                 user.getEmail(), newVerification.getCode(), newVerification.getLinkToken()
         ));
         if (emailSend) {
-            //TODO: Definitely test this
             verificationService.deleteAllExistingTokensForEmail(user.getEmail());
             user.setVerification(newVerification);
         }
@@ -167,7 +167,7 @@ public class AuthService {
                 email,
                 token.getTokenValue(),
                 user.getFirstName(),
-                "30"
+                Integer.toString(resetTokenExpiryMinutes)
         );
         emailService.sendPasswordResetLink(emailParams);
         eventPublisher.publishEvent(new PasswordEvent(PassEventType.RESET_REQUEST, email));
@@ -195,7 +195,7 @@ public class AuthService {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .path("/auth")
+                .path("/api/auth")
                 .maxAge( logout ? Duration.ZERO : Duration.ofHours(refreshExpiryHours))
                 .sameSite("Strict")
                 .build();

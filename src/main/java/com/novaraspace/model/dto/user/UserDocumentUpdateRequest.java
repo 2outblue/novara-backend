@@ -1,7 +1,6 @@
 package com.novaraspace.model.dto.user;
 
 import com.novaraspace.validation.annotations.ValidUserDocumentUpdateRequest;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @ValidUserDocumentUpdateRequest

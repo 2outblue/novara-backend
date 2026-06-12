@@ -12,10 +12,6 @@ public class VerificationToken extends BaseEntity {
     @Column(nullable = false)
     private String code;
 
-//    @OneToOne
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
-
     @Column(nullable = false)
     private String userEmail;
 
@@ -58,15 +54,6 @@ public class VerificationToken extends BaseEntity {
         this.userEmail = userEmail;
         return this;
     }
-
-    //    public User getUser() {
-//        return user;
-//    }
-//
-//    public VerificationToken setUser(User user) {
-//        this.user = user;
-//        return this;
-//    }
 
     public Instant getCreatedAt() {
         return createdAt;

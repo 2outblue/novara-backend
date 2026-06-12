@@ -11,15 +11,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Component
 @Order(1)
 public class CabinClassDBInit implements CommandLineRunner {
-
     private final ObjectMapper mapper;
     private final CabinClassRepository cabinClassRepository;
 
@@ -27,8 +24,6 @@ public class CabinClassDBInit implements CommandLineRunner {
         this.mapper = mapper;
         this.cabinClassRepository = cabinClassRepository;
     }
-
-
 
     @Override
     public void run(String... args) throws Exception {
@@ -52,16 +47,4 @@ public class CabinClassDBInit implements CommandLineRunner {
 
         cabinClassRepository.saveAll(cabinClasses);
     }
-
-//    private void initCabinClasses() {
-//        List<CabinClass> cabinClasses = Stream.of(
-//                CabinClassesFactory.getFirstClasses().entrySet(),
-//                CabinClassesFactory.getMiddleClasses().entrySet(),
-//                CabinClassesFactory.getLowerClasses().entrySet()
-//        ).flatMap(set -> set.stream())
-//                        .map(entry -> entry.getValue())
-//                        .toList();
-//
-//        classRepository.saveAll(cabinClasses);
-//    }
 }

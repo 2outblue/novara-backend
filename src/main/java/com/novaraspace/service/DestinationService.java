@@ -1,7 +1,6 @@
 package com.novaraspace.service;
 
 import com.novaraspace.model.dto.destination.DestinationDTO;
-import com.novaraspace.model.entity.Destination;
 import com.novaraspace.model.mapper.DestinationMapper;
 import com.novaraspace.repository.DestinationRepository;
 import org.springframework.cache.annotation.Cacheable;

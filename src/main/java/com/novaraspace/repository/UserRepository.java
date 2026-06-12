@@ -5,7 +5,6 @@ import com.novaraspace.model.domain.UserBookingsQuery;
 import com.novaraspace.model.domain.UserStatusParams;
 import com.novaraspace.model.dto.admin.ChangeUserStatusRequestDTO;
 import com.novaraspace.model.dto.admin.UserControlSearchDTO;
-import com.novaraspace.model.dto.admin.UsersStatusRequestDTO;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.User;
 import com.novaraspace.model.enums.AccountStatus;
@@ -25,7 +24,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
-    boolean existsByAuthId(String authId);
     Optional<User> findByEmail(String email);
     Optional<User> findByAuthId(String authId);
 

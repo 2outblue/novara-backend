@@ -76,7 +76,7 @@ public class Booking extends BaseEntity {
         this.cancelled = true;
     }
 
-    //TODO: Probably a way to combine the changeFlight methods?
+    //TODO: Combine the changeFlight methods?
     public void changeDepartureFlight(FlightInstance newFlight, FlightReserveDTO reserveDTO) {
         if (newFlight == null || reserveDTO == null) {throw BookingException.changeFailed();}
         CabinClassEnum newCabinClass = CabinClassEnum.getEnumFromDisplayName(reserveDTO.getFlightClass());
@@ -247,8 +247,4 @@ public class Booking extends BaseEntity {
         return demo;
     }
 
-    //    public Booking setCancelled(boolean cancelled) {
-//        this.cancelled = cancelled;
-//        return this;
-//    }
 }

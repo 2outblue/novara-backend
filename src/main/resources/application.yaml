@@ -19,7 +19,7 @@ spring:
     name: novara
   datasource:
     username: ${NOVARA_SQL_USER:root}
-    url: ${NOVARA_DB_URL:jdbc:mysql://localhost:3306/novara-main?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
+    url: ${NOVARA_DB_URL:jdbc:mysql://mysql:3306/novara-main?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ${MYSQL_PASS1:1q2w3e4r}
   jpa:
@@ -47,9 +47,9 @@ app:
     expiry-minutes: 20
     refresh-expiry-hours: 32
   verification-token-expiry-hours: 24
-  enable-email-verification: false
-  enable-email-password-reset: false
-  frontend-url: http://localhost:4200
+  enable-email-verification: true
+  enable-email-password-reset: true
+  frontend-url: https://novaraspace.com
   flight:
     padding-days-on-fetch: 14
     unbooked-cleanup-days-back: 10
@@ -59,6 +59,9 @@ app:
   user:
     max-activation-attempts: 4
     unverified-cleanup-days: 5
+    reset-token-expiry-minutes: 30
+    adminInitialPass: ${NOVARA_ADMIN_PASS}
+    userInitialPass: ${NOVARA_USER_PASS}
 
 server:
   port: 8095

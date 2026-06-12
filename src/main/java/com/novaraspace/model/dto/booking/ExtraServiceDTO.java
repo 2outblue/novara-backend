@@ -1,13 +1,9 @@
 package com.novaraspace.model.dto.booking;
 
 import com.novaraspace.model.enums.ExtraServiceCode;
-import com.novaraspace.validation.annotations.ValidExtraServiceCode;
 import jakarta.validation.constraints.*;
 
 public class ExtraServiceDTO {
-//    @NotBlank
-//    @Size(min = 1, max = 30)
-//    @ValidExtraServiceCode
     @NotNull
     private ExtraServiceCode code;
 

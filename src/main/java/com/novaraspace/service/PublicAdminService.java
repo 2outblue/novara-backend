@@ -79,9 +79,6 @@ public class PublicAdminService {
         return paMapper.toPaUserDetailsDTO(rawDetails);
     }
 
-
-
-
     private EmailsAndTotalCount maskEmails(EmailsAndTotalCount raw) {
         List<String> maskedEmails = raw.getEmails().stream()
                 .map(dataMasker::hardMaskEmail).toList();

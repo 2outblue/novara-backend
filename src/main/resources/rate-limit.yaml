@@ -48,11 +48,11 @@ bucket4j:
         - cache-key: "getHeader('X-Real-IP') != null ? getHeader('X-Real-IP') : getRemoteAddr()"
           skip-condition: "method == 'OPTIONS'"
           bandwidths:
-            - capacity: 1
+            - capacity: 2
               time: 10
               unit: seconds
               refill-speed: greedy
-            - capacity: 10
+            - capacity: 12
               time: 2
               unit: minutes
               refill-speed: greedy

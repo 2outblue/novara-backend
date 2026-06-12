@@ -1,14 +1,11 @@
 package com.novaraspace.model.entity;
 
-import com.novaraspace.model.dto.user.AddCardDTO;
 import com.novaraspace.model.dto.user.UserDocumentUpdateRequest;
 import com.novaraspace.model.enums.AccountStatus;
 import com.novaraspace.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,8 +21,6 @@ import static java.sql.Types.VARCHAR;
         @Index(name = "idx_creationDate", columnList = "created_at")
 })
 public class User extends BaseEntity {
-
-
     private String publicId;
     private Instant createdAt;
     @JdbcTypeCode(VARCHAR)
@@ -215,23 +210,6 @@ public class User extends BaseEntity {
         return this;
     }
 
-//    public LocalDateTime getLastResetStamp() {
-//        return lastResetStamp;
-//    }
-//
-//    public User setLastResetStamp(LocalDateTime lastResetStamp) {
-//        this.lastResetStamp = lastResetStamp;
-//        return this;
-//    }
-//
-//    public int getRecentResetCount() {
-//        return recentResetCount;
-//    }
-//
-//    public User setRecentResetCount(int recentResetCount) {
-//        this.recentResetCount = recentResetCount;
-//        return this;
-//    }
 
     public boolean isDemo() {
         return isDemo;

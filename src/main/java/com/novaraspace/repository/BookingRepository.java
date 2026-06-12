@@ -22,22 +22,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Transactional
     Integer deleteAllByDemoIsFalseAndCreatedAtBefore(LocalDateTime date);
-
-//    @Query("""
-//    select b from User u join u.bookings b where u.id = :#{#params.userId}
-//    and (b.returnFlight is null OR (cast(b.returnFlight.departureDate as localdatetime) >= :#{#params.minDate}
-//        and cast(b.returnFlight.departureDate as localdatetime) < :#{#params.maxDate}))
-//    or (cast(b.departureFlight.departureDate as localdatetime) >= :#{#params.minDate}
-//        and cast(b.departureFlight.departureDate as localdatetime) < :#{#params.maxDate})
-//""")
-//    Page<Booking> getUserUpcomingBookings(@Param("params") UserBookingsQuery params, Pageable pageable);
-//
-//    @Query("""
-//    select b from User u join u.bookings b where u.id = :#{#params.userId}
-//    and (b.returnFlight is null OR (cast(b.returnFlight.arrivalDate as localdatetime) <= :#{#params.maxDate}
-//        and cast(b.returnFlight.departureDate as localdatetime) > :#{#params.minDate}))
-//    and (cast(b.departureFlight.arrivalDate as localdatetime) <= :#{#params.maxDate}
-//        and cast(b.departureFlight.departureDate as localdatetime) > :#{#params.minDate})
-//""")
-//    Page<Booking> getUserBookingsHistory(@Param("params") UserBookingsQuery params, Pageable pageable);
 }

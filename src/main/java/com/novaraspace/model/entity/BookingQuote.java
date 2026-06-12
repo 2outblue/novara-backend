@@ -11,7 +11,6 @@ import org.hibernate.type.SqlTypes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-//TODO: need a scheduled task to clean these up if expired
 @Entity
 @Table(indexes = {
         @Index(name = "idx_reference", columnList = "reference")

@@ -15,7 +15,6 @@ import com.novaraspace.model.exception.BookingException;
 import com.novaraspace.model.mapper.BookingMapper;
 import com.novaraspace.repository.BookingRepository;
 import com.novaraspace.validation.business.BookingValidator;
-//import jakarta.transaction.Transactional;
 import com.novaraspace.validation.business.ChangeFlightValidator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ import java.util.List;
 
 @Service
 public class BookingService {
-
 
     private final BookingMapper bookingMapper;
     private final FlightService flightService;
@@ -41,8 +39,7 @@ public class BookingService {
     private final CurrentUserService currentUserService;
     private final ApplicationEventPublisher eventPublisher;
 
-    //TODO: Maybe rename this to something like BookingCreationService and keep the getResultForNewBookingStart
-    // and createNewBooking methods, and move the others to a BookingManageService
+    //TODO: Split this into BookingCreateService and BookingManageService?
     public BookingService(
             BookingMapper bookingMapper,
             FlightService flightService,
@@ -70,7 +67,6 @@ public class BookingService {
         FlightSearchResultDTO flightSearchResultDTO = flightService.getFlightSearchResult(flightSearchParamsDTO);
         ServicesPricingOffer servicesPricing = pricingService
                 .getServiceOfferForNewBooking(flightSearchParamsDTO.getTotalPaxCount());
-//        BookingQuoteDTO bookingQuote = bookingQuoteService.createQuoteWithoutServicesOffer(flightSearchParamsDTO, flightSearchResultDTO);
 
         String quoteReference = bookingQuoteService.createQuoteForNewBooking(
                 new BookingQuoteParams(flightSearchParamsDTO, flightSearchResultDTO, servicesPricing)
@@ -95,14 +91,12 @@ public class BookingService {
         booking.setReturnFlight(returnFlight);
 
         String bookingReference = bookingReferenceGenerator.generateUniqueReference();
-//        Payment payment = paymentService.createNewPayment(request.getPaymentDTO(), bookingReference);
         Payment payment = paymentService.createBookingConfirmPayment(request.getPaymentDTO(), bookingReference);
 
         BookingQuote quote = bookingQuoteService.getValidQuoteByReference(request.getBookingDTO().getQuoteReference());
         boolean validBooking = bookingValidator.validateNewBooking(
                 new BookingValidationParams(booking, payment, quote));
 
-//        boolean validBookingPayment = bookingValidator.validateBookingAgainstPayment(booking, payment);
         if (!validBooking) {throw BookingException.creationFailed();}
 
         int paxCount = booking.getPassengers().size();
@@ -145,7 +139,7 @@ public class BookingService {
     public BookingDTO cancelBooking(BookingSearchParams params) {
         //TODO: Maybe make 'reverse' payments of refundable amount to show them as refunds on user account?
         Booking booking = findValidBooking(params);
-//        FlightInstance departureFlight = booking.getDepartureFlight();
+
         if (!booking.canModify()) {
             throw BookingException.changeFailed();
         }

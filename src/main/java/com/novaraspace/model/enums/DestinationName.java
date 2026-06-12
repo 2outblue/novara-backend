@@ -1,6 +1,5 @@
 package com.novaraspace.model.enums;
 
-import java.util.Arrays;
 
 public enum DestinationName {
     EARTH, MOON, MARS, VENUS;

@@ -27,13 +27,8 @@ import java.util.Optional;
 @Service
 public class FlightService {
 
-    private final int availabilityMonthsFromToday = 6;
-
     @Value("${app.flight.max-future-departure-days}")
     private int maxFutureDepartureDays;
-
-    @Value("${app.flight.padding-days-on-fetch}")
-    private int paddingRange;
 
     private final FlightTemplateRepository flightTemplateRepository;
     private final FlightInstanceRepository flightInstanceRepository;

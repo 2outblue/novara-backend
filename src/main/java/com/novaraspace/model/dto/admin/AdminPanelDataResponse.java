@@ -1,6 +1,5 @@
 package com.novaraspace.model.dto.admin;
 
-import org.springframework.lang.Nullable;
 
 public class AdminPanelDataResponse {
     private Integer totalUsers;

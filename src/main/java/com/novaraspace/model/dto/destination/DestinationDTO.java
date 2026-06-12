@@ -3,7 +3,6 @@ package com.novaraspace.model.dto.destination;
 import com.novaraspace.model.dto.location.LocationDetailsDTO;
 import com.novaraspace.model.embedded.DestinationDetails;
 import com.novaraspace.model.embedded.DestinationPoint;
-import com.novaraspace.model.entity.Location;
 import com.novaraspace.model.enums.DestinationName;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package com.novaraspace.service;
 
 import com.novaraspace.model.entity.VerificationToken;
 import com.novaraspace.model.exception.FailedOperationException;
-import com.novaraspace.model.exception.VerificationException;
 import com.novaraspace.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

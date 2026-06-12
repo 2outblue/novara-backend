@@ -1,7 +1,6 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.enums.PaxAgeGroup;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ public class Passenger extends BaseEntity {
     private String lastName;
     private LocalDate dob;
     private PaxAgeGroup ageGroup;
-//    private String ageGroup;
     private long cabinId;
 
     @ManyToOne

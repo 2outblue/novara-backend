@@ -2,7 +2,6 @@ package com.novaraspace.listeners;
 
 import com.novaraspace.model.dto.user.UserSummary;
 import com.novaraspace.model.entity.AuditLog;
-import com.novaraspace.model.entity.User;
 import com.novaraspace.model.enums.UserRole;
 import com.novaraspace.model.enums.audit.*;
 import com.novaraspace.model.events.*;
@@ -11,7 +10,6 @@ import com.novaraspace.service.CurrentUserService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Component

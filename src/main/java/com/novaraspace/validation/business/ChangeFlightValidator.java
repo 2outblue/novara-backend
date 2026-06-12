@@ -5,7 +5,6 @@ import com.novaraspace.model.dto.booking.ChangeFlightsRequest;
 import com.novaraspace.model.entity.Booking;
 import com.novaraspace.model.entity.BookingQuote;
 import com.novaraspace.model.entity.FlightInstance;
-import com.novaraspace.model.enums.CabinClassEnum;
 import com.novaraspace.repository.BookingQuoteRepository;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.util.DoublePricesUtil;

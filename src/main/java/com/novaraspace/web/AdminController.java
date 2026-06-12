@@ -1,9 +1,9 @@
 package com.novaraspace.web;
 
-import com.novaraspace.factory.FlightJSONFactory;
 import com.novaraspace.model.dto.admin.*;
 import com.novaraspace.model.dto.audit.AuditLogDTO;
 import com.novaraspace.model.dto.audit.AuditLogRequestDTO;
+import com.novaraspace.model.dto.flight.FlightInstanceGenerationParams;
 import com.novaraspace.model.dto.flight.FlightTemplateGenerationRequest;
 import com.novaraspace.model.other.FlightJSON;
 import com.novaraspace.model.other.PageResponse;
@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -43,13 +41,6 @@ public class AdminController {
         FlightJSON fl = flightGenerationService.generateNewFlightJSON(data);
         return ResponseEntity.ok(fl);
     }
-
-
-//    @GetMapping("/active-users")
-//    public ResponseEntity<ActiveUsersResponseDTO> getCurrentActiveUsers() {
-//        ActiveUsersResponseDTO res = adminService.getCurrentActiveUsers();
-//        return ResponseEntity.ok(res);
-//    }
 
     @PostMapping("/panel")
     public ResponseEntity<AdminPanelDataResponse> getAdminPanelData(@Valid @RequestBody AdminPanelDataRequestDTO dto) {
@@ -85,6 +76,12 @@ public class AdminController {
     public ResponseEntity<Void> resetUserPassword(@Valid @RequestBody UcPasswordResetRequest req) {
         adminService.resetUserPassword(req);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/generate-flights")
+    public ResponseEntity<Integer> generateFlights(@RequestBody @Valid FlightInstanceGenerationParams params) {
+        Integer count = flightGenerationService.generateForAllTemplates(params);
+        return ResponseEntity.ok(count);
     }
 
 }

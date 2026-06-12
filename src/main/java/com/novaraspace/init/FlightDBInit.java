@@ -55,7 +55,6 @@ public class FlightDBInit implements CommandLineRunner {
                     .filter(l -> l.getRegion().equals(FlightRegion.EARTH))
                     .collect(Collectors.toList());
 
-//            generateFlights();
             generateFlightsForAllTemplates();
         }
 
@@ -93,23 +92,6 @@ public class FlightDBInit implements CommandLineRunner {
                 .append(".json")
                 .toString();
     }
-
-//    private void generateFlights() throws IOException {
-//        ClassPathResource flightsResource = new ClassPathResource("data/Flights.json");
-//        List<FlightJSON> flightsData = Arrays.asList(mapper.readValue(flightsResource.getInputStream(), FlightJSON[].class));
-//
-//        LocalDate startDate = LocalDate.now().plusDays(1);
-//        LocalDate endDate = LocalDate.now().plusMonths(1);
-//
-//        List<FlightTemplate> templatesWithInstances1 = flightsData.stream()
-//                .map(this::jsonToTemplate)
-//                .map(t -> {
-//                    List<FlightInstance> instances = flightGenerationService
-//                            .generateInstancesForTemplate(t, new FlightInstanceGenerationParams(startDate, endDate));
-//                    return t.setInstances(instances);
-//                }).toList();
-//        flightTemplateRepository.saveAll(templatesWithInstances1);
-//    }
 
     private FlightTemplate jsonToTemplate(FlightJSON json) {
         Location departureLocation = locationsMap.get(json.getDepartureLocationId());

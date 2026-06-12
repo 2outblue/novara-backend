@@ -14,7 +14,6 @@ import com.novaraspace.model.other.FlightGenerationProperties;
 import com.novaraspace.model.other.FlightJSON;
 import com.novaraspace.repository.FlightInstanceRepository;
 import com.novaraspace.repository.FlightTemplateRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -143,11 +142,6 @@ public class FlightGenerationService {
         double galleyM = amenities.contains(VehicleAmenity.GALLEY) ? flightProps.getGalleyMultiplier() : 1.0;
         double loungeM = amenities.contains(VehicleAmenity.OBSERVATION_LOUNGE) ? flightProps.getLoungeMultiplier() : 1.0;
         double vrM = amenities.contains(VehicleAmenity.VR) ? flightProps.getVrMultiplier() : 1.0;
-
-//        double evaM = vehicle.hasEva() ? flightProps.getEvaMultiplier() : 1.0;
-//        double galleyM = vehicle.hasGalley() ? flightProps.getGalleyMultiplier() : 1.0;
-//        double loungeM = vehicle.hasObservationLounge() ? flightProps.getLoungeMultiplier() : 1.0;
-//        double vrM = vehicle.hasVr() ? flightProps.getVrMultiplier() : 1.0;
 
         double amenitiesMultiplier = evaM + galleyM + loungeM + vrM;
 

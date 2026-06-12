@@ -62,20 +62,6 @@ public abstract class FlightMapper {
         FlightLeg departure = mapFlightLegFromInstance(instance, true);
         FlightLeg arrival = mapFlightLegFromInstance(instance, false);
 
-//        FlightLeg departure = new FlightLeg()
-//                .setLocationCode(template.getDepartureLocation().getCode())
-//                .setRegion(template.getDepartureLocation().getRegion())
-//                .setLocation(template.getDepartureLocation().getName())
-//                .setDate(instance.getDepartureDate())
-//                .setMinimumOrbits(template.getOrbitsDeparture());
-//
-//        FlightLeg arrival = new FlightLeg()
-//                .setLocationCode(template.getArrivalLocation().getCode())
-//                .setRegion(template.getArrivalLocation().getRegion())
-//                .setLocation(template.getArrivalLocation().getName())
-//                .setDate(instance.getArrivalDate())
-//                .setMinimumOrbits(template.getOrbitsArrival());
-
         AvailableFlightDTO.AvailableCabinClassDTO firstClass = new AvailableFlightDTO.AvailableCabinClassDTO()
                 .setTotal(vehicle.getFirstClass().getTotalSeats())
                 .setAvailable(instance.getFirstClass().getAvailableSeats())

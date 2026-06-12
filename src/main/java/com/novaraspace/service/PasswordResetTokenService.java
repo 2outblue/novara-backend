@@ -3,6 +3,7 @@ package com.novaraspace.service;
 import com.novaraspace.model.entity.PasswordResetToken;
 import com.novaraspace.model.exception.UserException;
 import com.novaraspace.repository.PasswordResetTokenRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -15,17 +16,20 @@ public class PasswordResetTokenService {
 
     private final PasswordResetTokenRepository repository;
 
+    @Value("${app.user.reset-token-expiry-minutes}")
+    private int resetTokenExpiryMinutes;
+
     public PasswordResetTokenService(PasswordResetTokenRepository repository) {
         this.repository = repository;
     }
 
-    //TODO: Encode the token value in the DB
+    //TODO: Don't store raw values here.
     public PasswordResetToken generateNewToken(String authId) {
         repository.deleteAllByUserAuthId(authId);
         PasswordResetToken token = new PasswordResetToken()
                 .setTokenValue(generateTokenValue())
                 .setUserAuthId(authId)
-                .setExpiresOn(LocalDateTime.now().plusMinutes(30));
+                .setExpiresOn(LocalDateTime.now().plusMinutes(resetTokenExpiryMinutes));
         return repository.save(token);
     }
 

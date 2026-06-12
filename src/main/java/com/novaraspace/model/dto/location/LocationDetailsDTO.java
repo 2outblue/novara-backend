@@ -1,7 +1,5 @@
 package com.novaraspace.model.dto.location;
 
-import com.novaraspace.model.enums.FlightRegion;
-
 public class LocationDetailsDTO {
 
     private String name;

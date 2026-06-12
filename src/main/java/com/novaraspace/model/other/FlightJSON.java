@@ -45,32 +45,6 @@ public class FlightJSON {
         return this;
     }
 
-    //    public double getFirstBasePrice() {
-//        return firstBasePrice;
-//    }
-//
-//    public FlightJSON setFirstBasePrice(double firstBasePrice) {
-//        this.firstBasePrice = firstBasePrice;
-//        return this;
-//    }
-//
-//    public double getMiddleBasePrice() {
-//        return middleBasePrice;
-//    }
-//
-//    public FlightJSON setMiddleBasePrice(double middleBasePrice) {
-//        this.middleBasePrice = middleBasePrice;
-//        return this;
-//    }
-//
-//    public double getLowerBasePrice() {
-//        return lowerBasePrice;
-//    }
-//
-//    public FlightJSON setLowerBasePrice(double lowerBasePrice) {
-//        this.lowerBasePrice = lowerBasePrice;
-//        return this;
-//    }
 
     public Long getDepartureLocationId() {
         return departureLocationId;

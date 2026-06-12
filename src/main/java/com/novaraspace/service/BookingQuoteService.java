@@ -15,7 +15,6 @@ import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,9 +31,6 @@ public class BookingQuoteService {
         this.quoteRepository = quoteRepository;
     }
 
-    Optional<BookingQuote> findQuoteByReference(String reference) {
-        return quoteRepository.findByReference(reference);
-    }
 
     public BookingQuote getValidQuoteByReference(String reference) {
         return quoteRepository.findByReference(reference).orElseThrow(BookingException::invalidQuote);
@@ -43,7 +39,6 @@ public class BookingQuoteService {
     public String createQuoteWithoutServicesOffer(BookingQuoteParams params) {
         BookingQuote quote = getGeneralValidQuote(params);
         return quoteRepository.save(quote).getReference();
-//        return mapper.entityToDto(persistedQuote);
     }
 
     public String createQuoteForNewBooking(BookingQuoteParams params) {
@@ -56,7 +51,6 @@ public class BookingQuoteService {
         quote.setServicesPricing(servicesOffer);
         BookingQuote persistedQuote = quoteRepository.save(quote);
         return persistedQuote.getReference();
-//        return mapper.entityToDto(persistedQuote);
     }
 
     private BookingQuote getGeneralValidQuote(BookingQuoteParams params) {

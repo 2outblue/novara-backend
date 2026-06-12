@@ -1,12 +1,9 @@
 package com.novaraspace.model.entity;
 
 import com.novaraspace.model.enums.BaggageCapacity;
-import jakarta.persistence.Entity;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 
-//@Entity
 public class PassengerBaggage {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private BaggageCapacity capacity;
