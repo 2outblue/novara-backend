@@ -4,8 +4,8 @@ spring:
   mail:
     host: smtp.mailersend.net
     port: 587
-    username: ${MAILERSEND_USER}
-    password: ${MAILERSEND_PASS}
+    username: placeholder
+    password: placeholder
     from: noreply@novaraspace.com
     properties:
       mail:
@@ -19,7 +19,7 @@ spring:
     name: novara
   datasource:
     username: ${NOVARA_SQL_USER:root}
-    url: ${NOVARA_DB_URL:jdbc:mysql://mysql:3306/novara-main?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
+    url: ${NOVARA_DB_URL:jdbc:mysql://mysql:3306/novara-local?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
     driverClassName: com.mysql.cj.jdbc.Driver
     password: ${MYSQL_PASS1:1q2w3e4r}
   jpa:
@@ -28,9 +28,9 @@ spring:
     defer-datasource-initialization: false
     properties:
       hibernate:
-#        dialect: org.hibernate.dialect.MySQLDialect
+        #        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
-#        generate_statistics: false
+    #        generate_statistics: false
     hibernate:
       ddl-auto: validate
   servlet:
@@ -43,14 +43,14 @@ spring:
 app:
   jwt:
     issuer: "novara-space"
-    secret: "${NOVARA_JWT_SECRET}"
+    secret: ${NOVARA_JWT_SECRET:this-is-not-a-real-secret-local-dev-only-12345}
     expiry-minutes: 20
     refresh-expiry-hours: 32
-    refresh-cookie-path: /api/auth
+    refresh-cookie-path: /auth
   verification-token-expiry-hours: 24
-  enable-email-verification: true
-  enable-email-password-reset: true
-  frontend-url: https://novaraspace.com
+  enable-email-verification: false
+  enable-email-password-reset: false
+  frontend-url: http://localhost:4200
   flight:
     padding-days-on-fetch: 14
     unbooked-cleanup-days-back: 10
@@ -61,11 +61,11 @@ app:
     max-activation-attempts: 4
     unverified-cleanup-days: 5
     reset-token-expiry-minutes: 30
-    adminInitialPass: ${NOVARA_ADMIN_PASS}
-    userInitialPass: ${NOVARA_USER_PASS}
+    adminInitialPass: "parola"
+    userInitialPass: "parola"
 
 server:
-  port: 8095
+  port: 8085
 
 logging:
   level:

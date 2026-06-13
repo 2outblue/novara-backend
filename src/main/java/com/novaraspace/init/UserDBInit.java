@@ -138,7 +138,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setCreatedAt(Instant.now())
                         .setAuthId(Base64.encode(UUID.randomUUID().toString()).toString())
                         .setStatus(AccountStatus.ACTIVE)
-                        .setRoles(Set.of(UserRole.USER))
+                        .setRoles(Set.of(UserRole.PUBLIC_ADMIN))
                         .setDemo()
                 ,
                 new User()
@@ -212,7 +212,7 @@ public class UserDBInit implements CommandLineRunner {
                         .setCreatedAt(Instant.now())
                         .setAuthId(Base64.encode(UUID.randomUUID().toString()).toString())
                         .setStatus(AccountStatus.ACTIVE)
-                        .setRoles(Set.of(UserRole.PUBLIC_ADMIN))
+                        .setRoles(Set.of(UserRole.USER))
                         .setDemo()
         );
     }

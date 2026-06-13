@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    container_name: novara_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1q2w3e4r
+      MYSQL_DATABASE: novara-local
+    volumes:
+      - novara-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p1q2w3e4r"]
+      interval: 5s
+      timeout: 5s
+      retries: 6
+  be:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: novara_be
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+    ports:
+      - "127.0.0.1:8085:8085"
+volumes:
+  novara-db-data: {}

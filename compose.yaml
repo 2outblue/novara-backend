@@ -25,7 +25,7 @@ services:
         condition: service_healthy
     environment:
       MAILERSEND_USER: ${MAILERSEND_USER}
-      MAILERSEND_PASS: ${MAILERSEND_USER}
+      MAILERSEND_PASS: ${MAILERSEND_PASS}
       NOVARA_SQL_USER: ${NOVARA_SQL_USER}
       NOVARA_DB_URL: ${NOVARA_DB_URL}
       MYSQL_PASS1: ${MYSQL_ROOT_PASSWORD}

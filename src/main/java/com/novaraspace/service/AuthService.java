@@ -43,6 +43,8 @@ public class AuthService {
     private int maxUserActivationAttempts;
     @Value("${app.user.reset-token-expiry-minutes}")
     private int resetTokenExpiryMinutes;
+    @Value("${app.jwt.refresh-cookie-path}")
+    private String refreshCookiePath;
 
     private final UserService userService;
     private final VerificationService verificationService;
@@ -195,7 +197,7 @@ public class AuthService {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .path("/api/auth")
+                .path(refreshCookiePath)
                 .maxAge( logout ? Duration.ZERO : Duration.ofHours(refreshExpiryHours))
                 .sameSite("Strict")
                 .build();

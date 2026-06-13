@@ -1,6 +1,3 @@
-#FROM ubuntu:latest
-#LABEL authors="cvety"
-#
 #ENTRYPOINT ["top", "-b"]
 FROM gradle:8.7-jdk21 AS build
 WORKDIR /app
